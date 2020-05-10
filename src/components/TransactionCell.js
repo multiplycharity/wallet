@@ -32,15 +32,11 @@ const ActivityCell = props => {
         <Image
           style={{ marginLeft: 25, width: 50, height: 50, borderRadius: 25 }}
           source={{
-            uri:
-              props.imageUrl ||
-              'https://randomuser.me/api/portraits/med/men/10.jpg'
+            uri: props.imageUrl
           }}
         />
         <View style={{ marginLeft: 20 }}>
-          <Text style={{ fontSize: 21, fontWeight: '500' }}>
-            {props.title || 'Title'}
-          </Text>
+          <Text style={{ fontSize: 21, fontWeight: '500' }}>{props.title}</Text>
 
           <Text
             style={{
@@ -50,13 +46,14 @@ const ActivityCell = props => {
               color: Colors.Gray500
             }}
           >
-            {moment.unix(props.timestamp).calendar() || 'Timestamp'}
+            At {moment(props.timestamp).format('HH:mm A')}
           </Text>
         </View>
       </View>
 
       <Text style={{ marginRight: 25, fontSize: 21, fontWeight: '500' }}>
-        {props.amount || 'Amount'}
+        {props.type === 'out' ? '-$' : '$'}
+        {props.amount}
       </Text>
     </View>
   )
