@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, SectionList } from 'react-native'
 import Colors from '../constants/colors'
-
 import TransactionCell from '../components/TransactionCell'
 import moment from 'moment'
 import _ from 'lodash'
@@ -20,15 +19,18 @@ const transactions = [
   { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '3' }
 ]
 
-const formatDate = item =>
-  moment(item.timestamp, 'YYYY-MM-DD HH:mm').format('MMMM DD')
-
-const groupedArray = _.groupBy(transactions, formatDate)
+const groupedArray = _.groupBy(transactions, tx =>
+  moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
+)
 
 let sections = []
 
 for (let [key, value] of Object.entries(groupedArray)) {
-  sections.push({ id: key, title: key, data: value })
+  sections.push({
+    id: key,
+    title: moment(key, 'YYYY-MM-DD').format('MMMM DD'),
+    data: value
+  })
 }
 
 const renderItem = ({ item }) => {
