@@ -1,27 +1,40 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  StatusBar,
+  ScrollView
+} from 'react-native'
 import Colors from '../constants/colors'
 import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
 
-const HomeScreen = () => {
+const Header = () => {
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle='dark-content' />
+    <View style={[styles.container, { marginBottom: 40 }]}>
       <Text style={styles.balance}>$103.04</Text>
       <Text style={styles.balanceDescription}>Cash Balance</Text>
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          marginTop: 74
+          marginTop: 50
         }}
       >
         <Button title='Add Cash' style={{}}></Button>
         <Button title='Cash Out' style={{ marginLeft: 14 }}></Button>
       </View>
+    </View>
+  )
+}
 
-      <TransactionsList></TransactionsList>
+const HomeScreen = () => {
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle='dark-content' />
+      <TransactionsList ListHeaderComponent={Header}></TransactionsList>
     </View>
   )
 }
@@ -35,9 +48,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.White
   },
   balance: {
-    marginTop: 144,
     fontSize: 48,
-    fontWeight: '500'
+    fontWeight: '500',
+    marginTop: 40
   },
   balanceDescription: {
     marginTop: 5,

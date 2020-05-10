@@ -11,13 +11,14 @@ const Stack = createStackNavigator()
 
 const Header = props => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.White }}>
       <View
         style={{
           height: 60,
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          backgroundColor: Colors.White
         }}
       >
         <Text style={{ fontSize: 21, fontWeight: '600', marginLeft: 20 }}>
@@ -38,10 +39,6 @@ const HomeStack = () => {
         name='Home'
         component={HomeScreen}
         options={{
-          headerTransparent: true,
-          headerStyle: {
-            height: 104 // Specify the height of your custom header
-          },
           header: Header
           // headerTitleAlign: 'left',
           // headerTitleStyle: { fontSize: 24, fontWeight: '600' },

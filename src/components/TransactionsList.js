@@ -5,7 +5,7 @@ import TransactionCell from '../components/TransactionCell'
 import moment from 'moment'
 import _ from 'lodash'
 
-const transactions = [
+let transactions = [
   { id: 0, title: 'Amir', timestamp: '2020-05-10 11:37', amount: '1' },
   { id: 1, title: 'James', timestamp: '2020-05-10 09:23', amount: '2' },
   {
@@ -15,21 +15,27 @@ const transactions = [
     amount: '5',
     type: 'out'
   },
-  { id: 4, title: 'Bob', timestamp: '2020-05-07 08:02', amount: '4' },
+  { id: 4, title: 'Bob', timestamp: '2020-03-01 08:02', amount: '4' },
   { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '3' }
 ]
 
-const groupedArray = _.groupBy(transactions, tx =>
+let sorted = _.orderBy(
+  transactions,
+  tx => moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
+  ['desc']
+)
+
+let transactionsByDate = _.groupBy(sorted, tx =>
   moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
 )
 
 let sections = []
 
-for (let [key, value] of Object.entries(groupedArray)) {
+for (let [date, transactions] of Object.entries(transactionsByDate)) {
   sections.push({
-    id: key,
-    title: moment(key, 'YYYY-MM-DD').format('MMMM DD'),
-    data: value
+    id: date,
+    title: moment(date, 'YYYY-MM-DD').format('MMMM DD'),
+    data: transactions
   })
 }
 
@@ -48,14 +54,14 @@ const renderSectionHeader = ({ section }) => {
   return <Text style={styles.sectionHeader}>{section.title.toUpperCase()}</Text>
 }
 
-const TransactionsList = () => {
+const TransactionsList = props => {
   return (
     <SectionList
-      style={{ marginTop: 20 }}
       sections={sections}
       renderItem={renderItem}
       keyExtractor={extractKey}
       renderSectionHeader={renderSectionHeader}
+      ListHeaderComponent={props.ListHeaderComponent}
     ></SectionList>
   )
 }
