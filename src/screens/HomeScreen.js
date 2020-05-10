@@ -1,29 +1,74 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
+import React, { useEffect } from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  StatusBar,
+  SectionList,
+  FlatList
+} from 'react-native'
 import Colors from '../constants/colors'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Button from '../components/Button'
+import ActivityCell from '../components/ActivityCell'
+import moment from 'moment'
+import _ from 'lodash'
 
-import useScreenDDimensions from '../hooks/useScreenDimensions'
+// <ActivityCell
+//   style={{}}
+//   title='Pedro Gomes'
+//   timestamp={1589101639}
+//   amount='-$5'
+//   imageUrl='https://randomuser.me/api/portraits/med/men/50.jpg'
+// />
+// <ActivityCell
+//   style={{}}
+//   title='Amir Jumaniyazov'
+//   timestamp={1588636800}
+//   amount='$20'
+//   imageUrl='https://randomuser.me/api/portraits/med/men/20.jpg'
+// />
 
-const ActivityCell = () => {
+const transactions = [
+  { id: 0, title: 'Amir', timestamp: '2020-05-10 11:37', amount: '$1' },
+  { id: 1, title: 'James', timestamp: '2020-05-10 09:23', amount: '$2' },
+  { id: 2, title: 'Alice', timestamp: '2020-05-07 15:02', amount: '$5' },
+  { id: 4, title: 'Bob', timestamp: '2020-05-07 08:02', amount: '$4' },
+  { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '$5' }
+]
+
+const formatDate = item =>
+  moment(item.timestamp, 'YYYY-MM-DD HH:mm').format('MMMM DD')
+
+const groupedArray = _.groupBy(transactions, formatDate)
+
+let sections = []
+
+for (let [key, value] of Object.entries(groupedArray)) {
+  sections.push({ id: key, title: moment., data: value })
+}
+
+
+const renderItem = ({ item }) => {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        backgroundColor: Colors.Gray200
-      }}
-    >
-      <Text>Pedro Gomes</Text>
-    </View>
+    <ActivityCell
+      {...item}
+      imageUrl={`https://randomuser.me/api/portraits/med/men/${item.id}.jpg`}
+    />
   )
+}
+
+const extractKey = ({ id }) => id
+
+const renderSectionHeader = ({ section }) => {
+  return <Text style={styles.sectionHeader}>{section.title.toUpperCase()}</Text>
 }
 
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' />
-      <Text style={styles.balance}>$5,755.04</Text>
+      <Text style={styles.balance}>$103.04</Text>
       <Text style={styles.balanceDescription}>Cash Balance</Text>
       <View
         style={{
@@ -35,9 +80,14 @@ const HomeScreen = () => {
         <Button title='Add Cash' style={{}}></Button>
         <Button title='Cash Out' style={{ marginLeft: 14 }}></Button>
       </View>
-      <View style={{ marginTop: 50 }}>
-        <ActivityCell />
-      </View>
+
+      <SectionList
+        style={{ marginTop: 20 }}
+        sections={sections}
+        renderItem={renderItem}
+        keyExtractor={extractKey}
+        renderSectionHeader={renderSectionHeader}
+      ></SectionList>
     </View>
   )
 }
@@ -60,5 +110,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: Colors.Gray500
+  },
+  sectionHeader: {
+    backgroundColor: Colors.Gray100,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    fontSize: 12,
+    color: Colors.Gray500,
+    fontWeight: '600'
   }
 })

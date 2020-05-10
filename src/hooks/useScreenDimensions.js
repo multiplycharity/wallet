@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import { Dimensions } from 'react-native'
 
 const useScreenDimensions = () => {

@@ -19,9 +19,9 @@ const PaymentStack = createStackNavigator()
 
 const PaymentStackScreen = () => {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name='Payment' component={PaymentScreen} />
-    </HomeStack.Navigator>
+    <PaymentStack.Navigator>
+      <PaymentStack.Screen name='Payment' component={PaymentScreen} />
+    </PaymentStack.Navigator>
   )
 }
 
@@ -31,9 +31,9 @@ const ProfileStack = createStackNavigator()
 
 const ProfileStackScreen = () => {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name='Profile' component={ProfileScreen} />
-    </HomeStack.Navigator>
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name='Profile' component={ProfileScreen} />
+    </ProfileStack.Navigator>
   )
 }
 
