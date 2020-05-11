@@ -4,9 +4,11 @@ export const TOGGLE_SEARCH_BAR = 'TOGGLE_SEARCH_BAR'
 const initialState = { searchBarActive: false }
 
 // Action Creators
-export const toggleSearchBar = () => {
-  type: TOGGLE_SEARCH_BAR
-}
+// export const toggleSearchBar = {
+//   type: TOGGLE_SEARCH_BAR
+// }
+
+export const toggleSearchBar = () => ({ type: TOGGLE_SEARCH_BAR })
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

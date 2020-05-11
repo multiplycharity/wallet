@@ -9,10 +9,12 @@ import {
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { toggleSearchBar } from '../redux/reducer'
 
 import Colors from '../constants/colors'
 import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
+import SearchBar from '../components/SearchBar'
 
 const ListHeader = () => {
   return (
@@ -34,15 +36,35 @@ const ListHeader = () => {
 }
 
 const HomeScreen = props => {
+  const { navigation, route } = props
+
   const searchBarActive = useSelector(state => state.searchBarActive)
 
+  if (searchBarActive) {
+    navigation.setOptions({ headerShown: false })
+  } else {
+    navigation.setOptions({ headerShown: true })
+  }
+
+  const dispatch = useDispatch()
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle='dark-content' />
+
+      {searchBarActive ? (
+        <SearchBar
+          title='Search email, address'
+          onClose={() => {
+            dispatch(toggleSearchBar())
+          }}
+        ></SearchBar>
+      ) : null}
+
       <TransactionsList
         ListHeaderComponent={!searchBarActive ? ListHeader : null}
       ></TransactionsList>
-    </View>
+    </SafeAreaView>
   )
 }
 

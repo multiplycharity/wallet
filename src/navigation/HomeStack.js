@@ -7,26 +7,26 @@ import {
   Button
 } from 'react-native'
 
-import { useSelector, useDispatch } from 'react-redux'
-
 import { createStackNavigator } from '@react-navigation/stack'
 import { Feather } from '@expo/vector-icons'
 
 import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
-import { toggleSearchBar, TOGGLE_SEARCH_BAR } from '../redux/reducer'
+
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleSearchBar } from '../redux/reducer'
 
 const Stack = createStackNavigator()
 
 const HomeStack = props => {
   const { navigation, route } = props
 
-  const dispatch = useDispatch()
-
   if (route.state && route.state.index > 0) {
     navigation.setOptions({ tabBarVisible: false })
   } else navigation.setOptions({ tabBarVisible: true })
+
+  const dispatch = useDispatch()
 
   return (
     <Stack.Navigator initialRouteName='Home'>
@@ -42,7 +42,7 @@ const HomeStack = props => {
               <TouchableOpacity
                 style={{ marginRight: 20 }}
                 onPress={() => {
-                  dispatch({ type: TOGGLE_SEARCH_BAR })
+                  dispatch(toggleSearchBar())
                 }}
               >
                 <Feather name='search' size={22} />
