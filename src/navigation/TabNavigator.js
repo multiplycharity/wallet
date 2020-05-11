@@ -39,10 +39,11 @@ const ProfileStackScreen = () => {
 
 const Tab = createBottomTabNavigator()
 
-const HomeTabs = () => {
+const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        tabBarVisible: getTabBarVisibility(route),
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 
@@ -63,11 +64,20 @@ const HomeTabs = () => {
         keyboardHidesTabBar: true
       }}
     >
-      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Home' component={HomeStack} />
       <Tab.Screen name='Payment' component={PaymentStackScreen} />
       <Tab.Screen name='Profile' component={ProfileStackScreen} />
     </Tab.Navigator>
   )
 }
 
-export default HomeTabs
+const getTabBarVisibility = route => {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : ''
+  if (routeName === 'Transaction') {
+    return false
+  }
+  return true
+}
+export default TabNavigator

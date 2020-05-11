@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,13 @@ import Colors from '../constants/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const TransactionScreen = props => {
+  // console.log(props.navigation)
+  // React.useLayoutEffect(() => {
+  //   props.navigation.setOptions({
+  //     tabBarVisible: false
+  //   })
+  // }, [props.navigation])
+
   return (
     <View style={styles.container}>
       <Image

@@ -16,14 +16,12 @@ import Colors from '../constants/colors'
 
 const Stack = createStackNavigator()
 
-import HomeTabs from './HomeTabs'
-
 const HomeStack = props => {
   return (
     <Stack.Navigator initialRouteName='Home'>
       <Stack.Screen
         name='Home'
-        component={HomeTabs}
+        component={HomeScreen}
         options={{
           headerStyle: {},
           headerTitleAlign: 'left',
