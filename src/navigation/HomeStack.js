@@ -17,6 +17,12 @@ import Colors from '../constants/colors'
 const Stack = createStackNavigator()
 
 const HomeStack = props => {
+  const { navigation, route } = props
+
+  if (route.state && route.state.index > 0) {
+    navigation.setOptions({ tabBarVisible: false })
+  } else navigation.setOptions({ tabBarVisible: true })
+
   return (
     <Stack.Navigator initialRouteName='Home'>
       <Stack.Screen
@@ -41,7 +47,7 @@ const HomeStack = props => {
         options={({ navigation, route }) => {
           return {
             headerTitle: null,
-            headerLeft: props => {
+            headerLeft: () => {
               return (
                 <TouchableOpacity
                   style={{ marginLeft: 14 }}

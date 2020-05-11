@@ -72,12 +72,12 @@ const TabNavigator = () => {
 }
 
 const getTabBarVisibility = route => {
-  const routeName = route.state
-    ? route.state.routes[route.state.index].name
-    : ''
-  if (routeName === 'Transaction') {
-    return false
-  }
+  //   const routeName = route.state
+  //     ? route.state.routes[route.state.index].name
+  //     : ''
+  //   if (routeName === 'Transaction') {
+  //     return false
+  //   }
   return true
 }
 export default TabNavigator

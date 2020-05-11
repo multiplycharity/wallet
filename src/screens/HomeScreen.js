@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -30,11 +30,15 @@ const Header = () => {
   )
 }
 
-const HomeScreen = () => {
+const HomeScreen = props => {
+  const [searchBarActive, setSearchBarActive] = useState(false)
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' />
-      <TransactionsList ListHeaderComponent={Header}></TransactionsList>
+      <TransactionsList
+        ListHeaderComponent={!searchBarActive ? Header : null}
+      ></TransactionsList>
     </View>
   )
 }
