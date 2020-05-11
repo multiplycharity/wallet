@@ -6,18 +6,23 @@ import {
   SafeAreaView,
   Button
 } from 'react-native'
-import { createStackNavigator } from '@react-navigation/stack'
 
+import { useSelector, useDispatch } from 'react-redux'
+
+import { createStackNavigator } from '@react-navigation/stack'
+import { Feather } from '@expo/vector-icons'
+
+import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
-
-import { Feather } from '@expo/vector-icons'
-import Colors from '../constants/colors'
+import { toggleSearchBar, TOGGLE_SEARCH_BAR } from '../redux/reducer'
 
 const Stack = createStackNavigator()
 
 const HomeStack = props => {
   const { navigation, route } = props
+
+  const dispatch = useDispatch()
 
   if (route.state && route.state.index > 0) {
     navigation.setOptions({ tabBarVisible: false })
@@ -34,7 +39,12 @@ const HomeStack = props => {
           headerTitleStyle: { fontSize: 21 },
           headerRight: () => {
             return (
-              <TouchableOpacity style={{ marginRight: 20 }} onPress={() => {}}>
+              <TouchableOpacity
+                style={{ marginRight: 20 }}
+                onPress={() => {
+                  dispatch({ type: TOGGLE_SEARCH_BAR })
+                }}
+              >
                 <Feather name='search' size={22} />
               </TouchableOpacity>
             )

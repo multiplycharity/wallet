@@ -7,11 +7,14 @@ import {
   StatusBar,
   ScrollView
 } from 'react-native'
+
+import { useSelector, useDispatch } from 'react-redux'
+
 import Colors from '../constants/colors'
 import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
 
-const Header = () => {
+const ListHeader = () => {
   return (
     <View style={[styles.container, { marginBottom: 40 }]}>
       <Text style={styles.balance}>$103.04</Text>
@@ -31,13 +34,13 @@ const Header = () => {
 }
 
 const HomeScreen = props => {
-  const [searchBarActive, setSearchBarActive] = useState(false)
+  const searchBarActive = useSelector(state => state.searchBarActive)
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content' />
       <TransactionsList
-        ListHeaderComponent={!searchBarActive ? Header : null}
+        ListHeaderComponent={!searchBarActive ? ListHeader : null}
       ></TransactionsList>
     </View>
   )
