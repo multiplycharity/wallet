@@ -4,16 +4,18 @@ import { NavigationContainer } from '@react-navigation/native'
 
 import { enableScreens } from 'react-native-screens'
 
-import TabNavigator from './TabNavigator'
+import HomeStack from './HomeStack'
 
 enableScreens()
 
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <TabNavigator></TabNavigator>
+      <HomeStack></HomeStack>
     </NavigationContainer>
   )
 }
 
 export default AppNavigator
+
+// <TabNavigator></TabNavigator>

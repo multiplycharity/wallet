@@ -39,7 +39,7 @@ const ProfileStackScreen = () => {
 
 const Tab = createBottomTabNavigator()
 
-const TabNavigator = () => {
+const HomeTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -63,11 +63,11 @@ const TabNavigator = () => {
         keyboardHidesTabBar: true
       }}
     >
-      <Tab.Screen name='Home' component={HomeStack} />
+      <Tab.Screen name='Home' component={HomeScreen} />
       <Tab.Screen name='Payment' component={PaymentStackScreen} />
       <Tab.Screen name='Profile' component={ProfileStackScreen} />
     </Tab.Navigator>
   )
 }
 
-export default TabNavigator
+export default HomeTabs

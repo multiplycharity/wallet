@@ -5,18 +5,21 @@ import {
   View,
   SafeAreaView,
   StatusBar,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native'
 import Colors from '../constants/colors'
 import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 
 import useScreenDimensions from '../hooks/useScreenDimensions'
 
 const ActivityCell = props => {
+  const navigation = useNavigation()
   const screen = useScreenDimensions()
 
   return (
-    <View
+    <TouchableOpacity
       style={[
         {
           flexDirection: 'row',
@@ -27,6 +30,7 @@ const ActivityCell = props => {
         },
         props.style
       ]}
+      onPress={() => navigation.navigate('Transaction')}
     >
       <View style={{ flexDirection: 'row' }}>
         <Image
@@ -55,7 +59,7 @@ const ActivityCell = props => {
         {props.type === 'out' ? '-$' : '$'}
         {props.amount}
       </Text>
-    </View>
+    </TouchableOpacity>
   )
 }
 
