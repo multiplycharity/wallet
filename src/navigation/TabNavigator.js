@@ -4,54 +4,43 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { Ionicons, Feather } from '@expo/vector-icons'
+import Colors from '../constants/colors'
+
 import HomeScreen from '../screens/HomeScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 
-import { Ionicons, Feather } from '@expo/vector-icons'
-import Colors from '../constants/colors'
+function getHeaderTitle (route) {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : route.params?.screen || 'Home'
 
-import MyCodeScreen from '../screens/MyCodeScreen'
-
-import HomeStack from './HomeStack'
-
-//Payment stack
-
-const PaymentStack = createStackNavigator()
-
-const PaymentStackScreen = () => {
-  return (
-    <PaymentStack.Navigator>
-      <PaymentStack.Screen
-        name='Payment'
-        component={MyCodeScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-    </PaymentStack.Navigator>
-  )
-}
-
-//Profile stack
-
-const ProfileStack = createStackNavigator()
-
-const ProfileStackScreen = () => {
-  return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen name='Profile' component={ProfileScreen} />
-    </ProfileStack.Navigator>
-  )
+  switch (routeName) {
+    case 'Home':
+      return 'Home'
+    case 'Payment':
+      return 'Payment'
+    case 'Profile':
+      return 'Profile'
+  }
 }
 
 const Tab = createBottomTabNavigator()
 
-const TabNavigator = () => {
+const TabNavigator = props => {
+  const { navigation, route } = props
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: getHeaderTitle(route)
+    })
+  }, [navigation, route])
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarVisible: getTabBarVisibility(route),
+        // tabBarVisible: getTabBarVisibility(route),
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
 
@@ -72,22 +61,11 @@ const TabNavigator = () => {
         keyboardHidesTabBar: true
       }}
     >
-      <Tab.Screen name='Home' component={HomeStack} />
-      <Tab.Screen name='Payment' component={PaymentStackScreen} />
-      <Tab.Screen name='Profile' component={ProfileStackScreen} />
+      <Tab.Screen name='Home' component={HomeScreen} options={{}} />
+      <Tab.Screen name='Payment' component={PaymentScreen} />
+      <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   )
-}
-
-const getTabBarVisibility = route => {
-  const routeName = route.state
-    ? route.state.routes[route.state.index].name
-    : route.name
-
-  if (routeName === 'Payment') {
-    return false
-  }
-  return true
 }
 
 export default TabNavigator

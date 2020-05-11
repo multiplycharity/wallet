@@ -24,17 +24,23 @@ const onShare = async () => {
   }
 }
 
-const MyCodeScreen = () => {
+const onClose = () => {}
+
+const MyCodeScreen = props => {
+  const { navigation } = props
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={{ marginLeft: 14 }}>
+        <TouchableOpacity
+          style={{ marginLeft: 14 }}
+          onPress={() => navigation.goBack()}
+        >
           <Feather name='x' size={24} color={Colors.Black}></Feather>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ marginRight: 14 }} onPress={onShare}>
+        {/*<TouchableOpacity style={{ marginRight: 14 }} onPress={onShare}>
           <Feather name='share' size={24} color={Colors.Black}></Feather>
-        </TouchableOpacity>
+          </TouchableOpacity>*/}
       </View>
 
       <View style={styles.QRCode}>
@@ -55,16 +61,31 @@ const MyCodeScreen = () => {
             justifyContent: 'space-between',
             paddingHorizontal: 20
           }}
+          onPress={onShare}
         >
           <Text style={styles.address}>7p3QqbzZFZ…H53Xku6wvN</Text>
           <Feather
-            name='copy'
+            name='share'
             size={22}
             color={Colors.Gray600}
             width='2'
           ></Feather>
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity style={styles.roundButton}>
+        <Feather name='maximize' size={30}></Feather>
+      </TouchableOpacity>
+      <Text
+        style={{
+          marginTop: 10,
+          fontSize: 12,
+          fontWeight: '600',
+          textTransform: 'uppercase'
+        }}
+      >
+        Scan
+      </Text>
     </SafeAreaView>
   )
 }
@@ -113,5 +134,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500'
   },
-  roundButton: {}
+  roundButton: {
+    marginTop: 50,
+    height: 60,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+    borderRadius: 50,
+    backgroundColor: Colors.Gray200
+  }
 })

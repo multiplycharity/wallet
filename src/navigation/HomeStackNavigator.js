@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Button
 } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { createStackNavigator } from '@react-navigation/stack'
 import { Feather } from '@expo/vector-icons'
@@ -13,30 +14,29 @@ import { Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
+import MyCodeScreen from '../screens/MyCodeScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/reducer'
 
-const Stack = createStackNavigator()
+import TabNavigator from './TabNavigator'
 
-const HomeStack = props => {
-  const { navigation, route } = props
-
-  if (route.state && route.state.index > 0) {
-    navigation.setOptions({ tabBarVisible: false })
-  } else navigation.setOptions({ tabBarVisible: true })
+const HomeStack = createStackNavigator()
+const HomeStackNavigator = props => {
+  const { route } = props
+  const navigation = useNavigation()
 
   const dispatch = useDispatch()
 
   return (
-    <Stack.Navigator initialRouteName='Home'>
-      <Stack.Screen
+    <HomeStack.Navigator initialRouteName='Home'>
+      <HomeStack.Screen
         name='Home'
-        component={HomeScreen}
-        options={{
-          headerStyle: {},
-          headerTitleAlign: 'left',
+        component={TabNavigator}
+        options={({ route }) => ({
           headerTitleStyle: { fontSize: 21 },
+          headerTitleAlign: 'left',
+
           headerRight: () => {
             return (
               <TouchableOpacity
@@ -49,9 +49,9 @@ const HomeStack = props => {
               </TouchableOpacity>
             )
           }
-        }}
+        })}
       />
-      <Stack.Screen
+      <HomeStack.Screen
         name='Transaction'
         component={TransactionScreen}
         options={({ navigation, route }) => {
@@ -74,8 +74,8 @@ const HomeStack = props => {
           }
         }}
       />
-    </Stack.Navigator>
+    </HomeStack.Navigator>
   )
 }
 
-export default HomeStack
+export default HomeStackNavigator

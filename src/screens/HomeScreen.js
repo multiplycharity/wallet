@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 import { toggleSearchBar } from '../redux/reducer'
 
 import Colors from '../constants/colors'
@@ -16,7 +17,9 @@ import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
 import SearchBar from '../components/SearchBar'
 
-const ListHeader = () => {
+const ListHeader = props => {
+  const navigation = useNavigation()
+
   return (
     <View style={[styles.container, { marginBottom: 40 }]}>
       <Text style={styles.balance}>$103.04</Text>
@@ -28,7 +31,13 @@ const ListHeader = () => {
           marginTop: 50
         }}
       >
-        <Button title='Add Cash' style={{}}></Button>
+        <Button
+          title='Add Cash'
+          style={{}}
+          onPress={() => {
+            navigation.navigate('MyCode')
+          }}
+        ></Button>
         <Button title='Cash Out' style={{ marginLeft: 14 }}></Button>
       </View>
     </View>
@@ -38,12 +47,14 @@ const ListHeader = () => {
 const HomeScreen = props => {
   const { navigation, route } = props
 
+  const parentNavigation = navigation.dangerouslyGetParent()
+
   const searchBarActive = useSelector(state => state.searchBarActive)
 
-  if (searchBarActive) {
-    navigation.setOptions({ headerShown: false })
+  if (searchBarActive && parentNavigation) {
+    parentNavigation.setOptions({ headerShown: false })
   } else {
-    navigation.setOptions({ headerShown: true })
+    parentNavigation.setOptions({ headerShown: true })
   }
 
   const dispatch = useDispatch()
