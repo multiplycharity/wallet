@@ -11,6 +11,8 @@ import ProfileScreen from '../screens/ProfileScreen'
 import { Ionicons, Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 
+import MyCodeScreen from '../screens/MyCodeScreen'
+
 import HomeStack from './HomeStack'
 
 //Payment stack
@@ -20,7 +22,13 @@ const PaymentStack = createStackNavigator()
 const PaymentStackScreen = () => {
   return (
     <PaymentStack.Navigator>
-      <PaymentStack.Screen name='Payment' component={PaymentScreen} />
+      <PaymentStack.Screen
+        name='Payment'
+        component={MyCodeScreen}
+        options={{
+          headerShown: false
+        }}
+      />
     </PaymentStack.Navigator>
   )
 }
@@ -72,12 +80,14 @@ const TabNavigator = () => {
 }
 
 const getTabBarVisibility = route => {
-  //   const routeName = route.state
-  //     ? route.state.routes[route.state.index].name
-  //     : ''
-  //   if (routeName === 'Transaction') {
-  //     return false
-  //   }
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : route.name
+
+  if (routeName === 'Payment') {
+    return false
+  }
   return true
 }
+
 export default TabNavigator
