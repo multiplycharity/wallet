@@ -1,163 +1,107 @@
-import React, { useEffect } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  Dimensions,
-  Share
-} from 'react-native'
+import * as Permissions from 'expo-permissions'
+import { BarCodeScanner } from 'expo-barcode-scanner'
+import React, { useState, useEffect } from 'react'
+import { Text, View, StyleSheet, Button } from 'react-native'
+import { BlurView } from 'expo-blur'
+import BarcodeMask from '../components/BarcodeMask'
+import { Camera } from 'expo-camera'
+import SvgFigure from '../components/svg'
 
-import { useSelector, useDispatch } from 'react-redux'
+/**
+ *   <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
+ */
 
-import Colors from '../constants/colors'
-import { Feather } from '@expo/vector-icons'
-import QRCode from 'react-native-qrcode-svg'
-import { toggleScannerScreen } from '../redux/screenReducer'
+export default function App ({ navigation }) {
+  const [hasPermission, setHasPermission] = useState(null)
+  const [scanned, setScanned] = useState(false)
 
-const screen = Dimensions.get('screen')
+  useEffect(() => {
+    ;(async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync()
+      setHasPermission(status === 'granted')
+    })()
+  }, [])
 
-const onShare = async () => {
-  try {
-    const result = await Share.share({
-      message: '7p3QqbzZFZ…H53Xku6wvN'
-    })
-  } catch (err) {
-    alert(err.message)
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true)
+    alert(data)
   }
-}
 
-const onClose = () => {}
-
-const MyCodeScreen = props => {
-  const { navigation } = props
-
-  const isScannerActive = useSelector(
-    state => state.scannerScreen.isScannerActive
-  )
-
-  const dispatch = useDispatch()
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={{ marginLeft: 14 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Feather name='x' size={24} color={Colors.Black}></Feather>
-        </TouchableOpacity>
-
-        {/*<TouchableOpacity style={{ marginRight: 14 }} onPress={onShare}>
-          <Feather name='share' size={24} color={Colors.Black}></Feather>
-          </TouchableOpacity>*/}
-      </View>
-
-      <View style={styles.QRCode}>
-        <QRCode
-          value='https://google.com'
-          size={parseInt(screen.width * 0.65)}
-        ></QRCode>
-      </View>
-
-      <Text style={styles.title}>Amir</Text>
-      <Text style={styles.subtitle}>Scan to pay amiromayer@gmail.com</Text>
-
-      <View style={styles.addressContainer}>
-        <TouchableOpacity
+    <View
+      style={{
+        flex: 1
+      }}
+    >
+      <Camera
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={{ ...StyleSheet.absoluteFill }}
+      >
+        {/*<BarcodeMask
+          height={340}
+          width={340}
+          edgeRadius={20}
+          outerMaskOpacity={0.3}
+        />*/}
+        <View
           style={{
-            flexDirection: 'row',
+            flex: 1,
+            justifyContent: 'center',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 20
+            backgroundColor: 'rgba(0,0,0,0.3)'
           }}
-          onPress={onShare}
         >
-          <Text style={styles.address}>7p3QqbzZFZ…H53Xku6wvN</Text>
-          <Feather
-            name='share'
-            size={22}
-            color={Colors.Gray600}
-            width='2'
-          ></Feather>
-        </TouchableOpacity>
-      </View>
+          <SvgFigure
+            style={{
+              position: 'absolute',
 
-      <TouchableOpacity
-        style={styles.roundButton}
-        onPress={() => {
-          dispatch(toggleScannerScreen())
-        }}
-      >
-        <Feather name='maximize' size={30}></Feather>
-      </TouchableOpacity>
-      <Text
-        style={{
-          marginTop: 10,
-          fontSize: 12,
-          fontWeight: '600',
-          textTransform: 'uppercase'
-        }}
-      >
-        {!isScannerActive ? 'Scan' : 'My Code'}
-      </Text>
-    </SafeAreaView>
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          ></SvgFigure>
+        </View>
+      </Camera>
+
+      {scanned && (
+        <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
+      )}
+
+      <Button title='Back' onPress={() => navigation.goBack()} />
+    </View>
   )
 }
 
-export default MyCodeScreen
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.White,
-    alignItems: 'center'
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 60,
-    backgroundColor: Colors.White,
-    alignItems: 'center',
-    width: screen.width
-  },
-  QRCode: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 20,
-    backgroundColor: 'white',
-    marginTop: 40,
-    width: parseInt(screen.width * 0.8),
-    height: parseInt(screen.width * 0.8),
-    shadowColor: Colors.Gray300,
-    shadowOpacity: 1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 0 }
-  },
-  title: { marginTop: 40, fontSize: 25, fontWeight: '500' },
-  subtitle: { marginTop: 10, fontSize: 16, color: Colors.Gray600 },
-  addressContainer: {
-    justifyContent: 'center',
-    marginTop: 20,
-    width: screen.width * 0.8,
-    height: 60,
-    backgroundColor: Colors.Gray100,
-    borderRadius: 10
-  },
-  address: {
-    color: Colors.Gray600,
-    fontSize: 18,
-    fontWeight: '500'
-  },
-  roundButton: {
-    marginTop: 50,
-    height: 60,
-    width: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 5,
-    borderRadius: 50,
-    backgroundColor: Colors.Gray200
-  }
-})
+/**
+ *  // <View
+        //   style={{
+        //     ...StyleSheet.absoluteFillObject
+        //   }}
+        // >
+        //   <View
+        //     style={{
+        //       flex: 1,
+        //       justifyContent: 'center',
+        //       alignItems: 'center',
+        //       backgroundColor: 'rgba(0,0,0,0.25)'
+        //     }}
+        //   >
+        //     <View
+        //       style={{
+        //         height: 340,
+        //         width: 340,
+        //         backgroundColor: 'transparent'
+        //       }}
+        //     ></View>
+        //   </View>
+        // </View>
+ */
