@@ -20,6 +20,7 @@ import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
 import MyCodeScreen from '../screens/MyCodeScreen'
 import QRScannerScreen from '../screens/QRScannerScreen'
+import ScannerModalScreen from '../screens/ScannerModalScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
@@ -68,6 +69,13 @@ const ModalStackNavigator = ({ route, navigation }) => {
       <ModalStack.Screen
         name='QRScanner'
         component={QRScannerScreen}
+        options={({ route, navigation }) => ({
+          headerShown: false
+        })}
+      />
+      <ModalStack.Screen
+        name='ScannerModal'
+        component={ScannerModalScreen}
         options={({ route, navigation }) => ({
           headerShown: false
         })}

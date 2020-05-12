@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 
 import Colors from '../constants/colors'
 import { Feather } from '@expo/vector-icons'
@@ -50,7 +51,7 @@ const MyCodeScreen = props => {
     alert(`Bar code with type ${type} and data ${data} has been scanned!`)
   }
 
-  const { navigation } = props
+  const navigation = useNavigation()
 
   const isScannerActive = useSelector(
     state => state.scannerScreen.isScannerActive

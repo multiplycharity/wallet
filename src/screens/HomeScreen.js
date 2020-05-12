@@ -38,7 +38,7 @@ const ListHeader = props => {
           title='Add Cash'
           style={{}}
           onPress={() => {
-            navigation.navigate('MyCode')
+            navigation.navigate('ScannerModal')
           }}
         ></Button>
         <Button
