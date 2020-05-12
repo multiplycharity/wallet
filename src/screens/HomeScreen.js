@@ -5,12 +5,15 @@ import {
   View,
   SafeAreaView,
   StatusBar,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import { toggleSearchBar } from '../redux/reducer'
+import { toggleSearchBar } from '../redux/screenReducer'
+
+import { Feather } from '@expo/vector-icons'
 
 import Colors from '../constants/colors'
 import Button from '../components/Button'
@@ -38,7 +41,13 @@ const ListHeader = props => {
             navigation.navigate('MyCode')
           }}
         ></Button>
-        <Button title='Cash Out' style={{ marginLeft: 14 }}></Button>
+        <Button
+          title='Cash Out'
+          style={{ marginLeft: 14 }}
+          onPress={() => {
+            navigation.navigate('QRScanner')
+          }}
+        ></Button>
       </View>
     </View>
   )
@@ -49,9 +58,11 @@ const HomeScreen = props => {
 
   const parentNavigation = navigation.dangerouslyGetParent()
 
-  const searchBarActive = useSelector(state => state.searchBarActive)
+  const isSearchBarActive = useSelector(
+    state => state.homeScreen.isSearchBarActive
+  )
 
-  if (searchBarActive && parentNavigation) {
+  if (isSearchBarActive && parentNavigation) {
     parentNavigation.setOptions({ headerShown: false })
   } else {
     parentNavigation.setOptions({ headerShown: true })
@@ -63,7 +74,7 @@ const HomeScreen = props => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle='dark-content' />
 
-      {searchBarActive ? (
+      {isSearchBarActive ? (
         <SearchBar
           title='Search email, address'
           onClose={() => {
@@ -73,7 +84,7 @@ const HomeScreen = props => {
       ) : null}
 
       <TransactionsList
-        ListHeaderComponent={!searchBarActive ? ListHeader : null}
+        ListHeaderComponent={!isSearchBarActive ? ListHeader : null}
       ></TransactionsList>
     </SafeAreaView>
   )

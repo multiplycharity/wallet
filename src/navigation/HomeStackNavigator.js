@@ -17,7 +17,7 @@ import TransactionScreen from '../screens/TransactionScreen'
 import MyCodeScreen from '../screens/MyCodeScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSearchBar } from '../redux/reducer'
+import { toggleSearchBar } from '../redux/screenReducer'
 
 import TabNavigator from './TabNavigator'
 
@@ -35,20 +35,7 @@ const HomeStackNavigator = props => {
         component={TabNavigator}
         options={({ route }) => ({
           headerTitleStyle: { fontSize: 21 },
-          headerTitleAlign: 'left',
-
-          headerRight: () => {
-            return (
-              <TouchableOpacity
-                style={{ marginRight: 20 }}
-                onPress={() => {
-                  dispatch(toggleSearchBar())
-                }}
-              >
-                <Feather name='search' size={22} />
-              </TouchableOpacity>
-            )
-          }
+          headerTitleAlign: 'left'
         })}
       />
       <HomeStack.Screen

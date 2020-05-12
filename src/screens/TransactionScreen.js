@@ -13,11 +13,11 @@ import Colors from '../constants/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const TransactionScreen = props => {
-  React.useLayoutEffect(() => {
-    props.navigation.setOptions({
-      tabBarVisible: false
-    })
-  }, [props.navigation])
+  // React.useLayoutEffect(() => {
+  //   props.navigation.setOptions({
+  //     tabBarVisible: false
+  //   })
+  // }, [props.navigation])
 
   return (
     <View style={styles.container}>
@@ -69,6 +69,7 @@ const TransactionScreen = props => {
       >
         <TouchableOpacity
           onPress={async () => {
+            // props.navigation.navigate('WebView')
             await WebBrowser.openBrowserAsync('https://google.com')
           }}
         >
