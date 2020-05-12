@@ -84,24 +84,35 @@ const MyCodeScreen = props => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={styles.roundButton}
-        onPress={() => {
-          dispatch(toggleScannerScreen())
-        }}
-      >
-        <Feather name='maximize' size={30}></Feather>
-      </TouchableOpacity>
-      <Text
+      <View
         style={{
-          marginTop: 10,
-          fontSize: 12,
-          fontWeight: '600',
-          textTransform: 'uppercase'
+          position: 'absolute',
+          bottom: 0,
+          height: screen.height * 0.25,
+          width: screen.width,
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
-        {!isScannerActive ? 'Scan' : 'My Code'}
-      </Text>
+        <TouchableOpacity
+          style={styles.roundButton}
+          onPress={() => {
+            dispatch(toggleScannerScreen())
+          }}
+        >
+          <Feather name='maximize' size={30}></Feather>
+        </TouchableOpacity>
+        <Text
+          style={{
+            marginTop: 10,
+            fontSize: 12,
+            fontWeight: '600',
+            textTransform: 'uppercase'
+          }}
+        >
+          {!isScannerActive ? 'Scan' : 'My Code'}
+        </Text>
+      </View>
     </SafeAreaView>
   )
 }
@@ -151,7 +162,6 @@ const styles = StyleSheet.create({
     fontWeight: '500'
   },
   roundButton: {
-    marginTop: 50,
     height: 60,
     width: 60,
     justifyContent: 'center',
