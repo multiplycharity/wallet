@@ -61,7 +61,7 @@ const HomeScreen = props => {
   const parentNavigation = navigation.dangerouslyGetParent()
 
   const isSearchBarActive = useSelector(
-    state => state.homeScreen.isSearchBarActive
+    state => state.screen.homeScreen.isSearchBarActive
   )
 
   if (isSearchBarActive && parentNavigation) {

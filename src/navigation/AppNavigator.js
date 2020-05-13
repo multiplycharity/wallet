@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import ModalStackNavigator from './ModalStackNavigator'
 // import LoginStackNavigator @TODO
 import SignInScreen from '../screens/SignInScreen'
+import LoadingScreen from '../screens/LoadingScreen'
 
 enableScreens()
 
@@ -17,15 +18,16 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isSignedIn ? (
-          <Stack.Screen name='SignIn' component={SignInScreen}></Stack.Screen>
-        ) : (
-          <Stack.Screen
-            name='Home'
-            component={ModalStackNavigator}
-          ></Stack.Screen>
-        )}
+      <Stack.Navigator
+        initialRouteName='Loading'
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name='Loading' component={LoadingScreen}></Stack.Screen>
+        <Stack.Screen name='SignIn' component={SignInScreen}></Stack.Screen>
+        <Stack.Screen
+          name='Home'
+          component={ModalStackNavigator}
+        ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   )

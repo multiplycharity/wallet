@@ -11,10 +11,7 @@ import AppNavigator from './src/navigation/AppNavigator'
 export default function App () {
   return (
     <Provider store={store}>
-      <PersistGate
-        persistor={persistor}
-        loading={() => <SplashScreen></SplashScreen>}
-      >
+      <PersistGate persistor={persistor}>
         <AppNavigator />
       </PersistGate>
     </Provider>

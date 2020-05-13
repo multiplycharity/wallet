@@ -69,7 +69,7 @@ const MyCodeScreen = props => {
   const navigation = useNavigation()
 
   const isScannerActive = useSelector(
-    state => state.scannerScreen.isScannerActive
+    state => state.screen.scannerScreen.isScannerActive
   )
 
   const dispatch = useDispatch()

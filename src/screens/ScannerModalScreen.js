@@ -7,7 +7,7 @@ import QRScannerScreen from './QRScannerScreen'
 
 const ScannerModalScreen = () => {
   const isScannerActive = useSelector(
-    state => state.scannerScreen.isScannerActive
+    state => state.screen.scannerScreen.isScannerActive
   )
 
   return !isScannerActive ? (

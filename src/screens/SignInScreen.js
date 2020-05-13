@@ -18,7 +18,15 @@ import {
   loginFailure,
   loginSuccess,
   setAccessToken,
-  logout
+  setUserSuccess,
+  setUserFailure,
+  logout,
+  firebaseSignInSuccess,
+  firebaseSignInFailure,
+  googleSignInSuccess,
+  googleSignInFailure,
+  logoutSuccess,
+  logoutFailure
 } from '../redux/authReducer'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -40,84 +48,6 @@ const isUserEqual = (googleUser, firebaseUser) => {
   return false
 }
 
-const onSignIn = googleUser => {
-  // We need to register an Observer on Firebase Auth to make sure auth is initialized.
-  var unsubscribe = firebase.auth().onAuthStateChanged(function (firebaseUser) {
-    unsubscribe()
-    // Check if we are already signed-in Firebase with the correct user.
-    if (!isUserEqual(googleUser, firebaseUser)) {
-      // Build Firebase credential with the Google ID token.
-      var credential = firebase.auth.GoogleAuthProvider.credential(
-        googleUser.idToken,
-        googleUser.accessToken
-      )
-
-      // Sign in with credential from the Google user.
-      firebase
-        .auth()
-        .signInWithCredential(credential)
-        .then(response => {
-          console.log('responseUser: ', response.user)
-          console.log('User signed in successfully.')
-
-          if (response.user.uid) {
-            const {
-              uid,
-              email,
-              displayName,
-              phoneNumber,
-              photoURL
-            } = response.user
-            let user = { uid, email, displayName, phoneNumber, photoURL }
-
-            db.collection('users')
-              .doc(response.user.uid)
-              .set(user)
-              .catch(function (error) {
-                console.error('Error adding document: ', error)
-              })
-          }
-        })
-        .catch(function (error) {
-          console.log('error: ', error)
-          // Handle Errors here.
-          var errorCode = error.code
-          var errorMessage = error.message
-          // The email of the user's account used.
-          var email = error.email
-          // The firebase.auth.AuthCredential type that was used.
-          var credential = error.credential
-          // ...
-        })
-    } else {
-      console.log('User already signed-in Firebase.')
-    }
-  })
-}
-
-const signInWithGoogleAsync = async () => {
-  try {
-    const response = await Google.logInAsync({
-      iosClientId: CLIENT_ID,
-      scopes: [
-        'profile',
-        'email',
-        'https://www.googleapis.com/auth/drive.appdata'
-      ]
-    })
-
-    if (response.type === 'success') {
-      onSignIn(response)
-      return response.accessToken
-    } else {
-      return { canceled: true }
-    }
-  } catch (error) {
-    console.warn(err)
-    return { error }
-  }
-}
-
 const getMnemonic = async accessToken => {
   const baseApiUrl = 'https://www.googleapis.com/drive/v3'
 
@@ -137,10 +67,6 @@ const getMnemonic = async accessToken => {
 }
 
 const SignInScreen = () => {
-  const [accessToken, setAccessToken] = useState('')
-  const [isSignedIn, setIsSignedIn] = useState(false)
-  const [mnemonic, setMnemonic] = useState('')
-
   const accessTokenRedux = useSelector(state => state.auth.accessToken)
   console.log('accessTokenRedux: ', accessTokenRedux)
 
@@ -150,27 +76,103 @@ const SignInScreen = () => {
   const mnemonicRedux = useSelector(state => state.auth.mnemonic)
   console.log('mnemonicRedux: ', mnemonicRedux)
 
+  const userRedux = useSelector(state => state.auth.user)
+  console.log('userRedux: ', userRedux)
+
   const dispatch = useDispatch()
 
-  const handleSignIn = async () => {
-    const res = await signInWithGoogleAsync()
-    console.log('res: ', res)
-    if (res.canceled) {
-      dispatch(loginFailure('Signin canceled'))
-    } else if (res.error) {
-      dispatch(loginFailure(res.error))
-    } else {
-      setAccessToken(res)
-      setIsSignedIn(true)
-      dispatch(loginSuccess(res))
+  const signInWithGoogleAsync = async () => {
+    try {
+      const response = await Google.logInAsync({
+        iosClientId: CLIENT_ID,
+        scopes: [
+          'profile',
+          'email',
+          'https://www.googleapis.com/auth/drive.appdata'
+        ]
+      })
+
+      console.log('✅', response)
+
+      if (response.type === 'success') {
+        dispatch(googleSignInSuccess())
+        dispatch(setAccessToken(response.accessToken))
+        await onSignIn(response)
+        dispatch(loginSuccess())
+        return response.accessToken
+      } else {
+        dispatch(googleSignInFailure({ message: 'Canceled' }))
+        return { canceled: true }
+      }
+    } catch (error) {
+      console.log('Google failed ')
+      dispatch(googleSignInFailure(error))
+      console.warn(error)
+      return { error }
     }
+  }
+
+  const onSignIn = googleUser => {
+    var unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
+      unsubscribe()
+
+      // Check if we are already signed-in Firebase with the correct user.
+      if (!isUserEqual(googleUser, firebaseUser)) {
+        // Build Firebase credential with the Google ID token.
+        let credential = firebase.auth.GoogleAuthProvider.credential(
+          googleUser.idToken,
+          googleUser.accessToken
+        )
+
+        // Sign in with credential from the Google user.
+        firebase
+          .auth()
+          .signInWithCredential(credential)
+          .then(response => {
+            dispatch(firebaseSignInSuccess())
+            console.log('User signed in firebase')
+
+            if (response.user.uid) {
+              const {
+                uid,
+                email,
+                displayName,
+                phoneNumber,
+                photoURL
+              } = response.user
+
+              let user = { uid, email, displayName, phoneNumber, photoURL }
+
+              db.collection('users')
+                .doc(response.user.uid)
+                .set(user)
+                .then(() => {
+                  dispatch(setUserSuccess(user))
+                })
+                .catch(error => {
+                  dispatch(setUserFailure(error))
+                  console.error('Error adding document: ', error)
+                })
+            }
+          })
+          .catch(error => {
+            console.log('Failed to sign in firebase: ', error)
+            dispatch(firebaseSignInFailure(error))
+            let credential = error.credential
+            console.log('Credential: ', credential)
+          })
+      } else {
+        dispatch(firebaseSignInSuccess())
+        console.log('User already signed in firebase')
+      }
+    })
   }
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center'
       }}
@@ -190,7 +192,7 @@ const SignInScreen = () => {
         <Button
           style={{}}
           title='Sign in with Google'
-          onPress={handleSignIn}
+          onPress={signInWithGoogleAsync}
         ></Button>
       ) : null}
 
@@ -198,12 +200,23 @@ const SignInScreen = () => {
         <>
           <Button
             title='Get files'
-            onPress={() => getMnemonic(accessToken)}
+            onPress={() => getMnemonic(accessTokenRedux)}
             style={{ marginTop: 20 }}
           ></Button>
           <Button
             title='Sign out'
-            onPress={() => dispatch(logout())}
+            onPress={() => {
+              firebase
+                .auth()
+                .signOut()
+                .then(() => {
+                  dispatch(logoutSuccess())
+                })
+                .catch(error => {
+                  console.log('Failed to log out')
+                  dispatch(logoutFailure(error))
+                })
+            }}
             style={{ marginTop: 20 }}
           ></Button>
         </>
