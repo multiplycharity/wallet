@@ -10,6 +10,7 @@ import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
+import SignInScreen from '../screens/SignInScreen'
 
 function getHeaderTitle (route) {
   const routeName = route.state
@@ -62,7 +63,7 @@ const TabNavigator = props => {
       }}
     >
       <Tab.Screen name='Home' component={HomeScreen} options={{}} />
-      <Tab.Screen name='Payment' component={PaymentScreen} />
+      <Tab.Screen name='Payment' component={SignInScreen} />
       <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   )

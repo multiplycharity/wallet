@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
-  Share
+  Share,
+  LayoutAnimation
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -16,6 +17,7 @@ import Colors from '../constants/colors'
 import { Feather } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg'
 import { toggleScannerScreen } from '../redux/screenReducer'
+import * as Haptics from 'expo-haptics'
 
 const screen = Dimensions.get('screen')
 
@@ -32,6 +34,19 @@ const onShare = async () => {
 const onClose = () => {}
 
 const MyCodeScreen = props => {
+  LayoutAnimation.configureNext({
+    duration: 400,
+    create: {
+      type: LayoutAnimation.Types.spring,
+      property: LayoutAnimation.Properties.scaleXY,
+      springDamping: 0.7
+    },
+    update: {
+      type: LayoutAnimation.Types.spring,
+      springDamping: 0.7
+    }
+  })
+
   const navigation = useNavigation()
 
   const isScannerActive = useSelector(
@@ -99,6 +114,7 @@ const MyCodeScreen = props => {
           style={styles.roundButton}
           onPress={() => {
             dispatch(toggleScannerScreen())
+            Haptics.impactAsync('medium')
           }}
         >
           <Feather name='maximize' size={30}></Feather>

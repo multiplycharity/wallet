@@ -11,7 +11,7 @@ const Button = props => {
           backgroundColor: props.backgroundColor || Colors.Gray200,
           borderRadius: props.width / 2 || 90,
           height: props.height || 50,
-          width: props.width || 180,
+          width: props.width,
           justifyContent: 'center',
           alignItems: 'center'
         },
@@ -28,6 +28,7 @@ const Button = props => {
           {
             fontSize: 18,
             fontWeight: '500',
+            paddingHorizontal: 20,
             color: props.color || Colors.Black
           }
         ]}

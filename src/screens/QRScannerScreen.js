@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Share,
-  StatusBar
+  StatusBar,
+  LayoutAnimation
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -20,6 +21,7 @@ import { toggleScannerScreen } from '../redux/screenReducer'
 import ScannerMask from '../components/ScannerMask'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { BlurView } from 'expo-blur'
+import * as Haptics from 'expo-haptics'
 
 const screen = Dimensions.get('screen')
 
@@ -38,6 +40,19 @@ const onClose = () => {}
 const MyCodeScreen = props => {
   const [hasPermission, setHasPermission] = useState(null)
   const [scanned, setScanned] = useState(false)
+
+  LayoutAnimation.configureNext({
+    duration: 400,
+    create: {
+      type: LayoutAnimation.Types.spring,
+      property: LayoutAnimation.Properties.scaleXY,
+      springDamping: 0.7
+    },
+    update: {
+      type: LayoutAnimation.Types.spring,
+      springDamping: 0.7
+    }
+  })
 
   useEffect(() => {
     ;(async () => {
@@ -58,13 +73,6 @@ const MyCodeScreen = props => {
   )
 
   const dispatch = useDispatch()
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>
-  }
 
   return (
     <BlurView
@@ -113,6 +121,8 @@ const MyCodeScreen = props => {
             style={styles.roundButton}
             onPress={() => {
               dispatch(toggleScannerScreen())
+
+              Haptics.impactAsync('medium')
             }}
           >
             <Feather name='maximize' size={30}></Feather>
@@ -120,7 +130,6 @@ const MyCodeScreen = props => {
           <Text
             style={{
               marginTop: 10,
-
               fontSize: 12,
               fontWeight: '600',
               textTransform: 'uppercase',
