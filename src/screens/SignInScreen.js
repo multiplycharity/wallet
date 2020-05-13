@@ -4,17 +4,24 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView
 } from 'react-native'
 import Button from '../components/Button'
 
 import * as Google from 'expo-google-app-auth'
 import firebase from '../config/firebase'
-import 'firebase/firestore'
+import { firestore as db } from '../config/firebase'
+import { CLIENT_ID, API_KEY } from 'react-native-dotenv'
 
-const db = firebase.firestore()
+import {
+  loginFailure,
+  loginSuccess,
+  setAccessToken,
+  logout
+} from '../redux/authReducer'
 
-import { CLIENT_ID } from 'react-native-dotenv'
+import { useSelector, useDispatch } from 'react-redux'
 
 const isUserEqual = (googleUser, firebaseUser) => {
   if (firebaseUser) {
@@ -34,7 +41,6 @@ const isUserEqual = (googleUser, firebaseUser) => {
 }
 
 const onSignIn = googleUser => {
-  console.log('Google Auth Response', googleUser)
   // We need to register an Observer on Firebase Auth to make sure auth is initialized.
   var unsubscribe = firebase.auth().onAuthStateChanged(function (firebaseUser) {
     unsubscribe()
@@ -45,14 +51,13 @@ const onSignIn = googleUser => {
         googleUser.idToken,
         googleUser.accessToken
       )
-      console.log('credential: ', credential)
 
       // Sign in with credential from the Google user.
       firebase
         .auth()
         .signInWithCredential(credential)
         .then(response => {
-          console.log('res: ', response)
+          console.log('responseUser: ', response.user)
           console.log('User signed in successfully.')
 
           if (response.user.uid) {
@@ -92,7 +97,7 @@ const onSignIn = googleUser => {
 
 const signInWithGoogleAsync = async () => {
   try {
-    const result = await Google.logInAsync({
+    const response = await Google.logInAsync({
       iosClientId: CLIENT_ID,
       scopes: [
         'profile',
@@ -101,18 +106,15 @@ const signInWithGoogleAsync = async () => {
       ]
     })
 
-    console.log('Access token:', result.accessToken)
-    console.log('User', result.user)
-
-    if (result.type === 'success') {
-      console.log('success')
-      onSignIn(result)
-      return result.accessToken
+    if (response.type === 'success') {
+      onSignIn(response)
+      return response.accessToken
     } else {
-      return { cancelled: true }
+      return { canceled: true }
     }
-  } catch (err) {
-    return { error: true, err }
+  } catch (error) {
+    console.warn(err)
+    return { error }
   }
 }
 
@@ -132,8 +134,6 @@ const getMnemonic = async accessToken => {
     }
   )
   console.log('res: ', await res.json())
-
-  //   console.log('files: ', files)
 }
 
 const SignInScreen = () => {
@@ -141,20 +141,33 @@ const SignInScreen = () => {
   const [isSignedIn, setIsSignedIn] = useState(false)
   const [mnemonic, setMnemonic] = useState('')
 
+  const accessTokenRedux = useSelector(state => state.auth.accessToken)
+  console.log('accessTokenRedux: ', accessTokenRedux)
+
+  const isSignedInRedux = useSelector(state => state.auth.isSignedIn)
+  console.log('isSignedInRedux: ', isSignedInRedux)
+
+  const mnemonicRedux = useSelector(state => state.auth.mnemonic)
+  console.log('mnemonicRedux: ', mnemonicRedux)
+
+  const dispatch = useDispatch()
+
   const handleSignIn = async () => {
     const res = await signInWithGoogleAsync()
-    if (res.cancelled) {
-      console.warn('Cancelled')
+    console.log('res: ', res)
+    if (res.canceled) {
+      dispatch(loginFailure('Signin canceled'))
     } else if (res.error) {
-      console.warn(res.err)
+      dispatch(loginFailure(res.error))
     } else {
-      console.warn(res)
       setAccessToken(res)
+      setIsSignedIn(true)
+      dispatch(loginSuccess(res))
     }
   }
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: 'pink',
@@ -162,19 +175,40 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      <Text style={{ fontSize: 14, fontWeight: '500', marginBottom: 50 }}>
-        {accessToken}
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: '500',
+          marginBottom: 50,
+          paddingHorizontal: 40
+        }}
+      >
+        {accessTokenRedux}
       </Text>
-      <Button title='Sign in with Google' onPress={handleSignIn}></Button>
 
-      {accessToken ? (
+      {!accessTokenRedux ? (
         <Button
-          title='Get files'
-          onPress={() => getMnemonic(accessToken)}
-          style={{ marginTop: 20 }}
+          style={{}}
+          title='Sign in with Google'
+          onPress={handleSignIn}
         ></Button>
       ) : null}
-    </View>
+
+      {accessTokenRedux ? (
+        <>
+          <Button
+            title='Get files'
+            onPress={() => getMnemonic(accessToken)}
+            style={{ marginTop: 20 }}
+          ></Button>
+          <Button
+            title='Sign out'
+            onPress={() => dispatch(logout())}
+            style={{ marginTop: 20 }}
+          ></Button>
+        </>
+      ) : null}
+    </SafeAreaView>
   )
 }
 
