@@ -4,8 +4,11 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
 
-export const SET_USER_SUCCESS = 'SET_USER_SUCCESS'
-export const SET_USER_FAILURE = 'SET_USER_FAILURE'
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
+export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
+
+export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS'
+export const CREATE_USER_FAILURE = 'CREATE_USER_FAILURE'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'
 export const GOOGLE_SIGN_IN_FAILURE = 'GOOGLE_SIGN_IN_FAILURE'
@@ -27,32 +30,40 @@ const initialState = {
 }
 
 // Action Creators
-export const login = () => {
-  return async (dispatch, getState) => {
-    try {
-      //Try sign in and get access token
-      // const {accessToken, user} = await Google
-      //   if (accessToken) {
-      //     dispatch({ type: SET_ACCESS_TOKEN, payload: accessToken })
-      //   }
-      //   dispatch({ type: LOGIN_SUCCESS, payload: user })
-    } catch (error) {
-      console.log(error)
-      dispatch({ type: LOGIN_FAILURE })
-    }
-  }
-}
+// export const login = () => {
+//   return async (dispatch, getState) => {
+//     try {
+//       //Try sign in and get access token
+//       // const {accessToken, user} = await Google
+//       //   if (accessToken) {
+//       //     dispatch({ type: SET_ACCESS_TOKEN, payload: accessToken })
+//       //   }
+//       //   dispatch({ type: LOGIN_SUCCESS, payload: user })
+//     } catch (error) {
+//       console.log(error)
+//       dispatch({ type: LOGIN_FAILURE })
+//     }
+//   }
+// }
 
 export const setAccessToken = accessToken => {
   return { type: SET_ACCESS_TOKEN, payload: accessToken }
 }
 
-export const setUserSuccess = user => {
-  return { type: SET_USER_SUCCESS, payload: user }
+export const updateUserSuccess = user => {
+  return { type: UPDATE_USER_SUCCESS, payload: user }
 }
 
-export const setUserFailure = error => {
-  return { type: SET_USER_FAILURE, payload: error }
+export const updateUserFailure = error => {
+  return { type: UPDATE_USER_FAILURE, payload: error }
+}
+
+export const createUserSuccess = user => {
+  return { type: CREATE_USER_SUCCESS, payload: user }
+}
+
+export const createUserFailure = error => {
+  return { type: CREATE_USER_FAILURE, payload: error }
 }
 
 export const firebaseSignInSuccess = () => {
@@ -123,14 +134,19 @@ const authReducer = (state = initialState, action) => {
       return { ...state, isSignedInFirebase: false, error: action.payload }
     case SET_ACCESS_TOKEN:
       return { ...state, accessToken: action.payload }
-    case SET_USER_SUCCESS:
+    case CREATE_USER_SUCCESS:
       return { ...state, user: action.payload }
-    case SET_USER_FAILURE:
+    case CREATE_USER_FAILURE:
+      return { ...state, user: null, error: action.payload }
+    case UPDATE_USER_SUCCESS:
+      return { ...state, user: action.payload }
+    case UPDATE_USER_FAILURE:
       return { ...state, user: null, error: action.payload }
     case LOGIN_SUCCESS:
       return {
         ...state,
-        isSignedIn: true
+        isSignedIn: true,
+        error: null
       }
     case LOGIN_FAILURE:
       return { ...state, isSignedIn: false, error: action.payload }

@@ -18,8 +18,10 @@ import {
   loginFailure,
   loginSuccess,
   setAccessToken,
-  setUserSuccess,
-  setUserFailure,
+  createUserSuccess,
+  createUserFailure,
+  updateUserSuccess,
+  updateUserFailure,
   logout,
   firebaseSignInSuccess,
   firebaseSignInFailure,
@@ -32,20 +34,25 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 
 const isUserEqual = (googleUser, firebaseUser) => {
-  if (firebaseUser) {
-    var providerData = firebaseUser.providerData
-    for (var i = 0; i < providerData.length; i++) {
-      if (
-        providerData[i].providerId ===
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-        providerData[i].uid === googleUser.getBasicProfile().getId()
-      ) {
-        // We don't need to reauth the Firebase connection.
-        return true
+  try {
+    if (firebaseUser) {
+      var providerData = firebaseUser.providerData
+      for (var i = 0; i < providerData.length; i++) {
+        if (
+          providerData[i].providerId ===
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
+          providerData[i].uid === googleUser.getBasicProfile().getId()
+        ) {
+          // We don't need to reauth the Firebase connection.
+          return true
+        }
       }
     }
+    return false
+  } catch (error) {
+    console.warn(error)
+    return false
   }
-  return false
 }
 
 const getMnemonic = async accessToken => {
@@ -68,16 +75,10 @@ const getMnemonic = async accessToken => {
 
 const SignInScreen = () => {
   const accessTokenRedux = useSelector(state => state.auth.accessToken)
-  console.log('accessTokenRedux: ', accessTokenRedux)
-
   const isSignedInRedux = useSelector(state => state.auth.isSignedIn)
-  console.log('isSignedInRedux: ', isSignedInRedux)
-
   const mnemonicRedux = useSelector(state => state.auth.mnemonic)
-  console.log('mnemonicRedux: ', mnemonicRedux)
-
   const userRedux = useSelector(state => state.auth.user)
-  console.log('userRedux: ', userRedux)
+  const errorRedux = useSelector(state => state.auth.error)
 
   const dispatch = useDispatch()
 
@@ -92,27 +93,23 @@ const SignInScreen = () => {
         ]
       })
 
-      console.log('✅', response)
-
       if (response.type === 'success') {
         dispatch(googleSignInSuccess())
         dispatch(setAccessToken(response.accessToken))
         await onSignIn(response)
-        dispatch(loginSuccess())
         return response.accessToken
       } else {
         dispatch(googleSignInFailure({ message: 'Canceled' }))
         return { canceled: true }
       }
     } catch (error) {
-      console.log('Google failed ')
       dispatch(googleSignInFailure(error))
       console.warn(error)
       return { error }
     }
   }
 
-  const onSignIn = googleUser => {
+  const onSignIn = async googleUser => {
     var unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
       unsubscribe()
 
@@ -128,35 +125,57 @@ const SignInScreen = () => {
         firebase
           .auth()
           .signInWithCredential(credential)
-          .then(response => {
+          .then(result => {
             dispatch(firebaseSignInSuccess())
-            console.log('User signed in firebase')
 
-            if (response.user.uid) {
+            if (result.user.uid) {
               const {
                 uid,
                 email,
                 displayName,
                 phoneNumber,
                 photoURL
-              } = response.user
+              } = result.user
 
-              let user = { uid, email, displayName, phoneNumber, photoURL }
+              let user = {
+                uid,
+                email,
+                displayName,
+                phoneNumber,
+                photoURL
+              }
 
-              db.collection('users')
-                .doc(response.user.uid)
-                .set(user)
-                .then(() => {
-                  dispatch(setUserSuccess(user))
-                })
-                .catch(error => {
-                  dispatch(setUserFailure(error))
-                  console.error('Error adding document: ', error)
-                })
+              // If new user
+              if (result.additionalUserInfo.isNewUser) {
+                db.collection('users')
+                  .doc(result.user.uid)
+                  .set({ ...user, createdAt: Date.now() })
+                  .then(() => {
+                    dispatch(createUserSuccess(user))
+                    dispatch(loginSuccess())
+                  })
+                  .catch(error => {
+                    dispatch(createUserFailure(error))
+                    console.error('Error adding document: ', error)
+                  })
+              } else {
+                // If existing user
+                db.collection('users')
+                  .doc(result.user.uid)
+                  .update({ lastLoggedIn: Date.now() })
+                  .then(() => {
+                    dispatch(updateUserSuccess(user))
+                    dispatch(loginSuccess())
+                  })
+                  .catch(error => {
+                    dispatch(updateUserFailure(error))
+                    console.error(error.message)
+                  })
+              }
             }
           })
           .catch(error => {
-            console.log('Failed to sign in firebase: ', error)
+            console.log('Failed to sign in firebase:', error)
             dispatch(firebaseSignInFailure(error))
             let credential = error.credential
             console.log('Credential: ', credential)
@@ -177,6 +196,20 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
+      {errorRedux && typeof errorRedux.message !== 'undefined' ? (
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '600',
+            marginBottom: 50,
+            paddingHorizontal: 40,
+            color: 'red'
+          }}
+        >
+          {errorRedux.message}
+        </Text>
+      ) : null}
+
       <Text
         style={{
           fontSize: 14,
@@ -188,13 +221,15 @@ const SignInScreen = () => {
         {accessTokenRedux}
       </Text>
 
-      {!accessTokenRedux ? (
+      {
+        //!accessTokenRedux ?
         <Button
           style={{}}
           title='Sign in with Google'
           onPress={signInWithGoogleAsync}
         ></Button>
-      ) : null}
+        //) : null
+      }
 
       {accessTokenRedux ? (
         <>
