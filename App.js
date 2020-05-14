@@ -8,6 +8,12 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import AppNavigator from './src/navigation/AppNavigator'
 
+if (__DEV__) {
+  import('./src/config/reactotron').then(() =>
+    console.log('Reactotron Configured')
+  )
+}
+
 export default function App () {
   return (
     <Provider store={store}>
