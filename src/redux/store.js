@@ -1,8 +1,9 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { persistStore, persistReducer } from 'redux-persist'
 import logger from 'redux-logger'
 import reactotron from '../config/reactotron'
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
 import { AsyncStorage } from 'react-native'
 
@@ -21,13 +22,16 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
-const middleware = applyMiddleware(thunk)
+const middleware = [thunk]
 
-export const store = createStore(
-  persistedReducer,
-  undefined,
-  compose(middleware, reactotron.createEnhancer())
+const composeEnhancers = composeWithDevTools({})
+
+const enhancer = composeEnhancers(
+  applyMiddleware(...middleware),
+  reactotron.createEnhancer()
 )
+
+export const store = createStore(persistedReducer, undefined, enhancer)
 export const persistor = persistStore(store)
 
 export default store
