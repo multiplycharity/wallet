@@ -32,6 +32,7 @@ import {
 } from '../redux/authReducer'
 
 import { useSelector, useDispatch } from 'react-redux'
+import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
 
 const isUserEqual = (googleUser, firebaseUser) => {
   try {
@@ -55,32 +56,28 @@ const isUserEqual = (googleUser, firebaseUser) => {
   }
 }
 
-const getMnemonic = async accessToken => {
-  const baseApiUrl = 'https://www.googleapis.com/drive/v3'
+const getWalletFromDrive = async accessToken => {
+  const googleDrive = new GoogleDriveUtils(accessToken)
 
-  //   const files = await fetch(`https://www.googleapis.com/drive/v3/files`)
+  let wallet = await googleDrive.getFile()
+  if (wallet) {
+    wallet = await googleDrive.downloadFile(wallet.id)
+  }
 
-  const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&key=${API_KEY}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: 'application/json'
-      }
-    }
-  )
-  console.log('res: ', await res.json())
+  if (!wallet) {
+    wallet = { privateKey: '0x0' }
+    await googleDrive.uploadFile(wallet)
+  }
 }
 
 const SignInScreen = () => {
+  const dispatch = useDispatch()
+
   const accessTokenRedux = useSelector(state => state.auth.accessToken)
   const isSignedInRedux = useSelector(state => state.auth.isSignedIn)
   const mnemonicRedux = useSelector(state => state.auth.mnemonic)
   const userRedux = useSelector(state => state.auth.user)
   const errorRedux = useSelector(state => state.auth.error)
-
-  const dispatch = useDispatch()
 
   const signInWithGoogleAsync = async () => {
     try {
@@ -235,7 +232,7 @@ const SignInScreen = () => {
         <>
           <Button
             title='Get files'
-            onPress={() => getMnemonic(accessTokenRedux)}
+            onPress={() => getWalletFromDrive(accessTokenRedux)}
             style={{ marginTop: 20 }}
           ></Button>
           <Button
