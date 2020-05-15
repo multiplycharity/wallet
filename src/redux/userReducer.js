@@ -1,3 +1,6 @@
+import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
+import { ethers } from 'ethers'
+
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
 
@@ -21,7 +24,10 @@ export const updateUserSuccess = user => {
 }
 
 export const updateUserFailure = error => {
-  return { type: UPDATE_USER_FAILURE, payload: error }
+  return {
+    type: UPDATE_USER_FAILURE,
+    payload: error.message ? error.message : error
+  }
 }
 
 export const createUserSuccess = user => {
@@ -29,7 +35,10 @@ export const createUserSuccess = user => {
 }
 
 export const createUserFailure = error => {
-  return { type: CREATE_USER_FAILURE, payload: error }
+  return {
+    type: CREATE_USER_FAILURE,
+    payload: error.message ? error.message : error
+  }
 }
 
 export const createWalletSuccess = wallet => {
@@ -37,7 +46,10 @@ export const createWalletSuccess = wallet => {
 }
 
 export const createWalletFailure = error => {
-  return { type: CREATE_WALLET_FAILURE, payload: error }
+  return {
+    type: CREATE_WALLET_FAILURE,
+    payload: error.message ? error.message : error
+  }
 }
 
 export const getWalletSuccess = wallet => {
@@ -45,7 +57,42 @@ export const getWalletSuccess = wallet => {
 }
 
 export const getWalletFailure = error => {
-  return { type: GET_WALLET_FAILURE, payload: error }
+  return {
+    type: GET_WALLET_FAILURE,
+    payload: error.message ? error.message : error
+  }
+}
+
+export const getWalletFromDrive = accessToken => async dispatch => {
+  let wallet
+
+  try {
+    const googleDrive = new GoogleDriveUtils(accessToken)
+
+    wallet = await googleDrive.getFile()
+
+    if (wallet) {
+      wallet = await googleDrive.downloadFile(wallet.id)
+      dispatch(getWalletSuccess(wallet))
+    } else {
+      try {
+        wallet = ethers.Wallet.createRandom()
+
+        await googleDrive.uploadFile({
+          address: wallet.address,
+          privateKey: wallet.privateKey,
+          mnemonic: wallet.mnemonic
+        })
+        dispatch(createWalletSuccess(wallet))
+      } catch (error) {
+        dispatch(createWalletFailure(error))
+        throw new Error(error)
+      }
+    }
+  } catch (error) {
+    dispatch(getWalletFailure(error))
+    throw new Error(error)
+  }
 }
 
 const userReducer = (state = initialState, action) => {
@@ -66,7 +113,6 @@ const userReducer = (state = initialState, action) => {
     case GET_WALLET_SUCCESS:
       return { ...state, wallet: action.payload }
     case GET_WALLET_FAILURE:
-      console.log(action.payload, typeof action.payload)
       return { ...state, wallet: null, error: action.payload }
 
     default:

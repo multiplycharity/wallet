@@ -34,18 +34,18 @@ const onShare = async () => {
 const onClose = () => {}
 
 const MyCodeScreen = props => {
-  LayoutAnimation.configureNext({
-    duration: 400,
-    create: {
-      type: LayoutAnimation.Types.spring,
-      property: LayoutAnimation.Properties.scaleXY,
-      springDamping: 0.7
-    },
-    update: {
-      type: LayoutAnimation.Types.spring,
-      springDamping: 0.7
-    }
-  })
+  // LayoutAnimation.configureNext({
+  //   duration: 400,
+  //   create: {
+  //     type: LayoutAnimation.Types.spring,
+  //     property: LayoutAnimation.Properties.scaleXY,
+  //     springDamping: 0.7
+  //   },
+  //   update: {
+  //     type: LayoutAnimation.Types.spring,
+  //     springDamping: 0.7
+  //   }
+  // })
 
   const navigation = useNavigation()
 

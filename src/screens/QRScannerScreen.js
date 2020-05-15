@@ -41,18 +41,18 @@ const MyCodeScreen = props => {
   const [hasPermission, setHasPermission] = useState(null)
   const [scanned, setScanned] = useState(false)
 
-  LayoutAnimation.configureNext({
-    duration: 400,
-    create: {
-      type: LayoutAnimation.Types.spring,
-      property: LayoutAnimation.Properties.scaleXY,
-      springDamping: 0.7
-    },
-    update: {
-      type: LayoutAnimation.Types.spring,
-      springDamping: 0.7
-    }
-  })
+  // LayoutAnimation.configureNext({
+  //   duration: 400,
+  //   create: {
+  //     type: LayoutAnimation.Types.spring,
+  //     property: LayoutAnimation.Properties.scaleXY,
+  //     springDamping: 0.7
+  //   },
+  //   update: {
+  //     type: LayoutAnimation.Types.spring,
+  //     springDamping: 0.7
+  //   }
+  // })
 
   useEffect(() => {
     ;(async () => {

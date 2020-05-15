@@ -11,24 +11,16 @@ const LoadingScreen = () => {
 
   const isSignedIn = useSelector(state => state.auth.isSignedIn)
 
-  const checkIfLoggedIn = () => {
+  const checkIfSignedIn = () => {
     if (isSignedIn) {
       navigation.navigate('Home')
     } else {
       navigation.navigate('SignIn')
     }
-
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (user) {
-    //     navigation.navigate('Home')
-    //   } else {
-    //     navigation.navigate('SignIn')
-    //   }
-    // })
   }
 
   useEffect(() => {
-    checkIfLoggedIn()
+    checkIfSignedIn()
   })
 
   return (
