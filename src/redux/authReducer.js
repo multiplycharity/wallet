@@ -1,14 +1,7 @@
-// Action Types
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
 export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN'
-
-export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
-export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
-
-export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS'
-export const CREATE_USER_FAILURE = 'CREATE_USER_FAILURE'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'
 export const GOOGLE_SIGN_IN_FAILURE = 'GOOGLE_SIGN_IN_FAILURE'
@@ -24,46 +17,11 @@ const initialState = {
   isSignedInFirebase: false,
   isSignedInGoogle: false,
   accessToken: null,
-  user: null,
-  error: null,
-  mnemonic: 'MNEMONIC'
+  error: null
 }
-
-// Action Creators
-// export const login = () => {
-//   return async (dispatch, getState) => {
-//     try {
-//       //Try sign in and get access token
-//       // const {accessToken, user} = await Google
-//       //   if (accessToken) {
-//       //     dispatch({ type: SET_ACCESS_TOKEN, payload: accessToken })
-//       //   }
-//       //   dispatch({ type: LOGIN_SUCCESS, payload: user })
-//     } catch (error) {
-//       console.log(error)
-//       dispatch({ type: LOGIN_FAILURE })
-//     }
-//   }
-// }
 
 export const setAccessToken = accessToken => {
   return { type: SET_ACCESS_TOKEN, payload: accessToken }
-}
-
-export const updateUserSuccess = user => {
-  return { type: UPDATE_USER_SUCCESS, payload: user }
-}
-
-export const updateUserFailure = error => {
-  return { type: UPDATE_USER_FAILURE, payload: error }
-}
-
-export const createUserSuccess = user => {
-  return { type: CREATE_USER_SUCCESS, payload: user }
-}
-
-export const createUserFailure = error => {
-  return { type: CREATE_USER_FAILURE, payload: error }
 }
 
 export const firebaseSignInSuccess = () => {
@@ -82,13 +40,6 @@ export const googleSignInFailure = error => {
   return { type: GOOGLE_SIGN_IN_FAILURE, payload: error }
 }
 
-// export const loginSuccess = accessToken => {
-//   return async (dispatch, getState) => {
-//     dispatch(setAccessToken(accessToken))
-//     dispatch({ type: LOGIN_SUCCESS })
-//   }
-// }
-
 export const loginSuccess = () => {
   return { type: LOGIN_SUCCESS }
 }
@@ -105,23 +56,6 @@ export const logoutFailure = error => {
   return { type: LOGOUT_FAILURE, payload: error }
 }
 
-// export const login = () => {
-//   return async (dispatch, getState) => {
-//     try {
-//       const user = getState().user
-//       console.log('user: ', user);
-
-//       const response = await Firebase.auth().signInWithEmailAndPassword(
-//         email,
-//         password
-//       )
-//       dispatch({ type: LOGIN, payload: response.user })
-//     } catch (e) {
-//       console.log(e)
-//     }
-//   }
-// }
-
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case GOOGLE_SIGN_IN_SUCCESS:
@@ -134,14 +68,6 @@ const authReducer = (state = initialState, action) => {
       return { ...state, isSignedInFirebase: false, error: action.payload }
     case SET_ACCESS_TOKEN:
       return { ...state, accessToken: action.payload }
-    case CREATE_USER_SUCCESS:
-      return { ...state, user: action.payload }
-    case CREATE_USER_FAILURE:
-      return { ...state, user: null, error: action.payload }
-    case UPDATE_USER_SUCCESS:
-      return { ...state, user: action.payload }
-    case UPDATE_USER_FAILURE:
-      return { ...state, user: null, error: action.payload }
     case LOGIN_SUCCESS:
       return {
         ...state,

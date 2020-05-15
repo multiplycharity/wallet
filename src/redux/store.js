@@ -9,10 +9,12 @@ import { AsyncStorage } from 'react-native'
 
 import screenReducer from './screenReducer'
 import authReducer from './authReducer'
+import userReducer from './userReducer'
 
 const rootReducer = combineReducers({
   screen: screenReducer,
-  auth: authReducer
+  auth: authReducer,
+  user: userReducer
 })
 
 const persistConfig = {

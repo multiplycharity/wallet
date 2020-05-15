@@ -13,15 +13,12 @@ import * as Google from 'expo-google-app-auth'
 import firebase from '../config/firebase'
 import { firestore as db } from '../config/firebase'
 import { CLIENT_ID, API_KEY } from 'react-native-dotenv'
+import { ethers } from 'ethers'
 
 import {
   loginFailure,
   loginSuccess,
   setAccessToken,
-  createUserSuccess,
-  createUserFailure,
-  updateUserSuccess,
-  updateUserFailure,
   logout,
   firebaseSignInSuccess,
   firebaseSignInFailure,
@@ -30,6 +27,17 @@ import {
   logoutSuccess,
   logoutFailure
 } from '../redux/authReducer'
+
+import {
+  createUserSuccess,
+  createUserFailure,
+  updateUserSuccess,
+  updateUserFailure,
+  createWalletSuccess,
+  createWalletFailure,
+  getWalletSuccess,
+  getWalletFailure
+} from '../redux/userReducer'
 
 import { useSelector, useDispatch } from 'react-redux'
 import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
@@ -56,18 +64,36 @@ const isUserEqual = (googleUser, firebaseUser) => {
   }
 }
 
-const getWalletFromDrive = async accessToken => {
-  const googleDrive = new GoogleDriveUtils(accessToken)
+const getWalletFromDrive = accessToken => async dispatch => {
+  let wallet
+  try {
+    const googleDrive = new GoogleDriveUtils(accessToken)
 
-  let wallet = await googleDrive.getFile()
-  if (wallet) {
-    wallet = await googleDrive.downloadFile(wallet.id)
+    wallet = await googleDrive.getFile()
+
+    if (wallet) {
+      wallet = await googleDrive.downloadFile(wallet.id)
+      dispatch(getWalletSuccess(wallet))
+    } else {
+      wallet = ethers.Wallet.createRandom()
+      try {
+        await googleDrive.uploadFile({
+          address: wallet.address,
+          privateKey: wallet.privateKey,
+          mnemonic: wallet.mnemonic
+        })
+        dispatch(createWalletSuccess(wallet))
+      } catch (error) {
+        console.error(error)
+        dispatch(createWalletFailure(error))
+      }
+    }
+  } catch (error) {
+    dispatch(getWalletFailure(error))
+    console.error(error)
   }
 
-  if (!wallet) {
-    wallet = { privateKey: '0x0' }
-    await googleDrive.uploadFile(wallet)
-  }
+  console.log('wallet: ', wallet)
 }
 
 const SignInScreen = () => {
@@ -232,7 +258,7 @@ const SignInScreen = () => {
         <>
           <Button
             title='Get files'
-            onPress={() => getWalletFromDrive(accessTokenRedux)}
+            onPress={() => dispatch(getWalletFromDrive(accessTokenRedux))}
             style={{ marginTop: 20 }}
           ></Button>
           <Button
