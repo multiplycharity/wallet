@@ -31,8 +31,10 @@ const ListHeader = props => {
   const address = useSelector(state => state.user?.wallet?.address)
 
   useEffect(() => {
-    address &&
-      SDK.getBalance(address).then(balance => setBalance(balance.toString()))
+    ;(async () => {
+      address &&
+        SDK.getBalance(address).then(balance => setBalance(balance.toString()))
+    })()
   }, [address])
 
   return (

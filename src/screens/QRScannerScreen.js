@@ -23,36 +23,13 @@ import { BarCodeScanner } from 'expo-barcode-scanner'
 import { BlurView } from 'expo-blur'
 import * as Haptics from 'expo-haptics'
 
+import QRIcon from '../components/QRIcon'
+
 const screen = Dimensions.get('screen')
-
-const onShare = async () => {
-  try {
-    const result = await Share.share({
-      message: '7p3QqbzZFZ…H53Xku6wvN'
-    })
-  } catch (err) {
-    alert(err.message)
-  }
-}
-
-const onClose = () => {}
 
 const MyCodeScreen = props => {
   const [hasPermission, setHasPermission] = useState(null)
   const [scanned, setScanned] = useState(false)
-
-  // LayoutAnimation.configureNext({
-  //   duration: 400,
-  //   create: {
-  //     type: LayoutAnimation.Types.spring,
-  //     property: LayoutAnimation.Properties.scaleXY,
-  //     springDamping: 0.7
-  //   },
-  //   update: {
-  //     type: LayoutAnimation.Types.spring,
-  //     springDamping: 0.7
-  //   }
-  // })
 
   useEffect(() => {
     ;(async () => {
@@ -125,7 +102,11 @@ const MyCodeScreen = props => {
               Haptics.impactAsync('medium')
             }}
           >
-            <Feather name='maximize' size={30}></Feather>
+            {!isScannerActive ? (
+              <Feather name='maximize' size={30}></Feather>
+            ) : (
+              <QRIcon size={26}></QRIcon>
+            )}
           </TouchableOpacity>
           <Text
             style={{
