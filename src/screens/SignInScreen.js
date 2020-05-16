@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigation } from '@react-navigation/native'
 import {
   StyleSheet,
   Text,
@@ -40,16 +41,15 @@ import {
   getWalletFromDrive
 } from '../redux/userReducer'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, useStore } from 'react-redux'
 import { throwError } from '../redux/errorReducer'
 
 const SignInScreen = () => {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
-  const accessTokenRedux = useSelector(state => state.auth.accessToken)
-  const isSignedInRedux = useSelector(state => state.auth.isSignedIn)
-  const mnemonicRedux = useSelector(state => state.auth.mnemonic)
-  const userRedux = useSelector(state => state.auth.user)
+  const isSignedIn = useSelector(state => state.auth.isSignedIn)
+  const accessToken = useSelector(state => state.auth.accessToken)
 
   return (
     <SafeAreaView
@@ -70,7 +70,7 @@ const SignInScreen = () => {
           paddingHorizontal: 40
         }}
       >
-        {accessTokenRedux}
+        {accessToken}
       </Text>
 
       {
@@ -83,28 +83,21 @@ const SignInScreen = () => {
         //) : null
       }
 
-      {accessTokenRedux ? (
+      {isSignedIn ? (
         <>
           <Button
             title='Get files'
-            onPress={() => dispatch(getWalletFromDrive(accessTokenRedux))}
+            onPress={() => dispatch(getWalletFromDrive(accessToken))}
             style={{ marginTop: 20 }}
           ></Button>
           <Button
             title='Sign out'
             onPress={() => {
+              navigation.navigate('SignIn')
               dispatch(signOut())
             }}
             style={{ marginTop: 20 }}
           ></Button>
-
-          {/*<Button
-            title='Error'
-            onPress={() => {
-              dispatch(throwError('Error occured, sorry'))
-            }}
-            style={{ marginTop: 20 }}
-          ></Button>*/}
         </>
       ) : null}
     </SafeAreaView>
