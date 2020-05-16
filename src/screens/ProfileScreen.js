@@ -44,7 +44,15 @@ const ProfileScreen = () => {
             style={{ height: 80, width: 80, borderRadius: 40 }}
           ></Image>
 
-          <Text style={{ fontSize: 28, fontWeight: '600', marginTop: 20 }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 28,
+              fontWeight: '600',
+              marginTop: 20,
+              marginHorizontal: 25
+            }}
+          >
             {name}
           </Text>
 
@@ -52,6 +60,7 @@ const ProfileScreen = () => {
             style={{
               fontSize: 18,
               fontWeight: '500',
+              textAlign: 'center',
               color: Colors.Gray500,
               marginTop: 10
             }}
