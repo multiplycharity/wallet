@@ -18,36 +18,29 @@ import { Feather } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg'
 import { toggleScannerScreen } from '../redux/screenReducer'
 import * as Haptics from 'expo-haptics'
+import { throwError } from '../redux/errorReducer'
 
 const screen = Dimensions.get('screen')
-
-const onShare = async () => {
-  try {
-    const result = await Share.share({
-      message: '7p3QqbzZFZ…H53Xku6wvN'
-    })
-  } catch (err) {
-    alert(err.message)
-  }
-}
 
 const onClose = () => {}
 
 const MyCodeScreen = props => {
-  // LayoutAnimation.configureNext({
-  //   duration: 400,
-  //   create: {
-  //     type: LayoutAnimation.Types.spring,
-  //     property: LayoutAnimation.Properties.scaleXY,
-  //     springDamping: 0.7
-  //   },
-  //   update: {
-  //     type: LayoutAnimation.Types.spring,
-  //     springDamping: 0.7
-  //   }
-  // })
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: address
+      })
+    } catch (error) {
+      dispatch(throwError(error))
+      throw new Error(error)
+    }
+  }
 
   const navigation = useNavigation()
+
+  const name = useSelector(state => state?.user?.name)
+  const email = useSelector(state => state?.user?.email)
+  const address = useSelector(state => state?.user?.wallet?.address)
 
   const isScannerActive = useSelector(
     state => state.screen.scannerScreen.isScannerActive
@@ -64,10 +57,6 @@ const MyCodeScreen = props => {
         >
           <Feather name='x' size={24} color={Colors.Black}></Feather>
         </TouchableOpacity>
-
-        {/*<TouchableOpacity style={{ marginRight: 14 }} onPress={onShare}>
-          <Feather name='share' size={24} color={Colors.Black}></Feather>
-          </TouchableOpacity>*/}
       </View>
 
       <View style={styles.QRCode}>
@@ -77,8 +66,8 @@ const MyCodeScreen = props => {
         ></QRCode>
       </View>
 
-      <Text style={styles.title}>Amir</Text>
-      <Text style={styles.subtitle}>Scan to pay amiromayer@gmail.com</Text>
+      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.subtitle}>Scan to pay {email}</Text>
 
       <View style={styles.addressContainer}>
         <TouchableOpacity
@@ -90,7 +79,9 @@ const MyCodeScreen = props => {
           }}
           onPress={onShare}
         >
-          <Text style={styles.address}>7p3QqbzZFZ…H53Xku6wvN</Text>
+          <Text style={styles.address}>{`${(address || '').slice(0, 12)}...${(
+            address || ''
+          ).slice(-11)}`}</Text>
           <Feather
             name='share'
             size={22}
