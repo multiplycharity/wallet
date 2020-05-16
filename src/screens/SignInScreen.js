@@ -51,6 +51,18 @@ const SignInScreen = () => {
   const isSignedIn = useSelector(state => state.auth.isSignedIn)
   const accessToken = useSelector(state => state.auth.accessToken)
 
+  const checkIfSignedIn = () => {
+    if (isSignedIn) {
+      navigation.navigate('Home')
+    } else {
+      navigation.navigate('SignIn')
+    }
+  }
+
+  useEffect(() => {
+    checkIfSignedIn()
+  })
+
   return (
     <SafeAreaView
       style={{
@@ -60,46 +72,11 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      <Text
-        style={{
-          textAlign: 'left',
-          fontSize: 12,
-          color: 'navy',
-          fontWeight: '500',
-          marginBottom: 50,
-          paddingHorizontal: 40
-        }}
-      >
-        {accessToken}
-      </Text>
-
-      {
-        //!accessTokenRedux ?
-        <Button
-          style={{}}
-          title='Sign in with Google'
-          onPress={() => dispatch(signInWithGoogle())}
-        ></Button>
-        //) : null
-      }
-
-      {isSignedIn ? (
-        <>
-          <Button
-            title='Get files'
-            onPress={() => dispatch(getWalletFromDrive(accessToken))}
-            style={{ marginTop: 20 }}
-          ></Button>
-          <Button
-            title='Sign out'
-            onPress={() => {
-              navigation.navigate('SignIn')
-              dispatch(signOut())
-            }}
-            style={{ marginTop: 20 }}
-          ></Button>
-        </>
-      ) : null}
+      <Button
+        style={{}}
+        title='Sign in with Google'
+        onPress={() => dispatch(signInWithGoogle())}
+      ></Button>
     </SafeAreaView>
   )
 }

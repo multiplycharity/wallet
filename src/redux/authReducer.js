@@ -9,8 +9,7 @@ import {
   createUserFailure,
   updateUserFailure,
   updateUserSuccess,
-  getWalletFromDrive,
-  resetUser
+  getWalletFromDrive
 } from './userReducer'
 
 import { throwError, clearError } from './errorReducer'
@@ -161,9 +160,9 @@ export const signInWithFirebase = googleUser => dispatch => {
             let user = {
               uid,
               email,
-              displayName,
-              phoneNumber,
-              photoURL
+              name: displayName,
+              phone: phoneNumber,
+              photoUrl: photoURL
             }
 
             // If new user
@@ -172,7 +171,7 @@ export const signInWithFirebase = googleUser => dispatch => {
                 .doc(result.user.uid)
                 .set({ ...user, createdAt: Date.now() })
                 .then(() => {
-                  dispatch(createUserSuccess(user))
+                  dispatch(createUserSuccess({ ...user }))
                   dispatch(loginSuccess())
                 })
                 .catch(error => {
@@ -185,7 +184,7 @@ export const signInWithFirebase = googleUser => dispatch => {
                 .doc(result.user.uid)
                 .update({ lastLoggedIn: Date.now() })
                 .then(() => {
-                  dispatch(updateUserSuccess(user))
+                  dispatch(updateUserSuccess({ ...user }))
                   dispatch(loginSuccess())
                 })
                 .catch(error => {

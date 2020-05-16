@@ -19,7 +19,14 @@ const ProfileStack = createStackNavigator()
 const ProfileStackNavigator = () => {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name='Profile' component={TabNavigator} />
+      <ProfileStack.Screen
+        name='Profile'
+        component={TabNavigator}
+        options={({ route }) => ({
+          headerTitleStyle: { fontSize: 29 },
+          headerTitleAlign: 'center'
+        })}
+      />
     </ProfileStack.Navigator>
   )
 }

@@ -41,7 +41,7 @@ const ModalStackNavigator = ({ route, navigation }) => {
   return (
     <ModalStack.Navigator
       mode='modal'
-      screenOptions={({ route, navigation }) => ({})}
+      screenOptions={({ route, navigation }) => ({ headerShown: false })}
     >
       <ModalStack.Screen
         name='Home'

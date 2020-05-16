@@ -14,11 +14,7 @@ export const CREATE_WALLET_FAILURE = 'CREATE_WALLET_FAILURE'
 export const GET_WALLET_SUCCESS = 'GET_WALLET_SUCCESS'
 export const GET_WALLET_FAILURE = 'GET_WALLET_FAILURE'
 
-const initialState = {
-  user: null,
-  error: null,
-  wallet: null
-}
+const initialState = {}
 
 export const updateUserSuccess = user => {
   return { type: UPDATE_USER_SUCCESS, payload: user }
@@ -103,11 +99,11 @@ export const getWalletFromDrive = accessToken => async dispatch => {
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case CREATE_USER_SUCCESS:
-      return { ...state, user: action.payload }
+      return { ...state, ...action.payload }
     case CREATE_USER_FAILURE:
       return { ...state, user: null, error: action.payload }
     case UPDATE_USER_SUCCESS:
-      return { ...state, user: action.payload }
+      return { ...state, ...action.payload }
     case UPDATE_USER_FAILURE:
       return { ...state, user: null, error: action.payload }
 

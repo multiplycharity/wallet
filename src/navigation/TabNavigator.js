@@ -12,11 +12,13 @@ import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import SignInScreen from '../screens/SignInScreen'
 
-function getHeaderTitle (route) {
-  const routeName = route.state
+const getRouteName = route =>
+  route.state
     ? route.state.routes[route.state.index].name
     : route.params?.screen || 'Home'
 
+const getHeaderTitle = route => {
+  const routeName = getRouteName(route)
   switch (routeName) {
     case 'Home':
       return 'Home'
@@ -27,6 +29,13 @@ function getHeaderTitle (route) {
   }
 }
 
+const isHeaderShown = route => {
+  const routeName = getRouteName(route)
+  if (routeName === 'Profile') return false
+
+  return true
+}
+
 const Tab = createBottomTabNavigator()
 
 const TabNavigator = props => {
@@ -34,7 +43,8 @@ const TabNavigator = props => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: getHeaderTitle(route)
+      headerTitle: getHeaderTitle(route),
+      headerShown: isHeaderShown(route)
     })
   }, [navigation, route])
 
@@ -62,8 +72,8 @@ const TabNavigator = props => {
         keyboardHidesTabBar: true
       }}
     >
-      <Tab.Screen name='Home' component={HomeScreen} options={{}} />
-      <Tab.Screen name='Payment' component={SignInScreen} />
+      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Payment' component={PaymentScreen} />
       <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   )
