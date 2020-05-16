@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView,
+  ActivityIndicator
 } from 'react-native'
 import Button from '../components/Button'
 
@@ -50,6 +51,7 @@ const SignInScreen = () => {
 
   const isSignedIn = useSelector(state => state.auth.isSignedIn)
   const accessToken = useSelector(state => state.auth.accessToken)
+  const isLoading = useSelector(state => state.isLoading)
 
   const checkIfSignedIn = () => {
     if (isSignedIn) {
@@ -72,11 +74,15 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      <Button
-        style={{}}
-        title='Sign in with Google'
-        onPress={() => dispatch(signInWithGoogle())}
-      ></Button>
+      {isLoading ? (
+        <ActivityIndicator size='large'></ActivityIndicator>
+      ) : (
+        <Button
+          style={{}}
+          title='Sign in with Google'
+          onPress={() => dispatch(signInWithGoogle())}
+        ></Button>
+      )}
     </SafeAreaView>
   )
 }

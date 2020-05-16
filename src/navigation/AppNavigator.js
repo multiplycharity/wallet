@@ -5,9 +5,7 @@ import { enableScreens } from 'react-native-screens'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import ModalStackNavigator from './ModalStackNavigator'
-// import LoginStackNavigator @TODO
 import SignInScreen from '../screens/SignInScreen'
-import LoadingScreen from '../screens/LoadingScreen'
 
 enableScreens()
 

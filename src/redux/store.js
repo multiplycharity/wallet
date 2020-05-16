@@ -11,12 +11,14 @@ import screenReducer from './screenReducer'
 import authReducer from './authReducer'
 import userReducer from './userReducer'
 import errorReducer from './errorReducer'
+import loadingReducer from './loadingReducer'
 
 const appReducer = combineReducers({
   screen: screenReducer,
   auth: authReducer,
   user: userReducer,
-  error: errorReducer
+  error: errorReducer,
+  isLoading: loadingReducer
 })
 
 const rootReducer = (state, action) => {
@@ -28,7 +30,8 @@ const rootReducer = (state, action) => {
 
 const persistConfig = {
   key: 'root',
-  storage: AsyncStorage
+  storage: AsyncStorage,
+  blacklist: ['isLoading']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

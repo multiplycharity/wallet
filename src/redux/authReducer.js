@@ -14,6 +14,7 @@ import {
 
 import { throwError, clearError } from './errorReducer'
 
+export const LOGIN_STARTED = 'LOGIN_STARTED'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
@@ -66,8 +67,12 @@ export const googleSignInFailure = error => dispatch => {
   })
 }
 
-export const loginSuccess = () => {
-  return { type: LOGIN_SUCCESS }
+export const loginStarted = () => dispatch => {
+  dispatch({ type: LOGIN_STARTED })
+}
+
+export const loginSuccess = () => dispatch => {
+  dispatch({ type: LOGIN_SUCCESS })
 }
 
 export const loginFailure = error => dispatch => {
@@ -106,6 +111,8 @@ export const signOut = () => dispatch => {
 
 export const signInWithGoogle = () => async dispatch => {
   try {
+    dispatch(loginStarted())
+
     const response = await Google.logInAsync({
       iosClientId: CLIENT_ID,
       scopes: [
