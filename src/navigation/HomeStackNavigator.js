@@ -47,7 +47,7 @@ const HomeStackNavigator = props => {
             headerLeft: () => {
               return (
                 <TouchableOpacity
-                  style={{ marginLeft: 14 }}
+                  style={{ marginLeft: 16 }}
                   onPress={() => {
                     if (navigation.canGoBack()) {
                       navigation.popToTop()

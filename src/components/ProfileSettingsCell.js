@@ -9,14 +9,17 @@ const ProfileSettingsCell = props => {
 
   return (
     <TouchableOpacity
-      style={{
-        alignItems: 'center',
-        height: 100,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 25,
-        backgroundColor: Colors.White
-      }}
+      style={[
+        {
+          alignItems: 'center',
+          height: 100,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingHorizontal: 25,
+          backgroundColor: Colors.White
+        },
+        props.style
+      ]}
       onPress={() => {
         Haptics.impactAsync('medium')
         if (typeof props.onPress === 'function') props.onPress()
@@ -46,7 +49,7 @@ const ProfileSettingsCell = props => {
         </Text>
       </View>
 
-      <Feather name='chevron-right' size={28} color={Colors.Gray400}></Feather>
+      <Feather name='chevron-right' size={24} color={Colors.Gray400}></Feather>
     </TouchableOpacity>
   )
 }

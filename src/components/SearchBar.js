@@ -35,7 +35,7 @@ const SearchBar = props => {
           flexDirection: 'row',
           paddingVertical: 10,
           paddingLeft: 45,
-          marginHorizontal: 14,
+          marginHorizontal: 16,
           backgroundColor: Colors.Gray100,
           borderRadius: 10,
           alignItems: 'center',

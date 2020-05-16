@@ -12,6 +12,11 @@ import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import SignInScreen from '../screens/SignInScreen'
 
+import QRIcon from '../components/QRIcon'
+import { useDispatch } from 'react-redux'
+
+import { signOut } from '../redux/authReducer'
+
 const getRouteName = route =>
   route.state
     ? route.state.routes[route.state.index].name
@@ -31,8 +36,7 @@ const getHeaderTitle = route => {
 
 const isHeaderShown = route => {
   const routeName = getRouteName(route)
-  if (routeName === 'Profile') return false
-
+  if (routeName === 'Profile') return true
   return true
 }
 
@@ -40,12 +44,25 @@ const Tab = createBottomTabNavigator()
 
 const TabNavigator = props => {
   const { navigation, route } = props
+  const dispatch = useDispatch()
+  const routeName = getRouteName(route)
 
   React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: getHeaderTitle(route),
-      headerShown: isHeaderShown(route)
-    })
+    if (routeName === 'Profile') {
+      navigation.setOptions({
+        headerTitle: null,
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => {}} style={{ marginLeft: 16 }}>
+            <QRIcon size={22}></QRIcon>
+          </TouchableOpacity>
+        )
+      })
+    } else {
+      navigation.setOptions({
+        headerTitle: getHeaderTitle(route),
+        headerLeft: null
+      })
+    }
   }, [navigation, route])
 
   return (

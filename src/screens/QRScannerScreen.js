@@ -85,7 +85,7 @@ const MyCodeScreen = props => {
 
         <View style={styles.header}>
           <TouchableOpacity
-            style={{ marginLeft: 14 }}
+            style={{ marginLeft: 16 }}
             onPress={() => navigation.goBack()}
           >
             <Feather name='x' size={24} color={Colors.White}></Feather>

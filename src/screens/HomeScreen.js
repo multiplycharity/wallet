@@ -57,7 +57,7 @@ const ListHeader = props => {
         <Button
           title='Cash Out'
           width={180}
-          style={{ marginLeft: 14 }}
+          style={{ marginLeft: 16 }}
           onPress={() => {
             navigation.navigate('QRScanner')
           }}
