@@ -5563,6 +5563,11 @@ react-native-iphone-x-helper@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
 
+react-native-notifier@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-notifier/-/react-native-notifier-1.0.0.tgz#4a43f65d52882e573924d5bfb590bd809e4e58c5"
+  integrity sha512-IRvHFrADmm7zGiIjKRMoW8TC+lbgmkD1eJ0+aqgIpCOC2MS4btQPJ/zkKvQlkwXz/VY+U1k7PV6nUV36lQ8iIg==
+
 react-native-qrcode-svg@^6.0.6:
   version "6.0.6"
   resolved "https://registry.yarnpkg.com/react-native-qrcode-svg/-/react-native-qrcode-svg-6.0.6.tgz#bd4756cc0d76eeb3d162dca2f55eea80e3ebbe97"

@@ -41,6 +41,7 @@ import {
 } from '../redux/userReducer'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { throwError } from '../redux/errorReducer'
 
 const SignInScreen = () => {
   const dispatch = useDispatch()
@@ -49,7 +50,6 @@ const SignInScreen = () => {
   const isSignedInRedux = useSelector(state => state.auth.isSignedIn)
   const mnemonicRedux = useSelector(state => state.auth.mnemonic)
   const userRedux = useSelector(state => state.auth.user)
-  const errorRedux = useSelector(state => state.auth.error)
 
   return (
     <SafeAreaView
@@ -60,23 +60,11 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      {errorRedux && typeof errorRedux !== 'undefined' ? (
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: '600',
-            marginBottom: 50,
-            paddingHorizontal: 40,
-            color: 'red'
-          }}
-        >
-          {errorRedux}
-        </Text>
-      ) : null}
-
       <Text
         style={{
-          fontSize: 14,
+          textAlign: 'left',
+          fontSize: 12,
+          color: 'navy',
           fontWeight: '500',
           marginBottom: 50,
           paddingHorizontal: 40
@@ -109,6 +97,14 @@ const SignInScreen = () => {
             }}
             style={{ marginTop: 20 }}
           ></Button>
+
+          {/*<Button
+            title='Error'
+            onPress={() => {
+              dispatch(throwError('Error occured, sorry'))
+            }}
+            style={{ marginTop: 20 }}
+          ></Button>*/}
         </>
       ) : null}
     </SafeAreaView>

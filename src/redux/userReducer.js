@@ -1,5 +1,6 @@
 import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
 import { ethers } from 'ethers'
+import { throwError, clearError } from './errorReducer'
 
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
@@ -23,44 +24,48 @@ export const updateUserSuccess = user => {
   return { type: UPDATE_USER_SUCCESS, payload: user }
 }
 
-export const updateUserFailure = error => {
-  return {
+export const updateUserFailure = error => dispatch => {
+  dispatch(throwError(error, 'Update user failed'))
+  dispatch({
     type: UPDATE_USER_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const createUserSuccess = user => {
   return { type: CREATE_USER_SUCCESS, payload: user }
 }
 
-export const createUserFailure = error => {
-  return {
+export const createUserFailure = error => dispatch => {
+  dispatch(throwError(error, 'Create user failed'))
+  dispatch({
     type: CREATE_USER_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const createWalletSuccess = wallet => {
   return { type: CREATE_WALLET_SUCCESS, payload: wallet }
 }
 
-export const createWalletFailure = error => {
-  return {
+export const createWalletFailure = error => dispatch => {
+  dispatch(throwError(error, 'Create wallet failed'))
+  dispatch({
     type: CREATE_WALLET_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const getWalletSuccess = wallet => {
   return { type: GET_WALLET_SUCCESS, payload: wallet }
 }
 
-export const getWalletFailure = error => {
-  return {
+export const getWalletFailure = error => dispatch => {
+  dispatch(throwError(error, 'Get wallet failed'))
+  dispatch({
     type: GET_WALLET_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const getWalletFromDrive = accessToken => async dispatch => {

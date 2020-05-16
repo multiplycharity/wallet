@@ -9,8 +9,11 @@ import {
   createUserFailure,
   updateUserFailure,
   updateUserSuccess,
-  getWalletFromDrive
+  getWalletFromDrive,
+  resetUser
 } from './userReducer'
+
+import { throwError, clearError } from './errorReducer'
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
@@ -30,7 +33,7 @@ const initialState = {
   isSignedIn: false,
   isSignedInFirebase: false,
   isSignedInGoogle: false,
-  accessToken: null,
+  accessToken: '',
   error: null
 }
 
@@ -42,41 +45,50 @@ export const firebaseSignInSuccess = () => {
   return { type: FIREBASE_SIGN_IN_SUCCESS }
 }
 
-export const firebaseSignInFailure = error => {
-  return {
+export const firebaseSignInFailure = error => dispatch => {
+  dispatch(throwError(error, 'Update user failed'))
+
+  dispatch({
     type: FIREBASE_SIGN_IN_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const googleSignInSuccess = () => {
   return { type: GOOGLE_SIGN_IN_SUCCESS }
 }
 
-export const googleSignInFailure = error => {
-  return {
+export const googleSignInFailure = error => dispatch => {
+  dispatch(throwError(error, 'Update user failed'))
+
+  dispatch({
     type: GOOGLE_SIGN_IN_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const loginSuccess = () => {
   return { type: LOGIN_SUCCESS }
 }
 
-export const loginFailure = error => {
-  return { type: LOGIN_FAILURE, payload: error.message ? error.message : error }
+export const loginFailure = error => dispatch => {
+  dispatch(throwError(error, 'Update user failed'))
+  dispatch({
+    type: LOGIN_FAILURE,
+    payload: error
+  })
 }
 
 export const logoutSuccess = () => {
   return { type: LOGOUT_SUCCESS }
 }
 
-export const logoutFailure = error => {
-  return {
+export const logoutFailure = error => dispatch => {
+  dispatch(throwError(error, 'Update user failed'))
+  dispatch({
     type: LOGOUT_FAILURE,
-    payload: error.message ? error.message : error
-  }
+    payload: error
+  })
 }
 
 export const signOut = () => dispatch => {
@@ -85,6 +97,7 @@ export const signOut = () => dispatch => {
     .signOut()
     .then(() => {
       dispatch(logoutSuccess())
+      dispatch({ type: 'RESET_APP' })
     })
     .catch(error => {
       dispatch(logoutFailure(error))

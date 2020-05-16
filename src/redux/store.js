@@ -10,12 +10,21 @@ import { AsyncStorage } from 'react-native'
 import screenReducer from './screenReducer'
 import authReducer from './authReducer'
 import userReducer from './userReducer'
+import errorReducer from './errorReducer'
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   screen: screenReducer,
   auth: authReducer,
-  user: userReducer
+  user: userReducer,
+  error: errorReducer
 })
+
+const rootReducer = (state, action) => {
+  if (action.type === 'RESET_APP') {
+    state = undefined
+  }
+  return appReducer(state, action)
+}
 
 const persistConfig = {
   key: 'root',

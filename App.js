@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Text, View, Splash } from 'react-native'
-import * as SplashScreen from 'expo-splash-screen'
+
+import { NotifierWrapper } from 'react-native-notifier'
 
 import { Provider } from 'react-redux'
 import { store, persistor } from './src/redux/store'
@@ -18,7 +19,9 @@ export default function App () {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <AppNavigator />
+        <NotifierWrapper>
+          <AppNavigator />
+        </NotifierWrapper>
       </PersistGate>
     </Provider>
   )
