@@ -5,6 +5,7 @@ module.exports = function (api) {
       'babel-preset-expo',
       'module:metro-react-native-babel-preset',
       'module:react-native-dotenv'
-    ]
+    ],
+    plugins: [['@babel/plugin-proposal-optional-chaining']]
   }
 }

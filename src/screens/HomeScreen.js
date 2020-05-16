@@ -20,12 +20,24 @@ import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
 import SearchBar from '../components/SearchBar'
 
+import WalletSDK from '../helpers/WalletSDK'
+
+const SDK = new WalletSDK()
+
 const ListHeader = props => {
   const navigation = useNavigation()
+  const [balance, setBalance] = useState('0')
+
+  const address = useSelector(state => state.user?.wallet?.address)
+
+  useEffect(() => {
+    address &&
+      SDK.getBalance(address).then(balance => setBalance(balance.toString()))
+  }, [address])
 
   return (
     <View style={[styles.container, { marginBottom: 40 }]}>
-      <Text style={styles.balance}>$103.04</Text>
+      <Text style={styles.balance}>${balance}</Text>
       <Text style={styles.balanceDescription}>Cash Balance</Text>
       <View
         style={{
