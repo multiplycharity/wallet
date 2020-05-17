@@ -12,7 +12,7 @@ import { Ionicons, Feather } from '@expo/vector-icons'
 
 import QRIcon from '../components/QRIcon'
 import Colors from '../constants/colors'
-import ProfileScreen from '../screens/ProfileScreen'
+import ProfileScreen from '../screens/ProfileScreen2'
 
 const Stack = createStackNavigator()
 

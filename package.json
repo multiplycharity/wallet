@@ -21,6 +21,7 @@
     "expo-camera": "~8.2.0",
     "expo-google-app-auth": "^8.1.0",
     "expo-haptics": "^8.1.0",
+    "expo-linking": "~1.0.1",
     "expo-permissions": "~8.1.0",
     "expo-splash-screen": "^0.2.3",
     "expo-web-browser": "^8.2.1",

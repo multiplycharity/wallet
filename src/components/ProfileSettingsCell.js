@@ -12,7 +12,7 @@ const ProfileSettingsCell = props => {
       style={[
         {
           alignItems: 'center',
-          height: 100,
+          height: 80,
           flexDirection: 'row',
           justifyContent: 'space-between',
           paddingHorizontal: 25,
@@ -42,9 +42,9 @@ const ProfileSettingsCell = props => {
             alignItems: 'center'
           }}
         >
-          <Feather name={icon} size={24}></Feather>
+          <Feather name={icon} size={20} color={Colors.Gray600}></Feather>
         </View>
-        <Text style={{ fontSize: 21, fontWeight: '500', marginLeft: 20 }}>
+        <Text style={{ fontSize: 18, fontWeight: '500', marginLeft: 10 }}>
           {title}
         </Text>
       </View>
