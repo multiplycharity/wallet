@@ -8,11 +8,10 @@ import {
 } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-
 import { Ionicons, Feather } from '@expo/vector-icons'
+
 import QRIcon from '../components/QRIcon'
 import Colors from '../constants/colors'
-
 import ProfileScreen from '../screens/ProfileScreen'
 
 const Stack = createStackNavigator()

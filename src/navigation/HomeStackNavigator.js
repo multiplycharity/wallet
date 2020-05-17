@@ -20,8 +20,6 @@ import MyCodeScreen from '../screens/MyCodeScreen'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
 
-import TabNavigator from './TabNavigator'
-
 const HomeStack = createStackNavigator()
 const HomeStackNavigator = props => {
   useFocusEffect(

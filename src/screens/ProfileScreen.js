@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import Button from '../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSafeArea } from 'react-native-safe-area-context'
 
 import { useHeaderHeight } from '@react-navigation/stack'
 
@@ -20,6 +19,7 @@ import QRIcon from '../components/QRIcon'
 
 import ProfileSettingsCell from '../components/ProfileSettingsCell'
 import { useNavigation } from '@react-navigation/core'
+import { signOut } from '../redux/authReducer'
 
 const ProfileScreen = () => {
   const name = useSelector(state => state.user.name)
@@ -28,7 +28,6 @@ const ProfileScreen = () => {
 
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const insets = useSafeArea()
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,6 +91,10 @@ const ProfileScreen = () => {
               height: 80,
               justifyContent: 'center',
               alignItems: 'center'
+            }}
+            onPress={() => {
+              navigation.navigate('SignIn')
+              dispatch(signOut())
             }}
           >
             <Text
