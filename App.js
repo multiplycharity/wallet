@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 import { store, persistor } from './src/redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 
-import AppNavigator from './src/navigation/AppNavigator'
+import RootNavigator from './src/navigation/RootNavigator'
 
 if (__DEV__) {
   import('./src/config/reactotron').then(() =>
@@ -20,7 +20,7 @@ export default function App () {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <NotifierWrapper>
-          <AppNavigator />
+          <RootNavigator />
         </NotifierWrapper>
       </PersistGate>
     </Provider>

@@ -18,30 +18,16 @@ import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import SignInScreen from '../screens/SignInScreen'
 
-import PaymentStackNavigator from '../navigation/PaymentStackNavigator'
-
-import QRIcon from '../components/QRIcon'
-import { useDispatch } from 'react-redux'
-
-import { signOut } from '../redux/authReducer'
+import HomeStackNavigator from './HomeStackNavigator'
+import PaymentStackNavigator from './PaymentStackNavigator'
 import ProfileStackNavigator from './ProfileStackNavigator'
+
+import { useDispatch } from 'react-redux'
 
 const getRouteName = route =>
   route.state
     ? route.state.routes[route.state.index].name
     : route.params?.screen || 'Home'
-
-const getHeaderTitle = route => {
-  const routeName = getRouteName(route)
-  switch (routeName) {
-    case 'Home':
-      return 'Home'
-    case 'Payment':
-      return 'Payment'
-    case 'Profile':
-      return 'Profile'
-  }
-}
 
 const getTabBarOptions = route => {
   const routeName = getRouteName(route)
@@ -68,54 +54,16 @@ const getTabBarOptions = route => {
   }
 }
 
-const getNavigationOptions = route => {
-  const routeName = getRouteName(route)
-
-  const defaultOptions = {
-    headerShown: true,
-    headerTitle: getHeaderTitle(route),
-    headerLeft: null,
-    headerStyle: { shadowColor: 'transparent' }
-  }
-
-  switch (routeName) {
-    case 'Profile':
-      return {
-        ...defaultOptions,
-        headerShown: true,
-        headerTitle: null,
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => {}} style={{ marginLeft: 16 }}>
-            <QRIcon size={22}></QRIcon>
-          </TouchableOpacity>
-        )
-      }
-    case 'Payment':
-      return { ...defaultOptions, headerShown: false }
-    default:
-      return { ...defaultOptions }
-  }
-}
-
 const Tab = createBottomTabNavigator()
 
 const TabNavigator = props => {
   const { navigation, route } = props
-
-  const dispatch = useDispatch()
-  const routeName = getRouteName(route)
-
-  React.useLayoutEffect(() => {
-    navigation.setOptions(getNavigationOptions(route))
-    // setNavigationOptions({ navigation, route })
-  }, [navigation, route])
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName
-
           if (route.name === 'Home') {
             iconName = 'home'
           } else if (route.name === 'Payment') {
@@ -128,7 +76,7 @@ const TabNavigator = props => {
       })}
       tabBarOptions={getTabBarOptions(route)}
     >
-      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen name='Home' component={HomeStackNavigator} />
       <Tab.Screen name='Payment' component={PaymentStackNavigator} />
       <Tab.Screen name='Profile' component={ProfileStackNavigator} />
     </Tab.Navigator>

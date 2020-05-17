@@ -37,10 +37,13 @@ const HomeStackNavigator = props => {
   const dispatch = useDispatch()
 
   return (
-    <HomeStack.Navigator initialRouteName='Home'>
+    <HomeStack.Navigator
+      initialRouteName='Home'
+      screenOptions={{ headerStyle: { shadowColor: 'transparent' } }}
+    >
       <HomeStack.Screen
         name='Home'
-        component={TabNavigator}
+        component={HomeScreen}
         options={({ route }) => ({
           headerTitleStyle: { fontSize: 21 },
           headerTitleAlign: 'left'
