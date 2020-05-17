@@ -1,33 +1,39 @@
-import React from 'react'
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import React, { useCallback } from 'react'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar
+} from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { Ionicons, Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 
-import HomeScreen from '../screens/HomeScreen'
-import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import MyCodeScreen from '../screens/MyCodeScreen'
 
-import TabNavigator from './TabNavigator'
-
-const ProfileStack = createStackNavigator()
+const Stack = createStackNavigator()
 
 const ProfileStackNavigator = () => {
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setBarStyle('dark-content')
+    }, [])
+  )
+
   return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
         name='Profile'
-        component={TabNavigator}
+        component={ProfileScreen}
         options={({ route }) => ({
           headerTitleStyle: { fontSize: 29 },
           headerTitleAlign: 'center'
         })}
       />
-    </ProfileStack.Navigator>
+    </Stack.Navigator>
   )
 }
 

@@ -4,9 +4,10 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  Button
+  Button,
+  StatusBar
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
 import { createStackNavigator } from '@react-navigation/stack'
 import { Feather } from '@expo/vector-icons'
@@ -23,6 +24,12 @@ import TabNavigator from './TabNavigator'
 
 const HomeStack = createStackNavigator()
 const HomeStackNavigator = props => {
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setBarStyle('dark-content')
+    }, [])
+  )
+
   const { route } = props
 
   const navigation = useNavigation()

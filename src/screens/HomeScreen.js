@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect } from 'react'
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { useFocusEffect } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import { toggleSearchBar } from '../redux/screenReducer'
 
@@ -88,8 +89,6 @@ const HomeScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle='dark-content' />
-
       {isSearchBarActive ? (
         <SearchBar
           title='Search email, address'

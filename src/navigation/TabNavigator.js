@@ -24,6 +24,7 @@ import QRIcon from '../components/QRIcon'
 import { useDispatch } from 'react-redux'
 
 import { signOut } from '../redux/authReducer'
+import ProfileStackNavigator from './ProfileStackNavigator'
 
 const getRouteName = route =>
   route.state
@@ -129,7 +130,7 @@ const TabNavigator = props => {
     >
       <Tab.Screen name='Home' component={HomeScreen} />
       <Tab.Screen name='Payment' component={PaymentStackNavigator} />
-      <Tab.Screen name='Profile' component={ProfileScreen} />
+      <Tab.Screen name='Profile' component={ProfileStackNavigator} />
     </Tab.Navigator>
   )
 }

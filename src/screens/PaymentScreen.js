@@ -1,11 +1,17 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import Colors from '../constants/colors'
 
 const PaymentScreen = ({ navigation }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setBarStyle('light-content')
+    }, [])
+  )
+
   return (
     <>
-      <StatusBar barStyle='light-content'></StatusBar>
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.Blue }}>
         <View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
