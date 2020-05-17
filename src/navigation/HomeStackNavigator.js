@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useLayoutEffect } from 'react'
 import {
   View,
   Text,
@@ -21,16 +21,27 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
 
 const HomeStack = createStackNavigator()
+
 const HomeStackNavigator = props => {
+  const { navigation, route } = props
+
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('dark-content')
     }, [])
   )
 
-  const { route } = props
-
-  const navigation = useNavigation()
+  // React.useEffect(() => {
+  //   if (route.state?.index > 0) {
+  //     navigation.setOptions({
+  //       tabBarVisible: false
+  //     })
+  //   } else {
+  //     navigation.setOptions({
+  //       tabBarVisible: true
+  //     })
+  //   }
+  // }, [route])
 
   const dispatch = useDispatch()
 

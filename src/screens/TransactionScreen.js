@@ -11,13 +11,16 @@ import * as WebBrowser from 'expo-web-browser'
 
 import Colors from '../constants/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useNavigation } from '@react-navigation/native'
 
 const TransactionScreen = props => {
-  // React.useLayoutEffect(() => {
-  //   props.navigation.setOptions({
-  //     tabBarVisible: false
-  //   })
-  // }, [props.navigation])
+  const navigation = useNavigation()
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      tabBarVisible: false
+    })
+  }, [navigation])
 
   return (
     <View style={styles.container}>
@@ -69,7 +72,6 @@ const TransactionScreen = props => {
       >
         <TouchableOpacity
           onPress={async () => {
-            // props.navigation.navigate('WebView')
             await WebBrowser.openBrowserAsync('https://google.com')
           }}
         >

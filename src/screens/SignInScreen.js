@@ -78,9 +78,10 @@ const SignInScreen = () => {
     >
       <AnimatedLoader
         visible={isLoading}
-        source={require('../../assets/lottie_loader.json')}
-        overlayColor='rgba(255,255,255,0.8)'
-        animationStyle={{ width: 80, height: 80 }}
+        source={require('../../assets/loader_gray400.json')}
+        overlayColor='rgba(255,255,255,0.7)'
+        overlayColor='rgba(0,0,0,0.42)'
+        animationStyle={{ width: 60, height: 60 }}
         speed={1}
       />
 

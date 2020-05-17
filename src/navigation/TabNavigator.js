@@ -61,22 +61,32 @@ const TabNavigator = props => {
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName
-          if (route.name === 'Home') {
-            iconName = 'home'
-          } else if (route.name === 'Payment') {
-            iconName = 'dollar-sign'
-          } else if (route.name === 'Profile') {
-            iconName = 'user'
+      screenOptions={({ route }) => {
+        return {
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName
+            if (route.name === 'Home') {
+              iconName = 'home'
+            } else if (route.name === 'Payment') {
+              iconName = 'dollar-sign'
+            } else if (route.name === 'Profile') {
+              iconName = 'user'
+            }
+            return <Feather name={iconName} size={size} color={color} />
           }
-          return <Feather name={iconName} size={size} color={color} />
         }
-      })}
+      }}
       tabBarOptions={getTabBarOptions(route)}
     >
-      <Tab.Screen name='Home' component={HomeStackNavigator} />
+      <Tab.Screen
+        name='Home'
+        component={HomeStackNavigator}
+        options={({ navigation, route }) => {
+          return {
+            tabBarVisible: !(route.state?.index > 0)
+          }
+        }}
+      />
       <Tab.Screen name='Payment' component={PaymentStackNavigator} />
       <Tab.Screen name='Profile' component={ProfileStackNavigator} />
     </Tab.Navigator>
