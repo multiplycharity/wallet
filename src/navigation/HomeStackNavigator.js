@@ -24,6 +24,7 @@ import TabNavigator from './TabNavigator'
 const HomeStack = createStackNavigator()
 const HomeStackNavigator = props => {
   const { route } = props
+
   const navigation = useNavigation()
 
   const dispatch = useDispatch()

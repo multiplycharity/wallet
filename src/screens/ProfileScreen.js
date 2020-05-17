@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import Button from '../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
+import { useSafeArea } from 'react-native-safe-area-context'
 
 import { useHeaderHeight } from '@react-navigation/stack'
 
@@ -27,6 +28,7 @@ const ProfileScreen = () => {
 
   const dispatch = useDispatch()
   const navigation = useNavigation()
+  const insets = useSafeArea()
 
   return (
     <SafeAreaView style={styles.container}>

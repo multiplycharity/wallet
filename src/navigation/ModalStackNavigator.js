@@ -32,6 +32,7 @@ import ModalHeader from '../components/ModalHeader'
 
 import HomeStackNavigator from './HomeStackNavigator'
 import ProfileStackNavigator from './ProfileStackNavigator'
+import PaymentStackNavigator from './PaymentStackNavigator'
 
 const ModalStack = createStackNavigator()
 
@@ -48,6 +49,7 @@ const ModalStackNavigator = ({ route, navigation }) => {
         component={HomeStackNavigator}
         options={{ headerShown: false }}
       />
+
       <ModalStack.Screen
         name='MyCode'
         component={MyCodeScreen}

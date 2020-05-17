@@ -12,14 +12,14 @@ import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
 import MyCodeScreen from '../screens/MyCodeScreen'
 
-import TabNavigator from './TabNavigator'
-
 const Stack = createStackNavigator()
 
-const PaymentStackNavigator = () => {
+const PaymentStackNavigator = props => {
+  const { navigation, route } = props
+
   return (
-    <Stack.Navigator>
-      <Stack.Screen name='Payment' component={TabNavigator} />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name='Payment' component={PaymentScreen} />
     </Stack.Navigator>
   )
 }
