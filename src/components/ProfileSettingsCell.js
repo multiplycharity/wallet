@@ -34,9 +34,9 @@ const ProfileSettingsCell = props => {
       >
         <View
           style={{
-            height: 50,
-            width: 50,
-            borderRadius: 25,
+            height: 40,
+            width: 40,
+            borderRadius: 20,
             backgroundColor: Colors.Gray200,
             justifyContent: 'center',
             alignItems: 'center'
@@ -44,7 +44,7 @@ const ProfileSettingsCell = props => {
         >
           <Feather name={icon} size={20} color={Colors.Gray600}></Feather>
         </View>
-        <Text style={{ fontSize: 18, fontWeight: '500', marginLeft: 10 }}>
+        <Text style={{ fontSize: 18, fontWeight: '500', marginLeft: 20 }}>
           {title}
         </Text>
       </View>
