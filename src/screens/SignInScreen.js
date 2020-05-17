@@ -45,6 +45,8 @@ import {
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { throwError } from '../redux/errorReducer'
 
+import AnimatedLoader from 'react-native-animated-loader'
+
 const SignInScreen = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
@@ -74,15 +76,19 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      {isLoading ? (
-        <ActivityIndicator size='large'></ActivityIndicator>
-      ) : (
-        <Button
-          style={{}}
-          title='Sign in with Google'
-          onPress={() => dispatch(signInWithGoogle())}
-        ></Button>
-      )}
+      <AnimatedLoader
+        visible={isLoading}
+        source={require('../../assets/lottie_loader.json')}
+        overlayColor='rgba(255,255,255,0.8)'
+        animationStyle={{ width: 80, height: 80 }}
+        speed={1}
+      />
+
+      <Button
+        style={{}}
+        title='Sign in with Google'
+        onPress={() => dispatch(signInWithGoogle())}
+      ></Button>
     </SafeAreaView>
   )
 }

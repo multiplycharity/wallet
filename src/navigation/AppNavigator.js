@@ -26,7 +26,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
 
 import PaymentScreen from '../screens/PaymentScreen'
-import WebViewScreen from '../screens/WebViewScreen'
 import ModalHeader from '../components/ModalHeader'
 
 import HomeStackNavigator from './HomeStackNavigator'

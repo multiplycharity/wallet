@@ -1,4 +1,5 @@
 import { Notifier, NotifierComponents, Easing } from 'react-native-notifier'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
 
 export const THROW_ERROR = 'THROW_ERROR'
 export const CLEAR_ERROR = 'CLEAR_ERROR'
@@ -17,7 +18,8 @@ export const throwError = (error, title = '') => (dispatch, getState) => {
     description: description,
     Component: NotifierComponents.Alert,
     componentProps: {
-      alertType: 'error'
+      alertType: 'error',
+      backgroundColor: Colors.Red
     },
     duration: 3600,
     showAnimationDuration: 800,
