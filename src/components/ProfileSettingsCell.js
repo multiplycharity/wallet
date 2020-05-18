@@ -3,9 +3,14 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 import * as Haptics from 'expo-haptics'
+import { useNavigation } from '@react-navigation/core'
+import { useDispatch } from 'react-redux'
 
 const ProfileSettingsCell = props => {
-  const { icon, title } = props
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+
+  const { icon, title, navigateTo } = props
 
   return (
     <TouchableOpacity
@@ -23,6 +28,7 @@ const ProfileSettingsCell = props => {
       onPress={() => {
         Haptics.impactAsync('medium')
         if (typeof props.onPress === 'function') props.onPress()
+        if (props.navigateTo) navigation.navigate(props.navigateTo)
       }}
     >
       <View

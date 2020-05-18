@@ -8,12 +8,15 @@ import {
   TouchableOpacity,
   ScrollView,
   SectionList,
-  Share
+  Share,
+  Modal,
+  TouchableHighlight
 } from 'react-native'
 import Button from '../components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useHeaderHeight } from '@react-navigation/stack'
+import useScreenDimensions from '../hooks/useScreenDimensions'
 
 import Colors from '../constants/colors'
 import { Feather } from '@expo/vector-icons'
@@ -25,7 +28,7 @@ import { signOut } from '../redux/authReducer'
 
 import * as Linking from 'expo-linking'
 
-const renderItem = ({ item }) => {
+const renderItem = ({ item, navigation, dispatch }) => {
   return <ProfileSettingsCell {...item} />
 }
 
@@ -39,7 +42,18 @@ let sections = [
   {
     id: 0,
     title: 'Security',
-    data: [{ id: 0, title: 'Backup Wallet', icon: 'cloud' }]
+    data: [
+      {
+        id: 0,
+        title: 'Backup Wallet',
+        icon: 'cloud',
+        navigateTo: 'Backup',
+        onPress: navigation => {
+          console.log(this)
+          // this.navigation.navigate('Backup')
+        }
+      }
+    ]
   },
   {
     id: 1,
@@ -95,6 +109,40 @@ let sections = [
     ]
   }
 ]
+
+const BackupModal = () => {
+  const screen = useScreenDimensions()
+  console.log('screen: ', screen)
+
+  return (
+    <Modal
+      animationType='slide'
+      transparent={true}
+      visible={false}
+      onRequestClose={() => {
+        alert('Modal has been closed.')
+      }}
+    >
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.5)'
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: screen.height * 0.6,
+            width: screen.width * 0.9,
+            borderRadius: 20
+          }}
+        ></View>
+      </View>
+    </Modal>
+  )
+}
 
 const ListHeader = () => {
   const name = useSelector(state => state.user.name)
@@ -180,15 +228,16 @@ const ListFooter = () => {
   )
 }
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: Colors.Gray100 }}>
         <SectionList
           sections={sections}
-          renderItem={renderItem}
+          renderItem={props => renderItem({ ...props, navigation })}
           keyExtractor={extractKey}
           renderSectionHeader={renderSectionHeader}
+          navigation={navigation}
           ListHeaderComponent={ListHeader}
           ListFooterComponent={ListFooter}
         ></SectionList>

@@ -26,21 +26,25 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
 
 import PaymentScreen from '../screens/PaymentScreen'
+import BackupScreen from '../screens/BackupScreen'
 import ModalHeader from '../components/ModalHeader'
 
 import HomeStackNavigator from './HomeStackNavigator'
 import ProfileStackNavigator from './ProfileStackNavigator'
 import PaymentStackNavigator from './PaymentStackNavigator'
 import TabNavigator from './TabNavigator'
+import useScreenDimensions from '../hooks/useScreenDimensions'
 
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
+  const screen = useScreenDimensions()
+
   return (
     <Stack.Navigator
       mode='modal'
-      headerMode='none'
-      screenOptions={({ route, navigation }) => ({ headerShown: false })}
+      // headerMode='none'
+      // screenOptions={({ route, navigation }) => ({ headerShown: false })}
     >
       <Stack.Screen
         name='Home'
@@ -78,6 +82,37 @@ const AppNavigator = ({ route, navigation }) => {
         component={ScannerModalScreen}
         options={({ route, navigation }) => ({
           headerShown: false
+        })}
+      />
+
+      <Stack.Screen
+        name='Backup'
+        component={BackupScreen}
+        options={({ route, navigation }) => ({
+          cardStyle: {
+            flex: 1,
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: screen.height / 8,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            backgroundColor: 'transparent',
+            justifyContent: 'flex-end'
+          },
+          header: () => <ModalHeader />,
+          // headerShown: false,
+          gestureEnabled: true,
+          cardOverlayEnabled: true,
+          gestureResponseDistance: {
+            vertical: screen.height
+          },
+          headerStatusBarHeight:
+            navigation.dangerouslyGetState().routes.indexOf(route) > 0
+              ? 0
+              : undefined,
+          ...TransitionPresets.ModalPresentationIOS
         })}
       />
     </Stack.Navigator>
