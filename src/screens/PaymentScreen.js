@@ -134,7 +134,7 @@ const PaymentScreen = ({ navigation }) => {
             style={{
               fontSize:
                 displayValue.length <= 4
-                  ? 84
+                  ? 88
                   : displayValue.length <= 6
                   ? 72
                   : 64,
