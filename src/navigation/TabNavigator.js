@@ -41,9 +41,12 @@ const getTabBarOptions = route => {
     case 'Payment':
       return {
         ...defaultOptions,
-        activeTintColor: Colors.White,
-        inactiveTintColor: Colors.Gray400,
-        style: { ...defaultOptions.style, backgroundColor: Colors.Blue }
+        activeTintColor: Colors.Black,
+        inactiveTintColor: Colors.Gray500
+        // activeTintColor: Colors.White,
+        // inactiveTintColor: Colors.Gray400,
+        // style: { ...defaultOptions.style }
+        // backgroundColor: Colors.Blue
       }
     default:
       return {
