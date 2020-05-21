@@ -7,7 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
-  ActivityIndicator
+  Animated,
+  Easing
 } from 'react-native'
 import Button from '../components/Button'
 
@@ -55,6 +56,8 @@ const SignInScreen = () => {
   const accessToken = useSelector(state => state.auth.accessToken)
   const isLoading = useSelector(state => state.isLoading)
 
+  const [fadeValue, setOpacityValue] = useState(new Animated.Value(0))
+
   const checkIfSignedIn = () => {
     if (isSignedIn) {
       navigation.navigate('Home')
@@ -66,6 +69,13 @@ const SignInScreen = () => {
   useEffect(() => {
     checkIfSignedIn()
   })
+
+  useEffect(() => {
+    Animated.timing(fadeValue, {
+      toValue: 1,
+      duration: 800
+    }).start()
+  }, [])
 
   return (
     <SafeAreaView
@@ -85,11 +95,24 @@ const SignInScreen = () => {
         speed={1}
       />
 
-      <Button
-        style={{}}
-        title='Sign in with Google'
-        onPress={() => dispatch(signInWithGoogle())}
-      ></Button>
+      <Animated.View
+        style={{
+          opacity: fadeValue,
+          transform: [
+            {
+              translateY: fadeValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [100, 0]
+              })
+            }
+          ]
+        }}
+      >
+        <Button
+          title='Sign in with Google'
+          onPress={() => dispatch(signInWithGoogle())}
+        ></Button>
+      </Animated.View>
     </SafeAreaView>
   )
 }

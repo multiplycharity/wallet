@@ -13,6 +13,7 @@ import userReducer from './userReducer'
 import errorReducer from './errorReducer'
 import loadingReducer from './loadingReducer'
 import paymentKeyboardReducer from './paymentKeyboardReducer'
+import lastActionReducer from './lastActionReducer'
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -20,7 +21,8 @@ const appReducer = combineReducers({
   user: userReducer,
   error: errorReducer,
   isLoading: loadingReducer,
-  paymentKeyboard: paymentKeyboardReducer
+  paymentKeyboard: paymentKeyboardReducer,
+  lastAction: lastActionReducer
 })
 
 const rootReducer = (state, action) => {

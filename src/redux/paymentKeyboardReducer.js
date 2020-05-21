@@ -26,12 +26,15 @@ export const setDisplayValue = value => {
   return { type: 'SET_DISPLAY_VALUE', payload: value }
 }
 
+export const handleOnPressOut = key => (dispatch, getState) => {}
+
 export const handleOnPressIn = key => (dispatch, getState) => {
   const {
     isFractionalPart,
     fractionalPart,
     wholePart,
-    displayValue
+    displayValue,
+    invalidValue
   } = getState().paymentKeyboard
 
   switch (key) {
@@ -45,8 +48,12 @@ export const handleOnPressIn = key => (dispatch, getState) => {
     case '7':
     case '8':
     case '9':
-      if (isFractionalPart && fractionalPart.length >= 2) break
-      if (!isFractionalPart && wholePart.length >= 5) break
+      if (isFractionalPart && fractionalPart.length >= 2) {
+        break
+      }
+      if (!isFractionalPart && wholePart.length >= 5) {
+        break
+      }
 
       isFractionalPart
         ? dispatch(setFractionalPart(fractionalPart + key))
@@ -55,7 +62,9 @@ export const handleOnPressIn = key => (dispatch, getState) => {
       dispatch(setDisplayValue(displayValue === '0' ? key : displayValue + key))
       break
     case '.':
-      if (wholePart === '0') break
+      if (wholePart === '0') {
+        break
+      }
       dispatch(
         setDisplayValue(!isFractionalPart ? displayValue + key : displayValue)
       )
@@ -65,6 +74,7 @@ export const handleOnPressIn = key => (dispatch, getState) => {
       if (displayValue.length === 1) {
         dispatch(setDisplayValue('0'))
         dispatch(setWholePart('0'))
+        break
       } else {
         if (displayValue.slice(-1) === '.') {
           dispatch(setIsFractionalPart(false))
@@ -103,6 +113,7 @@ const paymentKeyboardReducer = (state = initialState, action) => {
       return { ...state, isFractionalPart: action.payload }
     case SET_DISPLAY_VALUE:
       return { ...state, displayValue: action.payload }
+
     default:
       return state
   }

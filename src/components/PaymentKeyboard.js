@@ -1,9 +1,13 @@
 import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleOnPressIn } from '../redux/paymentKeyboardReducer'
+import {
+  handleOnPressIn,
+  handleOnPressOut
+} from '../redux/paymentKeyboardReducer'
 import { Feather } from '@expo/vector-icons'
 import { Dimensions } from 'react-native'
+import SpringButton from './SpringButton'
 
 const buttons = [
   ['1', '2', '3'],
@@ -14,9 +18,10 @@ const buttons = [
 
 const Key = props => {
   const screen = Dimensions.get('screen')
+  const invalidValue = useSelector(state => state.paymentKeyboard?.invalidValue)
 
   return (
-    <TouchableOpacity
+    <SpringButton
       style={{
         backgroundColor: 'white',
         height: 80,
@@ -32,7 +37,7 @@ const Key = props => {
       ) : (
         <Text style={{ fontSize: 21, fontWeight: '600' }}>{props.value}</Text>
       )}
-    </TouchableOpacity>
+    </SpringButton>
   )
 }
 

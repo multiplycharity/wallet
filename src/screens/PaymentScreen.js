@@ -14,6 +14,9 @@ import { Dimensions } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import PaymentKeyboard from '../components/PaymentKeyboard'
 import Button from '../components/Button'
+import SpringButton from '../components/SpringButton'
+
+import * as Haptics from 'expo-haptics'
 
 const PaymentScreen = ({ navigation }) => {
   const displayValue = useSelector(state => state.paymentKeyboard.displayValue)
@@ -34,7 +37,7 @@ const PaymentScreen = ({ navigation }) => {
               alignItems: 'flex-end',
               justifyContent: 'flex-end',
 
-              marginBottom: 80
+              marginBottom: 60
             }}
           >
             <Text
@@ -59,7 +62,7 @@ const PaymentScreen = ({ navigation }) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginTop: 40
+              marginVertical: 30
             }}
           >
             <Button
