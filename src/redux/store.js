@@ -12,13 +12,15 @@ import authReducer from './authReducer'
 import userReducer from './userReducer'
 import errorReducer from './errorReducer'
 import loadingReducer from './loadingReducer'
+import paymentKeyboardReducer from './paymentKeyboardReducer'
 
 const appReducer = combineReducers({
   screen: screenReducer,
   auth: authReducer,
   user: userReducer,
   error: errorReducer,
-  isLoading: loadingReducer
+  isLoading: loadingReducer,
+  paymentKeyboard: paymentKeyboardReducer
 })
 
 const rootReducer = (state, action) => {
@@ -31,7 +33,7 @@ const rootReducer = (state, action) => {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading']
+  blacklist: ['isLoading', 'key']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

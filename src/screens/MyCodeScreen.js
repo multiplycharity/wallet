@@ -84,7 +84,7 @@ const MyCodeScreen = props => {
           ).slice(-11)}`}</Text>
           <Feather
             name='share'
-            size={22}
+            size={20}
             color={Colors.Gray600}
             width='2'
           ></Feather>
