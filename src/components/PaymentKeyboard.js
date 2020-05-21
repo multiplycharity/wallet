@@ -28,9 +28,9 @@ const Key = props => {
       onPressOut={props.onPressOut}
     >
       {props.value === 'C' ? (
-        <Feather name='chevron-left' size={28}></Feather>
+        <Feather name='chevron-left' size={24}></Feather>
       ) : (
-        <Text style={{ fontSize: 24, fontWeight: '600' }}>{props.value}</Text>
+        <Text style={{ fontSize: 21, fontWeight: '600' }}>{props.value}</Text>
       )}
     </TouchableOpacity>
   )
@@ -59,7 +59,7 @@ const PaymentKeyboard = props => {
     )
   })
 
-  return layout
+  return <View style={props.style}>{layout}</View>
 }
 
 export default PaymentKeyboard

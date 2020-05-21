@@ -33,7 +33,7 @@ const ProfileStackNavigator = () => {
         options={({ route }) => ({
           headerTitle: null,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {}} style={{ marginLeft: 16 }}>
+            <TouchableOpacity onPress={() => {}} style={{ marginLeft: 18 }}>
               <QRIcon size={22}></QRIcon>
             </TouchableOpacity>
           )

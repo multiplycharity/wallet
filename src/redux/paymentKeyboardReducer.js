@@ -32,7 +32,7 @@ export const handleOnPressIn = key => (dispatch, getState) => {
     fractionalPart,
     wholePart,
     displayValue
-  } = getState().key
+  } = getState().paymentKeyboard
 
   switch (key) {
     case '0':

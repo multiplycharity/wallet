@@ -13,6 +13,7 @@ import { Dimensions } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import PaymentKeyboard from '../components/PaymentKeyboard'
+import Button from '../components/Button'
 
 const PaymentScreen = ({ navigation }) => {
   const displayValue = useSelector(state => state.paymentKeyboard.displayValue)
@@ -23,11 +24,19 @@ const PaymentScreen = ({ navigation }) => {
         <View
           style={{
             flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <View style={{ height: 160 }}>
+          <View
+            style={{
+              height: 180,
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end',
+
+              marginBottom: 80
+            }}
+          >
             <Text
               style={{
                 fontSize:
@@ -36,15 +45,40 @@ const PaymentScreen = ({ navigation }) => {
                     : displayValue.length <= 6
                     ? 72
                     : 64,
-                fontWeight: '700',
-                paddingHorizontal: 25,
-                marginBottom: 40
+                fontWeight: '500',
+                paddingHorizontal: 25
               }}
             >
               ${displayValue}
             </Text>
           </View>
-          <PaymentKeyboard></PaymentKeyboard>
+
+          <PaymentKeyboard style={{}}></PaymentKeyboard>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 40
+            }}
+          >
+            <Button
+              title='Request'
+              style={{}}
+              width={180}
+              onPress={() => {
+                navigation.navigate('ScannerModal')
+              }}
+            ></Button>
+            <Button
+              title='Pay'
+              width={180}
+              style={{ marginLeft: 16 }}
+              onPress={() => {
+                navigation.navigate('QRScanner')
+              }}
+            ></Button>
+          </View>
         </View>
       </SafeAreaView>
     </>

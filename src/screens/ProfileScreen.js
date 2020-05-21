@@ -153,7 +153,8 @@ const ListHeader = () => {
     <View
       style={{
         alignItems: 'center',
-        marginVertical: 40
+        marginTop: 40,
+        marginBottom: 60
       }}
     >
       <Image
@@ -195,7 +196,7 @@ const ListFooter = () => {
   const dispatch = useDispatch()
 
   return (
-    <View>
+    <View style={{ backgroundColor: Colors.Gray100 }}>
       <TouchableOpacity
         style={{
           marginTop: 36,
@@ -231,7 +232,7 @@ const ListFooter = () => {
 const ProfileScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ backgroundColor: Colors.Gray100 }}>
+      <View style={{ backgroundColor: Colors.White }}>
         <SectionList
           sections={sections}
           renderItem={props => renderItem({ ...props, navigation })}
