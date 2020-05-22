@@ -35,7 +35,7 @@ const rootReducer = (state, action) => {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'key']
+  blacklist: ['isLoading', 'paymentKeyboard']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

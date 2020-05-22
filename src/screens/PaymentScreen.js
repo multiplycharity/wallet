@@ -18,8 +18,51 @@ import SpringButton from '../components/SpringButton'
 
 import * as Haptics from 'expo-haptics'
 
+import * as Animatable from 'react-native-animatable'
+
+Animatable.initializeRegistryWithDefinitions({
+  fadeInDown: {
+    from: {
+      opacity: 0.1,
+      translateY: -40,
+      scale: 0.6
+    },
+    to: {
+      opacity: 1,
+      translateY: 0,
+      scale: 1
+    },
+    easing: 'ease-in'
+  },
+  moveLeft: {
+    from: { translateX: 0 },
+    to: { translateX: -10 }
+  }
+})
+
 const PaymentScreen = ({ navigation }) => {
   const displayValue = useSelector(state => state.paymentKeyboard.displayValue)
+  const [lastChar, setLastChar] = useState('')
+  const lastCharRef = useRef('')
+
+  const displayValueAnimation = useRef(null)
+  const lastCharAnimation = useRef(null)
+  let prevRef
+
+  useEffect(() => {
+    setLastChar(displayValue.slice(-1))
+    lastCharRef.current = displayValue.slice(-1)
+    prevRef = lastCharRef.current
+    console.log('prevRef: ', prevRef)
+
+    console.log('State', lastChar)
+    console.log('Ref', lastCharRef.current)
+
+    if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
+      lastCharAnimation.current.fadeInDown(160)
+      displayValueAnimation.current.moveLeft(300)
+    }
+  }, [displayValue])
 
   return (
     <>
@@ -31,16 +74,17 @@ const PaymentScreen = ({ navigation }) => {
             justifyContent: 'center'
           }}
         >
-          <View
+          <Animatable.View
+            ref={displayValueAnimation}
             style={{
               height: 180,
               alignItems: 'flex-end',
               justifyContent: 'flex-end',
-
-              marginBottom: 60
+              marginBottom: 60,
+              flexDirection: 'row'
             }}
           >
-            <Text
+            <Animatable.Text
               style={{
                 fontSize:
                   displayValue.length <= 4
@@ -49,16 +93,31 @@ const PaymentScreen = ({ navigation }) => {
                     ? 72
                     : 64,
                 fontWeight: '500',
-                paddingHorizontal: 25
+                paddingLeft: 25
               }}
             >
-              ${displayValue}
-            </Text>
-          </View>
+              ${displayValue.slice(0, -1)}
+            </Animatable.Text>
+            <Animatable.Text
+              ref={lastCharAnimation}
+              style={{
+                fontSize:
+                  displayValue.length <= 4
+                    ? 88
+                    : displayValue.length <= 6
+                    ? 72
+                    : 64,
+                fontWeight: '500',
+                paddingRight: 25
+              }}
+            >
+              {lastChar}
+            </Animatable.Text>
+          </Animatable.View>
 
           <PaymentKeyboard style={{}}></PaymentKeyboard>
 
-          <View
+          <Animatable.View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -81,7 +140,7 @@ const PaymentScreen = ({ navigation }) => {
                 navigation.navigate('QRScanner')
               }}
             ></Button>
-          </View>
+          </Animatable.View>
         </View>
       </SafeAreaView>
     </>
