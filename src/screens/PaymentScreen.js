@@ -126,8 +126,8 @@ const PaymentScreen = ({ navigation }) => {
               style={{}}
               width={180}
               onPress={() => {
-                dispatch(setIsScannerActive(false))
-                navigation.navigate('ScannerModal')
+                // dispatch(setIsScannerActive(false))
+                // navigation.navigate('')
               }}
             ></Button>
             <Button
@@ -135,7 +135,7 @@ const PaymentScreen = ({ navigation }) => {
               width={180}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                navigation.navigate('QRScanner')
+                // navigation.navigate('')
               }}
             ></Button>
           </Animatable.View>

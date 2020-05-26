@@ -53,35 +53,21 @@ const AppNavigator = ({ route, navigation }) => {
       />
 
       <Stack.Screen
-        name='MyCode'
-        component={MyCodeScreen}
+        name='ScannerModal'
+        component={ScannerModalScreen}
         options={({ route, navigation }) => ({
-          headerShown: false
-          // gestureEnabled: true,
+          headerShown: false,
+          gestureEnabled: true,
+          cardOverlayEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          }
           // cardOverlayEnabled: true,
-          // gestureResponseDistance: {
-          //   vertical: Dimensions.get('screen').height
-          // },
           // headerStatusBarHeight:
           //   navigation.dangerouslyGetState().routes.indexOf(route) > 0
           //     ? 0
           //     : undefined,
           // ...TransitionPresets.ModalPresentationIOS,
-        })}
-      />
-
-      <Stack.Screen
-        name='QRScanner'
-        component={QRScannerScreen}
-        options={({ route, navigation }) => ({
-          headerShown: false
-        })}
-      />
-      <Stack.Screen
-        name='ScannerModal'
-        component={ScannerModalScreen}
-        options={({ route, navigation }) => ({
-          headerShown: false
         })}
       />
 
