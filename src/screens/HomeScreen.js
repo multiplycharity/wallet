@@ -53,16 +53,14 @@ const ListHeader = props => {
           title='Add Cash'
           style={{}}
           width={180}
-          onPress={() => {
-            navigation.navigate('ScannerModal')
-          }}
+          onPress={() => {}}
         ></Button>
         <Button
           title='Cash Out'
           width={180}
           style={{ marginLeft: 16 }}
           onPress={() => {
-            navigation.navigate('QRScanner')
+            // navigation.navigate('QRScanner')
           }}
         ></Button>
       </View>

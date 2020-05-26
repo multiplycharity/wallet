@@ -12,12 +12,13 @@ import Colors from '../constants/colors'
 import { Dimensions } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
+import { setIsScannerActive } from '../redux/screenReducer'
+
 import PaymentKeyboard from '../components/PaymentKeyboard'
 import Button from '../components/Button'
 import SpringButton from '../components/SpringButton'
 
 import * as Haptics from 'expo-haptics'
-
 import * as Animatable from 'react-native-animatable'
 
 Animatable.initializeRegistryWithDefinitions({
@@ -41,6 +42,8 @@ Animatable.initializeRegistryWithDefinitions({
 })
 
 const PaymentScreen = ({ navigation }) => {
+  const dispatch = useDispatch()
+
   const displayValue = useSelector(state => state.paymentKeyboard.displayValue)
   const [lastChar, setLastChar] = useState('')
   const lastCharRef = useRef('')
@@ -52,15 +55,9 @@ const PaymentScreen = ({ navigation }) => {
   useEffect(() => {
     setLastChar(displayValue.slice(-1))
     lastCharRef.current = displayValue.slice(-1)
-    prevRef = lastCharRef.current
-    console.log('prevRef: ', prevRef)
-
-    console.log('State', lastChar)
-    console.log('Ref', lastCharRef.current)
 
     if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
-      lastCharAnimation.current.fadeInDown(160)
-      displayValueAnimation.current.moveLeft(300)
+      lastCharAnimation.current.fadeInDown(90)
     }
   }, [displayValue])
 
@@ -129,6 +126,7 @@ const PaymentScreen = ({ navigation }) => {
               style={{}}
               width={180}
               onPress={() => {
+                dispatch(setIsScannerActive(false))
                 navigation.navigate('ScannerModal')
               }}
             ></Button>

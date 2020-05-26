@@ -6,17 +6,22 @@ import {
   SafeAreaView,
   StatusBar
 } from 'react-native'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Ionicons, Feather } from '@expo/vector-icons'
+import { useDispatch } from 'react-redux'
 
 import QRIcon from '../components/QRIcon'
 import Colors from '../constants/colors'
 import ProfileScreen from '../screens/ProfileScreen'
+import { setIsScannerActive } from '../redux/screenReducer'
 
 const Stack = createStackNavigator()
 
 const ProfileStackNavigator = () => {
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
+
   useFocusEffect(
     useCallback(() => {
       StatusBar.setBarStyle('dark-content')
@@ -33,7 +38,13 @@ const ProfileStackNavigator = () => {
         options={({ route }) => ({
           headerTitle: null,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {}} style={{ marginLeft: 18 }}>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setIsScannerActive(false))
+                navigation.navigate('ScannerModal')
+              }}
+              style={{ marginLeft: 18 }}
+            >
               <QRIcon size={22}></QRIcon>
             </TouchableOpacity>
           )
