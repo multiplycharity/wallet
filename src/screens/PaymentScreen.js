@@ -20,6 +20,8 @@ import SpringButton from '../components/SpringButton'
 
 import * as Haptics from 'expo-haptics'
 import * as Animatable from 'react-native-animatable'
+const screen = Dimensions.get('screen')
+console.log('screen: ', screen)
 
 Animatable.initializeRegistryWithDefinitions({
   fadeInDown: {
@@ -68,16 +70,15 @@ const PaymentScreen = ({ navigation }) => {
           style={{
             flex: 1,
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'space-between'
           }}
         >
           <Animatable.View
             ref={displayValueAnimation}
             style={{
-              height: 180,
+              height: screen.height / 5,
               alignItems: 'flex-end',
               justifyContent: 'flex-end',
-              marginBottom: 60,
               flexDirection: 'row'
             }}
           >
@@ -85,10 +86,10 @@ const PaymentScreen = ({ navigation }) => {
               style={{
                 fontSize:
                   displayValue.length <= 4
-                    ? 88
+                    ? 80
                     : displayValue.length <= 6
-                    ? 72
-                    : 64,
+                    ? 64
+                    : 56,
                 fontWeight: '500',
                 paddingLeft: 25
               }}
@@ -100,10 +101,10 @@ const PaymentScreen = ({ navigation }) => {
               style={{
                 fontSize:
                   displayValue.length <= 4
-                    ? 88
+                    ? 80
                     : displayValue.length <= 6
-                    ? 72
-                    : 64,
+                    ? 64
+                    : 56,
                 fontWeight: '500',
                 paddingRight: 25
               }}
@@ -112,19 +113,21 @@ const PaymentScreen = ({ navigation }) => {
             </Animatable.Text>
           </Animatable.View>
 
-          <PaymentKeyboard style={{}}></PaymentKeyboard>
+          <PaymentKeyboard
+            style={{ marginTop: screen.height > 800 ? 40 : 0 }}
+          ></PaymentKeyboard>
 
           <Animatable.View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginVertical: 30
+              marginBottom: 40
             }}
           >
             <Button
               title='Request'
               style={{}}
-              width={180}
+              width={screen.width / 2.3}
               onPress={() => {
                 // dispatch(setIsScannerActive(false))
                 // navigation.navigate('')
@@ -132,7 +135,7 @@ const PaymentScreen = ({ navigation }) => {
             ></Button>
             <Button
               title='Pay'
-              width={180}
+              width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
                 // navigation.navigate('')

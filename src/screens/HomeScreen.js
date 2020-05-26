@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   StatusBar,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -24,6 +25,8 @@ import SearchBar from '../components/SearchBar'
 import WalletSDK from '../helpers/WalletSDK'
 
 import { fetchTxs } from '../redux/txsReducer'
+
+const screen = Dimensions.get('screen')
 
 const SDK = new WalletSDK()
 
@@ -54,12 +57,12 @@ const ListHeader = props => {
         <Button
           title='Add Cash'
           style={{}}
-          width={180}
+          width={screen.width / 2.3}
           onPress={() => {}}
         ></Button>
         <Button
           title='Cash Out'
-          width={180}
+          width={screen.width / 2.3}
           style={{ marginLeft: 16 }}
           onPress={() => {
             // navigation.navigate('QRScanner')

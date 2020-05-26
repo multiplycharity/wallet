@@ -24,7 +24,7 @@ const Key = props => {
     <SpringButton
       style={{
         backgroundColor: 'white',
-        height: 80,
+        height: 70,
         width: screen.width / 3,
         justifyContent: 'center',
         alignItems: 'center'

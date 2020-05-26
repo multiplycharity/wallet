@@ -23,10 +23,10 @@ const ActivityCell = props => {
       style={[
         {
           flexDirection: 'row',
-          height: 100,
+          height: 80,
           width: screen.width,
           justifyContent: 'space-between',
-          paddingVertical: 25
+          paddingVertical: 20
         },
         props.style
       ]}
@@ -34,20 +34,20 @@ const ActivityCell = props => {
     >
       <View style={{ flexDirection: 'row' }}>
         <Image
-          style={{ marginLeft: 25, width: 50, height: 50, borderRadius: 25 }}
+          style={{ marginLeft: 25, width: 40, height: 40, borderRadius: 20 }}
           source={{
             uri: props.imageUrl
           }}
         />
         <View style={{ marginLeft: 20 }}>
-          <Text style={{ fontSize: 21, fontWeight: '500' }}>{`${(
+          <Text style={{ fontSize: 18, fontWeight: '500' }}>{`${(
             props.title || ''
           ).slice(0, 8)}...${(props.title || '').slice(-7)}`}</Text>
 
           <Text
             style={{
               marginTop: 6,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: '400',
               color: Colors.Gray500
             }}
@@ -57,7 +57,7 @@ const ActivityCell = props => {
         </View>
       </View>
 
-      <Text style={{ marginRight: 25, fontSize: 21, fontWeight: '500' }}>
+      <Text style={{ marginRight: 25, fontSize: 18, fontWeight: '500' }}>
         {props.type === 'out' ? '-$' : '$'}
         {props.amount}
       </Text>
