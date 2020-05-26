@@ -4,40 +4,7 @@ import Colors from '../constants/colors'
 import TransactionCell from '../components/TransactionCell'
 import moment from 'moment'
 import _ from 'lodash'
-
-let transactions = [
-  { id: 0, title: 'Amir', timestamp: '2020-05-10 11:37', amount: '1' },
-  { id: 1, title: 'James', timestamp: '2020-05-10 09:23', amount: '2' },
-  {
-    id: 2,
-    title: 'Alice',
-    timestamp: '2020-05-07 15:02',
-    amount: '5',
-    type: 'out'
-  },
-  { id: 4, title: 'Bob', timestamp: '2020-03-01 08:02', amount: '4' },
-  { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '3' }
-]
-
-let sorted = _.orderBy(
-  transactions,
-  tx => moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
-  ['desc']
-)
-
-let transactionsByDate = _.groupBy(sorted, tx =>
-  moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
-)
-
-let sections = []
-
-for (let [date, transactions] of Object.entries(transactionsByDate)) {
-  sections.push({
-    id: date,
-    title: moment(date, 'YYYY-MM-DD').format('MMMM DD'),
-    data: transactions
-  })
-}
+import { useSelector } from 'react-redux'
 
 const renderItem = ({ item }) => {
   return (
@@ -55,6 +22,41 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
+  let transactions = useSelector(state => state.txs.txs)
+  // let transactions = [
+  //   { id: 0, title: 'Amir', timestamp: '2020-05-10 11:37', amount: '1' },
+  //   { id: 1, title: 'James', timestamp: '2020-05-10 09:23', amount: '2' },
+  //   {
+  //     id: 2,
+  //     title: 'Alice',
+  //     timestamp: '2020-05-07 15:02',
+  //     amount: '5',
+  //     type: 'out'
+  //   },
+  //   { id: 4, title: 'Bob', timestamp: '2020-03-01 08:02', amount: '4' },
+  //   { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '3' }
+  // ]
+
+  let sorted = _.orderBy(
+    transactions,
+    tx => moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
+    ['desc']
+  )
+
+  let transactionsByDate = _.groupBy(sorted, tx =>
+    moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
+  )
+
+  let sections = []
+
+  for (let [date, transactions] of Object.entries(transactionsByDate)) {
+    sections.push({
+      id: date,
+      title: moment(date, 'YYYY-MM-DD').format('MMMM DD'),
+      data: transactions
+    })
+  }
+
   return (
     <SectionList
       sections={sections}

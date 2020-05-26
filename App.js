@@ -10,9 +10,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import RootNavigator from './src/navigation/RootNavigator'
 
 if (__DEV__) {
-  import('./src/config/reactotron').then(() =>
-    console.log('Reactotron Configured')
-  )
+  import('./src/config/reactotron').then(() => {
+    // console.log('Reactotron Configured')
+  })
 }
 
 export default function App () {

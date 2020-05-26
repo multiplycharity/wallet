@@ -23,6 +23,8 @@ import SearchBar from '../components/SearchBar'
 
 import WalletSDK from '../helpers/WalletSDK'
 
+import { fetchTxs } from '../redux/txsReducer'
+
 const SDK = new WalletSDK()
 
 const ListHeader = props => {
@@ -84,6 +86,14 @@ const HomeScreen = props => {
   }
 
   const dispatch = useDispatch()
+
+  const txs = useSelector(state => state.txs)
+  console.log('txs: ', txs)
+
+  //Component will mount
+  useEffect(() => {
+    dispatch(fetchTxs())
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>

@@ -40,7 +40,9 @@ const ActivityCell = props => {
           }}
         />
         <View style={{ marginLeft: 20 }}>
-          <Text style={{ fontSize: 21, fontWeight: '500' }}>{props.title}</Text>
+          <Text style={{ fontSize: 21, fontWeight: '500' }}>{`${(
+            props.title || ''
+          ).slice(0, 8)}...${(props.title || '').slice(-7)}`}</Text>
 
           <Text
             style={{

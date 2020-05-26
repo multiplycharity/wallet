@@ -51,7 +51,6 @@ const ScannerModalScreen = props => {
   const isScannerActive = useSelector(
     state => state.screen.scannerScreen.isScannerActive
   )
-  console.log('isScannerActive: ', isScannerActive)
 
   const [hasPermission, setHasPermission] = useState(null)
   const [scanned, setScanned] = useState(false)
@@ -201,8 +200,8 @@ const ScannerModalScreen = props => {
               style={styles.roundButton}
               onPress={() => {
                 dispatch(toggleScannerScreen())
-                Haptics.impactAsync('medium')
-                // Haptics.notificationAsync('success')
+                // Haptics.impactAsync('medium')
+                Haptics.notificationAsync('success')
               }}
               onPressIn={() => {
                 animationRef.current.zoomIn(60)

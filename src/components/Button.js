@@ -42,8 +42,8 @@ const Button = props => {
           if (typeof props.onPressOut === 'function') props.onPressOut()
         }}
         onPress={() => {
-          Haptics.notificationAsync('success')
-          // Haptics.impactAsync('heavy')
+          // Haptics.notificationAsync('success')
+          Haptics.impactAsync('medium')
           if (typeof props.onPress === 'function') props.onPress()
         }}
       >
