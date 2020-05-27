@@ -1,7 +1,7 @@
 import { EXPLORER_API_HOST } from 'react-native-dotenv'
 import { useSelector } from 'react-redux'
 import { ethers } from 'ethers'
-import { formatWei } from '../helpers'
+import { formatWei, formatAddress } from '../helpers'
 import { firestore } from '../config/firebase'
 
 export const FETCH_TXS_PENDING = 'FETCH_TXS_PENDING'
@@ -39,6 +39,8 @@ export const fetchTxs = () => async (dispatch, getState) => {
 }
 
 const getUserByAddress = async address => {
+  address = formatAddress(address)
+
   let docs = []
 
   const snapshot = await firestore
@@ -51,6 +53,7 @@ const getUserByAddress = async address => {
   })
 
   if (docs.length !== 1) return null
+
   return docs[0]
 }
 
@@ -61,15 +64,18 @@ const sortTxs = txs => async (dispatch, getState) => {
   for (let i = 0; i < txs.length; i++) {
     const fromAddr = `0x${txs[i].from}`
     const toAddr = `0x${txs[i].to}`
-    const user = await getUserByAddress(fromAddr)
+    const txType =
+      formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
+
+    const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
 
     let tx = {
       id: txs[i].txHash,
-      title: user?.name || fromAddr,
-      timestamp: '2020-05-10 11:37',
+      title: user?.name || (txType === 'in' ? fromAddr : toAddr),
+      timestamp: txs[i].blockCreationTime,
       amount: formatWei(txs[i].value),
       user,
-      type: toAddr === userAddress ? 'out' : 'in'
+      type: txType
     }
     transactions.push(tx)
   }
@@ -77,7 +83,7 @@ const sortTxs = txs => async (dispatch, getState) => {
   dispatch(fetchTxsSuccess(transactions))
 }
 
-const initialState = { pending: false, txs: [], error: null, sorted: [] }
+const initialState = { pending: true, txs: [], error: null, sorted: [] }
 
 const txsReducer = (state = initialState, action) => {
   switch (action.type) {

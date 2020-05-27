@@ -34,7 +34,7 @@ const ActivityCell = props => {
           width: 40,
           height: 40,
           borderRadius: 20,
-          backgroundColor: Colors.Gray200,
+          backgroundColor: props.type === 'out' ? Colors.Red75 : Colors.Green75,
           justifyContent: 'center',
           alignItems: 'center'
         }}
@@ -54,8 +54,9 @@ const ActivityCell = props => {
           />
         ) : (
           <Feather
-            name={props.type === 'in' ? 'arrow-down' : 'arrow-up'}
-            size={18}
+            name={props.type === 'out' ? 'arrow-up' : 'arrow-down'}
+            size={21}
+            color='white'
           ></Feather>
         )}
       </View>
@@ -93,12 +94,19 @@ const ActivityCell = props => {
               color: Colors.Gray500
             }}
           >
-            At {moment(props.timestamp).format('HH:mm A')}
+            At {moment.unix(props.timestamp).format('HH:mm A')}
           </Text>
         </View>
       </View>
 
-      <Text style={{ marginRight: 25, fontSize: 18, fontWeight: '500' }}>
+      <Text
+        style={{
+          marginRight: 25,
+          fontSize: 18,
+          fontWeight: '500',
+          color: props.type === 'out' ? Colors.Red : Colors.Green
+        }}
+      >
         {props.type === 'out' ? '-$' : '$'}
         {props.amount}
       </Text>

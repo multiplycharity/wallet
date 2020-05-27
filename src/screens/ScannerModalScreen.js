@@ -183,7 +183,7 @@ const ScannerModalScreen = props => {
                 )}...${(address || '').slice(-11)}`}</Text>
                 <Feather
                   name='share'
-                  size={20}
+                  size={screen.height > 800 ? 20 : 18}
                   color={Colors.Gray600}
                   width='2'
                 ></Feather>

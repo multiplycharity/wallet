@@ -49,7 +49,6 @@ let sections = [
         icon: 'cloud',
         navigateTo: 'Backup',
         onPress: navigation => {
-          console.log(this)
           // this.navigation.navigate('Backup')
         }
       }
@@ -112,7 +111,6 @@ let sections = [
 
 const BackupModal = () => {
   const screen = useScreenDimensions()
-  console.log('screen: ', screen)
 
   return (
     <Modal

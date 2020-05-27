@@ -1,12 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, SectionList, Dimensions } from 'react-native'
 import Colors from '../constants/colors'
 import TransactionCell from '../components/TransactionCell'
 import moment from 'moment'
 import _ from 'lodash'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Feather } from '@expo/vector-icons'
 const screen = Dimensions.get('screen')
+
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+  Loader,
+  Shine,
+  ShineOverlay
+} from 'rn-placeholder'
+import { fetchTxsPending } from '../redux/txsReducer'
+
+const LoadingCell = () => {
+  return (
+    <Placeholder
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 80,
+        paddingHorizontal: 10
+      }}
+      Left={PlaceholderMedia}
+      Animation={ShineOverlay}
+    >
+      <PlaceholderLine style={{ marginVertical: 10 }} width={80} />
+      <PlaceholderLine width={30} />
+    </Placeholder>
+  )
+}
 
 const renderItem = ({ item }) => {
   return (
@@ -24,29 +53,28 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
+  const [renderPlaceholder, setRenderPlaceholder] = useState(true)
+  const isLoading = useSelector(state => state.txs.pending)
+  // const dispatch = useDispatch()
+  // useEffect(() => {
+  //   // const timer = setTimeout(() => {
+  //   //   setRenderPlaceholder(false)
+  //   // }, 2000)
+
+  //   // return () => clearTimeout(timer)
+  //   dispatch(fetchTxsPending())
+  // }, [])
+
   let transactions = useSelector(state => state.txs.txs)
-  // let transactions = [
-  //   { id: 0, title: 'Amir', timestamp: '2020-05-10 11:37', amount: '1' },
-  //   { id: 1, title: 'James', timestamp: '2020-05-10 09:23', amount: '2' },
-  //   {
-  //     id: 2,
-  //     title: 'Alice',
-  //     timestamp: '2020-05-07 15:02',
-  //     amount: '5',
-  //     type: 'out'
-  //   },
-  //   { id: 4, title: 'Bob', timestamp: '2020-03-01 08:02', amount: '4' },
-  //   { id: 5, title: 'Bob', timestamp: '2020-04-27 01:23', amount: '3' }
-  // ]
 
   let sorted = _.orderBy(
     transactions,
-    tx => moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
+    tx => moment.unix(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD'),
     ['desc']
   )
 
   let transactionsByDate = _.groupBy(sorted, tx =>
-    moment(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
+    moment.unix(tx.timestamp, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD')
   )
 
   let sections = []
@@ -67,19 +95,32 @@ const TransactionsList = props => {
       renderSectionHeader={renderSectionHeader}
       ListHeaderComponent={props.ListHeaderComponent}
       ListEmptyComponent={() => (
-        <View
-          style={{ alignItems: 'center', marginVertical: screen.height / 20 }}
-        >
-          <Text
-            style={{
-              marginVertical: 5,
-              fontSize: 16,
-              color: Colors.Gray500
-            }}
-          >
-            Transactions will appear here
-          </Text>
-        </View>
+        <>
+          {isLoading ? (
+            <View style={{ marginTop: 30 }}>
+              <LoadingCell></LoadingCell>
+              <LoadingCell></LoadingCell>
+              <LoadingCell></LoadingCell>
+            </View>
+          ) : (
+            <View
+              style={{
+                alignItems: 'center',
+                marginVertical: screen.height / 20
+              }}
+            >
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontSize: 16,
+                  color: Colors.Gray500
+                }}
+              >
+                Transactions will appear here
+              </Text>
+            </View>
+          )}
+        </>
       )}
     ></SectionList>
   )

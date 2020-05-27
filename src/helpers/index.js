@@ -8,3 +8,7 @@ export const isEthereumAddress = address => {
 export const formatWei = value => {
   return (ethers.utils.formatEther(value) * 100).toFixed(2).replace(/\.00$/, '')
 }
+
+export const formatAddress = address => {
+  return ethers.utils.getAddress(address)
+}

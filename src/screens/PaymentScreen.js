@@ -21,7 +21,6 @@ import SpringButton from '../components/SpringButton'
 import * as Haptics from 'expo-haptics'
 import * as Animatable from 'react-native-animatable'
 const screen = Dimensions.get('screen')
-console.log('screen: ', screen)
 
 Animatable.initializeRegistryWithDefinitions({
   fadeInDown: {
