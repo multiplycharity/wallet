@@ -7,43 +7,10 @@ import _ from 'lodash'
 import { useSelector, useDispatch } from 'react-redux'
 import { Feather } from '@expo/vector-icons'
 const screen = Dimensions.get('screen')
-
-import {
-  Placeholder,
-  PlaceholderMedia,
-  PlaceholderLine,
-  Fade,
-  Loader,
-  Shine,
-  ShineOverlay
-} from 'rn-placeholder'
-import { fetchTxsPending } from '../redux/txsReducer'
-
-const LoadingCell = () => {
-  return (
-    <Placeholder
-      style={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 80,
-        paddingHorizontal: 10
-      }}
-      Left={PlaceholderMedia}
-      Animation={ShineOverlay}
-    >
-      <PlaceholderLine style={{ marginVertical: 10 }} width={80} />
-      <PlaceholderLine width={30} />
-    </Placeholder>
-  )
-}
+import LoadingCellPlaceholder from '../components/LoadingCellPlaceholder'
 
 const renderItem = ({ item }) => {
-  return (
-    <TransactionCell
-      {...item}
-      // imageUrl={`https://randomuser.me/api/portraits/med/men/${1}.jpg`}
-    />
-  )
+  return <TransactionCell {...item} />
 }
 
 const extractKey = ({ id }) => id
@@ -53,17 +20,7 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
-  const [renderPlaceholder, setRenderPlaceholder] = useState(true)
   const isLoading = useSelector(state => state.txs.pending)
-  // const dispatch = useDispatch()
-  // useEffect(() => {
-  //   // const timer = setTimeout(() => {
-  //   //   setRenderPlaceholder(false)
-  //   // }, 2000)
-
-  //   // return () => clearTimeout(timer)
-  //   dispatch(fetchTxsPending())
-  // }, [])
 
   let transactions = useSelector(state => state.txs.txs)
 
@@ -98,9 +55,9 @@ const TransactionsList = props => {
         <>
           {isLoading ? (
             <View style={{ marginTop: 30 }}>
-              <LoadingCell></LoadingCell>
-              <LoadingCell></LoadingCell>
-              <LoadingCell></LoadingCell>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
             </View>
           ) : (
             <View

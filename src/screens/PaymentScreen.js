@@ -60,7 +60,7 @@ const PaymentScreen = ({ navigation }) => {
     lastCharRef.current = displayValue.slice(-1)
 
     if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
-      lastCharAnimation.current.fadeInDown(90)
+      lastCharAnimation.current.fadeInDown(120)
     }
   }, [displayValue])
 

@@ -35,13 +35,6 @@ const ListHeader = props => {
   const balance = useSelector(state => state.user?.balance)
   const address = useSelector(state => state.user?.wallet?.address)
 
-  useEffect(() => {
-    ;(async () => {
-      // address &&
-      //   SDK.getBalance(address).then(balance => setBalance(balance.toString()))
-    })()
-  }, [address])
-
   return (
     <View style={[styles.container, { marginBottom: 40 }]}>
       <Text style={styles.balance}>${balance}</Text>
@@ -64,7 +57,7 @@ const ListHeader = props => {
           width={screen.width / 2.3}
           style={{ marginLeft: 16 }}
           onPress={() => {
-            // navigation.navigate('QRScanner')
+            // navigation.navigate('')
           }}
         ></Button>
       </View>
@@ -88,14 +81,6 @@ const HomeScreen = props => {
   }
 
   const dispatch = useDispatch()
-
-  const txs = useSelector(state => state.txs)
-  // console.log('txs: ', txs)
-
-  // //Component will mount
-  // useEffect(() => {
-  //   dispatch(fetchTxs())
-  // }, [])
 
   return (
     <SafeAreaView style={styles.container}>
