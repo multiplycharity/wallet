@@ -23,7 +23,7 @@ const ActivityCell = props => {
   const screen = useScreenDimensions()
 
   const TxCellImage = () => {
-    const imgUrl = props.user?.imageUrl
+    const imgUrl = props.user?.photoUrl
     // `https://randomuser.me/api/portraits/med/men/${1}.jpg`
 
     return (

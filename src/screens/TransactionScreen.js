@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,8 @@ import {
   Image,
   Button,
   Dimensions,
-  ImageBackground
+  ImageBackground,
+  Clipboard
 } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 
@@ -22,12 +23,14 @@ import { BLOCK_EXPLORER_HOST } from 'react-native-dotenv'
 import { Feather } from '@expo/vector-icons'
 
 const TransactionScreen = props => {
+  const [tooltipVisible, setTooltipVisible] = useState(false)
+
   const navigation = useNavigation()
   const route = props.route
 
   const { amount, timestamp, type, title, user, id: txHash } = route.params
 
-  let imgUrl = user?.imageUrl
+  let imgUrl = user?.photoUrl
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -72,6 +75,7 @@ const TransactionScreen = props => {
       <Text style={{ marginTop: 20, fontSize: 21, fontWeight: '500' }}>
         {type === 'in' ? 'Incoming Transaction' : 'Outgoing Transaction'}
       </Text>
+
       <Text
         style={{
           marginTop: 5,
