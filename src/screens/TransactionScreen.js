@@ -8,14 +8,14 @@ import {
   Button,
   Dimensions,
   ImageBackground,
-  Clipboard
+  Clipboard,
+  TouchableOpacity
 } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 
 const screen = Dimensions.get('screen')
 
 import Colors from '../constants/colors'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import { isEthereumAddress } from '../helpers'
 import moment from 'moment'

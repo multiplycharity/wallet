@@ -18,8 +18,7 @@ import { Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
-import MyCodeScreen from '../screens/MyCodeScreen'
-import QRScannerScreen from '../screens/QRScannerScreen'
+
 import ScannerModalScreen from '../screens/ScannerModalScreen'
 
 import { useSelector, useDispatch } from 'react-redux'

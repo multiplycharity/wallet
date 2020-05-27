@@ -122,7 +122,7 @@ const ScannerModalScreen = props => {
           >
             <Feather
               name='x'
-              size={24}
+              size={screen.height > 800 ? 28 : 24}
               color={!isScannerActive ? Colors.Black : Colors.White}
             ></Feather>
           </TouchableOpacity>

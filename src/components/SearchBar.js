@@ -25,7 +25,6 @@ const SearchBar = props => {
         alignItems: 'center',
         height: 60,
         width: screen.width,
-
         flexDirection: 'row'
       }}
     >
@@ -44,9 +43,9 @@ const SearchBar = props => {
           fontWeight: '400'
         }}
         placeholderTextColor={Colors.Gray500}
-        placeholder={props.title}
-        value={queryString}
-        onChangeText={text => setQueryString(text)}
+        placeholder={props.placeholder}
+        value={props.value}
+        onChangeText={text => props.onChangeText(text)}
         autoCorrect={false}
         autoFocus={true}
       ></TextInput>

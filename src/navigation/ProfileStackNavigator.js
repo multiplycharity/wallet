@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  Dimensions
 } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -15,7 +16,7 @@ import QRIcon from '../components/QRIcon'
 import Colors from '../constants/colors'
 import ProfileScreen from '../screens/ProfileScreen'
 import { setIsScannerActive } from '../redux/screenReducer'
-
+const screen = Dimensions.get('screen')
 const Stack = createStackNavigator()
 
 const ProfileStackNavigator = () => {
@@ -45,7 +46,7 @@ const ProfileStackNavigator = () => {
               }}
               style={{ marginLeft: 18 }}
             >
-              <QRIcon size={22}></QRIcon>
+              <QRIcon size={screen.height > 800 ? 24 : 20}></QRIcon>
             </TouchableOpacity>
           )
         })}

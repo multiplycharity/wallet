@@ -25,9 +25,9 @@ const screen = Dimensions.get('screen')
 Animatable.initializeRegistryWithDefinitions({
   fadeInDown: {
     from: {
-      opacity: 0.5,
+      opacity: 0,
       translateY: -40,
-      translateX: -10,
+      translateX: -15,
       scale: 0.6
     },
     to: {
@@ -139,7 +139,9 @@ const PaymentScreen = ({ navigation }) => {
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                // navigation.navigate('')
+                navigation.navigate('ChoosePaymentRecipient', {
+                  amount: displayValue
+                })
               }}
             ></Button>
           </Animatable.View>

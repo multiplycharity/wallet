@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  Dimensions
 } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { NavigationContainer } from '@react-navigation/native'
@@ -18,12 +19,14 @@ import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import MyCodeScreen from '../screens/MyCodeScreen'
+import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
 
 import QRIcon from '../components/QRIcon'
 import { setIsScannerActive } from '../redux/screenReducer'
 
 const Stack = createStackNavigator()
+
+const screen = Dimensions.get('screen')
 
 const PaymentStackNavigator = () => {
   const navigation = useNavigation()
@@ -52,7 +55,28 @@ const PaymentStackNavigator = () => {
               }}
               style={{ marginLeft: 16 }}
             >
-              <Feather name='maximize' size={28}></Feather>
+              <Feather
+                name='maximize'
+                size={screen.height > 800 ? 28 : 24}
+              ></Feather>
+            </TouchableOpacity>
+          )
+        })}
+      />
+
+      <Stack.Screen
+        name='ChoosePaymentRecipient'
+        component={ChoosePaymentRecipientScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: null,
+          headerLeft: props => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack()
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              <Feather name='x' size={24}></Feather>
             </TouchableOpacity>
           )
         })}

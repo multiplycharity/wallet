@@ -8,10 +8,10 @@ import * as Animatable from 'react-native-animatable'
 Animatable.initializeRegistryWithDefinitions({
   zoomIn: {
     0: { scale: 1 },
-    1: { scale: 1.05 }
+    1: { scale: 1.025 }
   },
   zoomOut: {
-    0: { scale: 1.05 },
+    0: { scale: 1.025 },
     1: { scale: 1 }
   }
 })

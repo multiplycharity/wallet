@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Button,
-  StatusBar
+  StatusBar,
+  Dimensions
 } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
@@ -15,12 +16,13 @@ import { Feather } from '@expo/vector-icons'
 import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import TransactionScreen from '../screens/TransactionScreen'
-import MyCodeScreen from '../screens/MyCodeScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
 import { fetchTxs, fetchTxsPending } from '../redux/txsReducer'
 import { fetchBalance } from '../redux/userReducer'
+
+const screen = Dimensions.get('screen')
 
 const HomeStack = createStackNavigator()
 
@@ -56,7 +58,7 @@ const HomeStackNavigator = props => {
         name='Home'
         component={HomeScreen}
         options={({ route }) => ({
-          headerTitleStyle: { fontSize: 21 },
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
           headerTitleAlign: 'left'
         })}
       />
