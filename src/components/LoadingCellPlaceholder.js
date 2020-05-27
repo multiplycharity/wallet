@@ -19,7 +19,12 @@ const LoadingCellPlaceholder = () => {
         height: 80,
         paddingHorizontal: 10
       }}
-      Left={PlaceholderMedia}
+      Left={() => (
+        <PlaceholderMedia
+          isRound={true}
+          style={{ marginRight: 20 }}
+        ></PlaceholderMedia>
+      )}
       Animation={ShineOverlay}
     >
       <PlaceholderLine style={{ marginVertical: 10 }} width={80} />
