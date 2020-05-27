@@ -101,7 +101,7 @@ let sections = [
         onPress: () => {
           Share.share({
             title: 'Download Avacash',
-            url: 'https://avacash.com'
+            url: 'https://expo.io/@amiromayer/avacash'
           })
         }
       }
