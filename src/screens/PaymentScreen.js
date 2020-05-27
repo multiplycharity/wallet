@@ -25,13 +25,15 @@ const screen = Dimensions.get('screen')
 Animatable.initializeRegistryWithDefinitions({
   fadeInDown: {
     from: {
-      opacity: 0.1,
+      opacity: 0.5,
       translateY: -40,
+      translateX: -10,
       scale: 0.6
     },
     to: {
       opacity: 1,
       translateY: 0,
+      translateX: 0,
       scale: 1
     },
     easing: 'ease-in'
