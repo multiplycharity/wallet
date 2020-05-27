@@ -24,7 +24,6 @@ const ActivityCell = props => {
 
   const TxCellImage = () => {
     const imgUrl = props.user?.imageUrl
-
     // `https://randomuser.me/api/portraits/med/men/${1}.jpg`
 
     return (
@@ -49,7 +48,7 @@ const ActivityCell = props => {
               overflow: 'hidden'
             }}
             source={{
-              uri: `https://randomuser.me/api/portraits/med/men/${1}.jpg`
+              uri: imgUrl
             }}
           />
         ) : (
@@ -75,7 +74,7 @@ const ActivityCell = props => {
         },
         props.style
       ]}
-      onPress={() => navigation.navigate('Transaction')}
+      onPress={() => navigation.navigate('Transaction', { ...props })}
     >
       <View style={{ flexDirection: 'row' }}>
         <TxCellImage imageUrl={props.imageUrl}></TxCellImage>

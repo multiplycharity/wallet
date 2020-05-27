@@ -5,16 +5,29 @@ import {
   View,
   SafeAreaView,
   Image,
-  Button
+  Button,
+  Dimensions,
+  ImageBackground
 } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
+
+const screen = Dimensions.get('screen')
 
 import Colors from '../constants/colors'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
+import { isEthereumAddress } from '../helpers'
+import moment from 'moment'
+import { BLOCK_EXPLORER_HOST } from 'react-native-dotenv'
+import { Feather } from '@expo/vector-icons'
 
 const TransactionScreen = props => {
   const navigation = useNavigation()
+  const route = props.route
+
+  const { amount, timestamp, type, title, user, id: txHash } = route.params
+
+  let imgUrl = user?.imageUrl
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -24,14 +37,40 @@ const TransactionScreen = props => {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.avatar}
-        source={{
-          uri: `https://randomuser.me/api/portraits/med/men/11.jpg`
+      <View
+        style={{
+          width: 80,
+          height: 80,
+          borderRadius: 40,
+          backgroundColor: type === 'out' ? Colors.Red75 : Colors.Green75,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 40
         }}
-      />
+      >
+        {imgUrl ? (
+          <ImageBackground
+            style={{
+              flex: 1,
+              borderRadius: 40,
+              width: '100%',
+              height: '100%',
+              overflow: 'hidden'
+            }}
+            source={{
+              uri: imgUrl
+            }}
+          />
+        ) : (
+          <Feather
+            name={type === 'out' ? 'arrow-up' : 'arrow-down'}
+            size={42}
+            color='white'
+          ></Feather>
+        )}
+      </View>
       <Text style={{ marginTop: 20, fontSize: 21, fontWeight: '500' }}>
-        John Doe
+        {type === 'in' ? 'Incoming Transaction' : 'Outgoing Transaction'}
       </Text>
       <Text
         style={{
@@ -41,17 +80,23 @@ const TransactionScreen = props => {
           color: Colors.Gray500
         }}
       >
-        Payment to johndoe@gmail.com
+        {type === 'in' ? 'from' : 'to'}{' '}
+        {isEthereumAddress(title)
+          ? `${title.slice(0, 8)}...${title.slice(-7)}`
+          : user?.email
+          ? user.email
+          : title}
       </Text>
 
       <Text
         style={{
-          marginTop: 120,
+          marginTop: screen.height > 800 ? 120 : 90,
           fontSize: 60,
           fontWeight: '400'
         }}
       >
-        $5.00
+        {type === 'out' ? '-$' : '$'}
+        {amount}
       </Text>
       <Text
         style={{
@@ -61,7 +106,7 @@ const TransactionScreen = props => {
           color: Colors.Gray500
         }}
       >
-        Today at 11:37 AM
+        {moment.unix(timestamp).calendar(null, { sameElse: 'MM DD YYYY' })}
       </Text>
       <View
         style={{
@@ -72,12 +117,14 @@ const TransactionScreen = props => {
       >
         <TouchableOpacity
           onPress={async () => {
-            await WebBrowser.openBrowserAsync('https://google.com')
+            await WebBrowser.openBrowserAsync(
+              `${BLOCK_EXPLORER_HOST}/tx/0x${txHash}`
+            )
           }}
         >
           <Text
             style={{
-              fontSize: 21,
+              fontSize: 18,
               fontWeight: '500',
               color: Colors.Blue
             }}
