@@ -1,8 +1,8 @@
 import { EXPLORER_API_HOST } from 'react-native-dotenv'
 import { useSelector } from 'react-redux'
 import { ethers } from 'ethers'
-
-const address = '0x184EF1FF558b9134DcBb54dEF1a00f2A40C1a035'
+import { formatWei } from '../helpers'
+import { firestore } from '../config/firebase'
 
 export const FETCH_TXS_PENDING = 'FETCH_TXS_PENDING'
 export const FETCH_TXS_SUCCESS = 'FETCH_TXS_SUCCESS'
@@ -20,37 +20,61 @@ export const fetchTxsError = error => {
   return { type: FETCH_TXS_ERROR, payload: error }
 }
 
-export const fetchTxs = () => (dispatch, getState) => {
+export const fetchTxs = () => async (dispatch, getState) => {
+  const address = getState().user?.wallet?.address
   dispatch(fetchTxsPending)
 
-  fetch(`${EXPLORER_API_HOST}/account/${address}/txs`)
-    .then(res => res.json())
-    .then(res => {
-      if (res.error) {
-        throw res.error
-      }
-      const txs = sortTxs(res.data)
-      dispatch(fetchTxsSuccess(txs))
-      return txs
-    })
-    .catch(error => {
-      dispatch(fetchTxsError(res.error))
-    })
+  try {
+    let res = await fetch(`${EXPLORER_API_HOST}/account/${address}/txs`)
+    res = await res.json()
+
+    if (res.error) {
+      throw res.error
+    }
+
+    dispatch(sortTxs(res.data))
+  } catch (error) {
+    dispatch(fetchTxsError(res.error))
+  }
 }
 
-const sortTxs = txs => {
+const getUserByAddress = async address => {
+  let docs = []
+
+  const snapshot = await firestore
+    .collection('users')
+    .where('address', '==', address)
+    .get()
+
+  snapshot.docs.forEach(doc => {
+    docs.push(doc.data())
+  })
+
+  if (docs.length !== 1) return null
+  return docs[0]
+}
+
+const sortTxs = txs => async (dispatch, getState) => {
+  const userAddress = getState().user?.wallet?.address
+
   let transactions = []
   for (let i = 0; i < txs.length; i++) {
+    const fromAddr = `0x${txs[i].from}`
+    const toAddr = `0x${txs[i].to}`
+    const user = await getUserByAddress(fromAddr)
+
     let tx = {
-      id: txs[i].txIndex,
-      title: `0x${txs[i].from}`,
+      id: txs[i].txHash,
+      title: user?.name || fromAddr,
       timestamp: '2020-05-10 11:37',
-      amount: ethers.utils.formatEther(txs[i].value) * 1000
+      amount: formatWei(txs[i].value),
+      user,
+      type: toAddr === userAddress ? 'out' : 'in'
     }
     transactions.push(tx)
   }
 
-  return transactions
+  dispatch(fetchTxsSuccess(transactions))
 }
 
 const initialState = { pending: false, txs: [], error: null, sorted: [] }

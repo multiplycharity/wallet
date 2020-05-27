@@ -105,7 +105,9 @@ const ScannerModalScreen = props => {
       <SafeAreaView
         style={[
           styles.container,
-          { backgroundColor: !isScannerActive ? Colors.White : Colors.Black }
+          {
+            backgroundColor: !isScannerActive ? Colors.White : Colors.Black
+          }
         ]}
       >
         <View
@@ -130,7 +132,9 @@ const ScannerModalScreen = props => {
           <View style={styles.QRCode}>
             <QRCode
               value='https://google.com'
-              size={parseInt(screen.width * 0.65)}
+              size={parseInt(
+                screen.width * (screen.height > 800 ? 0.65 : 0.55)
+              )}
             ></QRCode>
           </View>
         ) : (
@@ -138,8 +142,12 @@ const ScannerModalScreen = props => {
             <BarCodeScanner
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               style={{
-                width: parseInt(screen.width * 0.78),
-                height: parseInt(screen.width * 0.78),
+                width: parseInt(
+                  screen.width * (screen.height > 800 ? 0.78 : 0.68)
+                ),
+                height: parseInt(
+                  screen.width * (screen.height > 800 ? 0.78 : 0.68)
+                ),
                 borderRadius: 15,
                 overflow: 'hidden'
               }}
@@ -151,7 +159,11 @@ const ScannerModalScreen = props => {
           <>
             <Text style={styles.title}>{name}</Text>
             <Text
-              style={{ marginTop: 10, fontSize: 16, color: Colors.Gray600 }}
+              style={{
+                marginTop: 10,
+                fontSize: 16,
+                color: Colors.Gray600
+              }}
             >
               Scan to pay {email}
             </Text>
@@ -179,20 +191,26 @@ const ScannerModalScreen = props => {
             </View>
           </>
         ) : (
-          <Text style={{ marginTop: 120, fontSize: 16, color: Colors.White }}>
+          <Text
+            style={{
+              marginTop: screen.height > 800 ? 120 : 90,
+              fontSize: 16,
+              color: Colors.White
+            }}
+          >
             Scan Avacash Code to Pay
           </Text>
         )}
 
         <View
           style={{
-            backgroundColor: 'white',
             position: 'absolute',
             bottom: 0,
-            height: screen.height * 0.25,
+            height: screen.height * (screen.height > 800 ? 0.25 : 0.2),
             width: screen.width,
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            backgroundColor: 'white'
           }}
         >
           <Animatable.View ref={animationRef} iterationCount={1}>
@@ -243,7 +261,6 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     height: 60,
     backgroundColor: Colors.White,
     alignItems: 'center',
@@ -254,9 +271,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     backgroundColor: 'white',
-    marginTop: 40,
-    width: parseInt(screen.width * 0.8),
-    height: parseInt(screen.width * 0.8),
+    marginTop: screen.height > 800 ? 40 : 20,
+    width: parseInt(screen.width * (screen.height > 800 ? 0.8 : 0.7)),
+    height: parseInt(screen.width * (screen.height > 800 ? 0.8 : 0.7)),
     shadowColor: Colors.Gray300,
     shadowOpacity: 1,
     shadowRadius: 4,
@@ -267,19 +284,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.5)',
-    marginTop: 40,
-    width: parseInt(screen.width * 0.8),
-    height: parseInt(screen.width * 0.8),
+    marginTop: screen.height > 800 ? 40 : 20,
+    width: parseInt(screen.width * (screen.height > 800 ? 0.8 : 0.7)),
+    height: parseInt(screen.width * (screen.height > 800 ? 0.8 : 0.7)),
     shadowColor: Colors.Gray600,
     shadowOpacity: 0.5,
     shadowRadius: 1,
     shadowOffset: { width: 0, height: 0 }
   },
-  title: { marginTop: 40, fontSize: 25, fontWeight: '500' },
+  title: {
+    marginTop: screen.height > 800 ? 40 : 30,
+    fontSize: 25,
+    fontWeight: '500'
+  },
   subtitle: { marginTop: 10, fontSize: 16, color: Colors.Gray600 },
   addressContainer: {
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: screen.height > 800 ? 40 : 20,
     width: screen.width * 0.8,
     height: 60,
     backgroundColor: Colors.Gray100,
@@ -287,7 +308,7 @@ const styles = StyleSheet.create({
   },
   address: {
     color: Colors.Gray600,
-    fontSize: 18,
+    fontSize: screen.height > 800 ? 18 : 16,
     fontWeight: '500'
   },
   roundButton: {

@@ -19,17 +19,30 @@ import MyCodeScreen from '../screens/MyCodeScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
+import { fetchTxs } from '../redux/txsReducer'
+import { fetchBalance } from '../redux/userReducer'
 
 const HomeStack = createStackNavigator()
 
 const HomeStackNavigator = props => {
   const { navigation, route } = props
 
+  const dispatch = useDispatch()
+
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle('dark-content')
+      dispatch(fetchTxs())
+      dispatch(fetchBalance())
     }, [])
   )
+
+  // console.log('txs: ', txs)
+
+  // //Component will mount
+  // useEffect(() => {
+  //   dispatch(fetchTxs())
+  // }, [])
 
   // React.useEffect(() => {
   //   if (route.state?.index > 0) {
@@ -42,8 +55,6 @@ const HomeStackNavigator = props => {
   //     })
   //   }
   // }, [route])
-
-  const dispatch = useDispatch()
 
   return (
     <HomeStack.Navigator

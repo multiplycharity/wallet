@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { JSON_RPC_URL } from 'react-native-dotenv'
+import { formatWei } from '.'
 
 class WalletSDK {
   constructor (jsonRpcUrl = JSON_RPC_URL) {
@@ -9,8 +10,7 @@ class WalletSDK {
 
   async getBalance (address) {
     let balance = await this.provider.getBalance(address)
-    balance = ethers.utils.formatEther(balance)
-    return balance * 1000
+    return formatWei(balance)
   }
 }
 

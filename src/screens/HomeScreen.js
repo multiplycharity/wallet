@@ -32,14 +32,13 @@ const SDK = new WalletSDK()
 
 const ListHeader = props => {
   const navigation = useNavigation()
-  const [balance, setBalance] = useState('0')
-
+  const balance = useSelector(state => state.user?.balance)
   const address = useSelector(state => state.user?.wallet?.address)
 
   useEffect(() => {
     ;(async () => {
-      address &&
-        SDK.getBalance(address).then(balance => setBalance(balance.toString()))
+      // address &&
+      //   SDK.getBalance(address).then(balance => setBalance(balance.toString()))
     })()
   }, [address])
 
@@ -91,12 +90,12 @@ const HomeScreen = props => {
   const dispatch = useDispatch()
 
   const txs = useSelector(state => state.txs)
-  console.log('txs: ', txs)
+  // console.log('txs: ', txs)
 
-  //Component will mount
-  useEffect(() => {
-    dispatch(fetchTxs())
-  }, [])
+  // //Component will mount
+  // useEffect(() => {
+  //   dispatch(fetchTxs())
+  // }, [])
 
   return (
     <SafeAreaView style={styles.container}>

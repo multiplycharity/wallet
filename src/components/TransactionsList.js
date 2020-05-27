@@ -1,16 +1,18 @@
 import React from 'react'
-import { StyleSheet, Text, View, SectionList } from 'react-native'
+import { StyleSheet, Text, View, SectionList, Dimensions } from 'react-native'
 import Colors from '../constants/colors'
 import TransactionCell from '../components/TransactionCell'
 import moment from 'moment'
 import _ from 'lodash'
 import { useSelector } from 'react-redux'
+import { Feather } from '@expo/vector-icons'
+const screen = Dimensions.get('screen')
 
 const renderItem = ({ item }) => {
   return (
     <TransactionCell
       {...item}
-      imageUrl={`https://randomuser.me/api/portraits/med/men/${item.id}.jpg`}
+      // imageUrl={`https://randomuser.me/api/portraits/med/men/${1}.jpg`}
     />
   )
 }
@@ -64,6 +66,21 @@ const TransactionsList = props => {
       keyExtractor={extractKey}
       renderSectionHeader={renderSectionHeader}
       ListHeaderComponent={props.ListHeaderComponent}
+      ListEmptyComponent={() => (
+        <View
+          style={{ alignItems: 'center', marginVertical: screen.height / 20 }}
+        >
+          <Text
+            style={{
+              marginVertical: 5,
+              fontSize: 16,
+              color: Colors.Gray500
+            }}
+          >
+            Transactions will appear here
+          </Text>
+        </View>
+      )}
     ></SectionList>
   )
 }

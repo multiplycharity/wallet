@@ -1,6 +1,8 @@
 import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
 import { ethers } from 'ethers'
 import { throwError, clearError } from './errorReducer'
+import WalletSDK from '../helpers/WalletSDK'
+const sdk = new WalletSDK()
 
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
@@ -14,10 +16,22 @@ export const CREATE_WALLET_FAILURE = 'CREATE_WALLET_FAILURE'
 export const GET_WALLET_SUCCESS = 'GET_WALLET_SUCCESS'
 export const GET_WALLET_FAILURE = 'GET_WALLET_FAILURE'
 
-const initialState = {}
+export const SET_BALANCE = 'SET_BALANCE'
+
+const initialState = { balance: 0 }
 
 export const updateUserSuccess = user => {
   return { type: UPDATE_USER_SUCCESS, payload: user }
+}
+
+export const setBalance = balance => {
+  return { type: SET_BALANCE, payload: balance }
+}
+
+export const fetchBalance = () => async (dispatch, getState) => {
+  const address = getState().user?.wallet?.address
+  const balance = await sdk.getBalance(address)
+  dispatch(setBalance(balance))
 }
 
 export const updateUserFailure = error => dispatch => {
@@ -115,6 +129,9 @@ const userReducer = (state = initialState, action) => {
       return { ...state, wallet: action.payload }
     case GET_WALLET_FAILURE:
       return { ...state, wallet: null, error: action.payload }
+
+    case SET_BALANCE:
+      return { ...state, balance: action.payload }
 
     default:
       return state
