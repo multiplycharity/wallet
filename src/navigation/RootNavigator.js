@@ -18,7 +18,7 @@ const RootNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName='SignIn'
-        screenOptions={{ headerShown: false }}
+        screenOptions={{ headerShown: false, gestureEnabled: false }}
       >
         <Stack.Screen name='SignIn' component={SignInScreen}></Stack.Screen>
         <Stack.Screen name='Home' component={AppNavigator}></Stack.Screen>

@@ -23,6 +23,10 @@ const ChoosePaymentRecipientScreen = props => {
   //     })
   //   }, [navigation])
 
+  //   {isEthereumAddress(queryStr) || foundUsers.length > 0 ? (
+  //     <Text style={styles.sectionHeader}>Suggested</Text>
+  //   ) : null}
+
   useEffect(() => {
     ;(async () => {
       const users = await search(queryStr)
@@ -79,10 +83,6 @@ const ChoosePaymentRecipientScreen = props => {
               }
         }
       ></SearchBar>
-
-      {isEthereumAddress(queryStr) || foundUsers.length > 0 ? (
-        <Text style={styles.sectionHeader}>Suggested</Text>
-      ) : null}
 
       {isEthereumAddress(queryStr) && foundUsers.length === 0 ? (
         <AddressCell address={queryStr}></AddressCell>
