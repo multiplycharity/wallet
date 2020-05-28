@@ -42,7 +42,15 @@ const SearchBar = props => {
       ></TextInput>
 
       <View style={{ position: 'absolute', left: 0, marginLeft: 30 }}>
-        <Feather name='search' size={20} color={Colors.Gray500}></Feather>
+        {props.leftTitle ? (
+          <Text
+            style={{ fontSize: 18, fontWeight: '600', color: Colors.Black }}
+          >
+            {props.leftTitle}
+          </Text>
+        ) : (
+          <Feather name='search' size={20} color={Colors.Gray500}></Feather>
+        )}
       </View>
 
       <TouchableOpacity

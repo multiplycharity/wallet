@@ -68,7 +68,8 @@ const PaymentStackNavigator = () => {
         name='ChoosePaymentRecipient'
         component={ChoosePaymentRecipientScreen}
         options={({ route, navigation }) => ({
-          headerTitle: null,
+          headerTitle: `$${route.params.amount}`,
+          headerTitleStyle: { fontSize: screen.height > 800 ? 24 : 21 },
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {
@@ -76,7 +77,10 @@ const PaymentStackNavigator = () => {
               }}
               style={{ marginLeft: 16 }}
             >
-              <Feather name='x' size={24}></Feather>
+              <Feather
+                name='arrow-left'
+                size={screen.height > 800 ? 28 : 24}
+              ></Feather>
             </TouchableOpacity>
           )
         })}
