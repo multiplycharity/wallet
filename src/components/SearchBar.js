@@ -8,17 +8,6 @@ import Colors from '../constants/colors'
 const SearchBar = props => {
   const screen = useScreenDimensions()
 
-  const [queryString, setQueryString] = useState('')
-
-  //   <Text
-  //   style={{
-  //     fontSize: 18,
-  //     color: Colors.Gray500,
-  //     fontWeight: '400',
-  //     marginLeft: 10
-  //   }}
-  // ></Text>
-
   return (
     <View
       style={{
@@ -34,6 +23,7 @@ const SearchBar = props => {
           flexDirection: 'row',
           paddingVertical: 10,
           paddingLeft: 45,
+          paddingRight: 80,
           marginHorizontal: 16,
           backgroundColor: Colors.Gray100,
           borderRadius: 10,
@@ -51,12 +41,24 @@ const SearchBar = props => {
         autoCapitalize='none'
       ></TextInput>
 
-      <View style={{ position: 'absolute', left: 0, marginLeft: 29 }}>
-        <Feather name='search' size='20' color={Colors.Gray500}></Feather>
+      <View style={{ position: 'absolute', left: 0, marginLeft: 30 }}>
+        <Feather name='search' size={20} color={Colors.Gray500}></Feather>
       </View>
 
-      <TouchableOpacity style={{ marginRight: 20 }} onPress={props.onClose}>
-        <Text style={{ fontSize: 16 }}>Close</Text>
+      <TouchableOpacity
+        style={{
+          marginRight: 20,
+          position: 'absolute',
+          right: 0,
+          marginRight: 30
+        }}
+        onPress={props.onHandleRightButton}
+      >
+        <Text
+          style={{ fontSize: 16, color: Colors.Gray600, fontWeight: '500' }}
+        >
+          {props.rightButtonTitle}
+        </Text>
       </TouchableOpacity>
     </View>
   )

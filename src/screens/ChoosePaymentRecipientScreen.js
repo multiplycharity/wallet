@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { View, Text, SafeAreaView } from 'react-native'
+import { View, Text, SafeAreaView, Clipboard } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
 import Colors from '../constants/colors'
 import { firestore } from '../config/firebase'
 import UserCell from '../components/UserCell'
+import { isEthereumAddress } from '../helpers'
 
 const ChoosePaymentRecipientScreen = props => {
   const { amount } = props.route.params
 
-  const [query, setQuery] = useState('')
-  console.log('query: ', query)
+  const [queryStr, setQueryStr] = useState('')
   const [foundUsers, setFoundUsers] = useState([])
 
   const navigation = useNavigation()
@@ -21,24 +21,36 @@ const ChoosePaymentRecipientScreen = props => {
 
   useEffect(() => {
     ;(async () => {
-      const usrs = await search(query)
-      setFoundUsers(usrs)
+      const users = await search(queryStr)
+      setFoundUsers(users)
     })()
-  }, [query])
+  }, [queryStr])
 
-  const search = async query => {
+  const search = async queryStr => {
     let docs = []
 
-    if (query) {
+    if (queryStr) {
       const emails = await firestore
         .collection('users')
-        .where('email', '>=', query)
-        .where('email', '<=', query + '\uf8ff')
+        .where('email', '>=', queryStr)
+        .where('email', '<=', queryStr + '\uf8ff')
         .get()
 
       emails.docs.forEach(doc => {
         docs.push(doc.data())
       })
+
+      if (isEthereumAddress(queryStr)) {
+        const addresses = await firestore
+          .collection('users')
+          .where('address', '>=', queryStr)
+          .where('address', '<=', queryStr + '\uf8ff')
+          .get()
+
+        addresses.docs.forEach(doc => {
+          docs.push(doc.data())
+        })
+      }
     }
 
     return docs
@@ -48,11 +60,22 @@ const ChoosePaymentRecipientScreen = props => {
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.White }}>
       <SearchBar
         placeholder='Search email, address'
-        value={query}
-        onChangeText={text => setQuery(text)}
+        value={queryStr}
+        onChangeText={text => setQueryStr(text)}
+        rightButtonTitle={queryStr ? 'Clear' : 'Paste'}
+        onHandleRightButton={
+          queryStr
+            ? () => {
+                setQueryStr('')
+              }
+            : async () => {
+                const textFromClipboard = await Clipboard.getString()
+                setQueryStr(textFromClipboard.trim())
+              }
+        }
       ></SearchBar>
 
-      {foundUsers
+      {foundUsers.length > 0
         ? foundUsers.map(user => <UserCell user={user}></UserCell>)
         : null}
     </SafeAreaView>
