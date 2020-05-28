@@ -20,29 +20,10 @@ import SpringButton from '../components/SpringButton'
 
 import * as Haptics from 'expo-haptics'
 import * as Animatable from 'react-native-animatable'
+import animationDefinitions from '../constants/animations'
 const screen = Dimensions.get('screen')
 
-Animatable.initializeRegistryWithDefinitions({
-  fadeInDown: {
-    from: {
-      opacity: 0,
-      translateY: -40,
-      translateX: -15,
-      scale: 0.6
-    },
-    to: {
-      opacity: 1,
-      translateY: 0,
-      translateX: 0,
-      scale: 1
-    },
-    easing: 'ease-in'
-  },
-  moveLeft: {
-    from: { translateX: 0 },
-    to: { translateX: -10 }
-  }
-})
+Animatable.initializeRegistryWithDefinitions(animationDefinitions)
 
 const PaymentScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -132,6 +113,10 @@ const PaymentScreen = ({ navigation }) => {
               onPress={() => {
                 // dispatch(setIsScannerActive(false))
                 // navigation.navigate('')
+
+                if (displayValue === '0') {
+                  displayValueAnimation.current.shake(480)
+                }
               }}
             ></Button>
             <Button
@@ -139,9 +124,13 @@ const PaymentScreen = ({ navigation }) => {
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                navigation.navigate('ChoosePaymentRecipient', {
-                  amount: displayValue
-                })
+                if (displayValue === '0') {
+                  displayValueAnimation.current.shake(480)
+                } else {
+                  navigation.navigate('ChoosePaymentRecipient', {
+                    amount: displayValue
+                  })
+                }
               }}
             ></Button>
           </Animatable.View>
