@@ -58,6 +58,8 @@ const TransactionsList = props => {
               <LoadingCellPlaceholder></LoadingCellPlaceholder>
               <LoadingCellPlaceholder></LoadingCellPlaceholder>
               <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
             </View>
           ) : (
             <View

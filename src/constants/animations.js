@@ -23,16 +23,16 @@ const animations = {
       translateX: 0
     },
     0.2: {
-      translateX: -5
+      translateX: -7.5
     },
     0.4: {
-      translateX: 5
+      translateX: 7.5
     },
     0.6: {
-      translateX: -5
+      translateX: -7.5
     },
     0.8: {
-      translateX: 5
+      translateX: 7.5
     },
     1: {
       translateX: 0

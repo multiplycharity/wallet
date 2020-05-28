@@ -13,6 +13,8 @@ const ChoosePaymentRecipientScreen = props => {
 
   const [queryStr, setQueryStr] = useState('')
   const [foundUsers, setFoundUsers] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  console.log('isLoading: ', isLoading)
 
   const navigation = useNavigation()
 
@@ -28,9 +30,12 @@ const ChoosePaymentRecipientScreen = props => {
   //   ) : null}
 
   useEffect(() => {
+    setFoundUsers([])
     ;(async () => {
+      setIsLoading(true)
       const users = await search(queryStr)
       setFoundUsers(users)
+      setIsLoading(false)
     })()
   }, [queryStr])
 
@@ -84,13 +89,18 @@ const ChoosePaymentRecipientScreen = props => {
         }
       ></SearchBar>
 
-      {isEthereumAddress(queryStr) && foundUsers.length === 0 ? (
-        <AddressCell address={queryStr}></AddressCell>
-      ) : foundUsers.length > 0 ? (
-        foundUsers.map(user => <UserCell user={user}></UserCell>)
+      {!isLoading ? (
+        isEthereumAddress(queryStr) && foundUsers.length === 0 ? (
+          <AddressCell address={queryStr}></AddressCell>
+        ) : foundUsers.length > 0 ? (
+          foundUsers.map(user => <UserCell user={user}></UserCell>)
+        ) : null
       ) : null}
 
-      {queryStr && foundUsers.length === 0 && !isEthereumAddress(queryStr) ? (
+      {queryStr &&
+      foundUsers.length === 0 &&
+      !isEthereumAddress(queryStr) &&
+      !isLoading ? (
         <View
           style={{
             marginTop: 20,
