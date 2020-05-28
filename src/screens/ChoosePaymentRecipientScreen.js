@@ -4,9 +4,9 @@ import { useNavigation } from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
 import Colors from '../constants/colors'
 import { firestore } from '../config/firebase'
-import UserCell from '../components/UserCell'
-import AddressCell from '../components/AddressCell'
-import { isEthereumAddress } from '../helpers'
+import Cell from '../components/Cell'
+import { isEthereumAddress, isEmailAddress } from '../helpers'
+import { Feather } from '@expo/vector-icons'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
@@ -90,19 +90,54 @@ const ChoosePaymentRecipientScreen = props => {
               }
         }
       ></SearchBar>
+      {isEmailAddress(queryStr) && false ? (
+        <View
+          style={{
+            flexDirection: 'row',
+            marginTop: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: Colors.Gray100,
+            height: 80
+          }}
+        >
+          <Text
+            style={{
+              marginLeft: 5,
+              fontSize: 18,
+              fontWeight: '500',
+              color: Colors.Blue
+            }}
+          >
+            Send By Link
+          </Text>
+        </View>
+      ) : null}
 
       {!isLoading ? (
         isEthereumAddress(queryStr) && foundUsers.length === 0 ? (
-          <AddressCell address={queryStr}></AddressCell>
+          <Cell
+            title={`${queryStr.slice(0, 8)}...${queryStr.slice(-7)}`}
+            iconName='credit-card'
+          ></Cell>
+        ) : isEmailAddress(queryStr) && foundUsers.length === 0 ? (
+          <Cell title={queryStr} iconName='mail'></Cell>
         ) : foundUsers.length > 0 ? (
-          foundUsers.map(user => <UserCell user={user}></UserCell>)
+          foundUsers.map(user => (
+            <Cell
+              title={user?.name}
+              subtitle={user?.email}
+              imageUrl={user?.photoUrl}
+            ></Cell>
+          ))
         ) : null
       ) : null}
 
       {!isLoading &&
       queryStr &&
       foundUsers.length === 0 &&
-      !isEthereumAddress(queryStr) ? (
+      !isEthereumAddress(queryStr) &&
+      !isEmailAddress(queryStr) ? (
         <Animatable.View
           animation='fadeIn'
           iterationCount={1}
@@ -129,7 +164,7 @@ const ChoosePaymentRecipientScreen = props => {
               textAlign: 'center'
             }}
           >
-            Try searching for another email or AVA address
+            Try searching for another email or address
           </Text>
         </Animatable.View>
       ) : null}

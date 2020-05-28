@@ -12,3 +12,7 @@ export const formatWei = value => {
 export const formatAddress = address => {
   return ethers.utils.getAddress(address)
 }
+
+export const isEmailAddress = email => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
