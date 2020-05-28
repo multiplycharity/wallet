@@ -8,13 +8,13 @@ import {
   TouchableOpacity
 } from 'react-native'
 import Colors from '../constants/colors'
+import { Feather } from '@expo/vector-icons'
 
 import { Dimensions } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { setIsScannerActive } from '../redux/screenReducer'
 
-import PaymentKeyboard from '../components/PaymentKeyboard'
 import Button from '../components/Button'
 import SpringButton from '../components/SpringButton'
 
@@ -25,23 +25,140 @@ const screen = Dimensions.get('screen')
 
 Animatable.initializeRegistryWithDefinitions(animationDefinitions)
 
+const Key = props => {
+  const screen = Dimensions.get('screen')
+
+  return (
+    <SpringButton
+      style={{
+        backgroundColor: 'white',
+        height: 70,
+        width: screen.width / 3,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+      onPressIn={props.onPressIn}
+      onPressOut={props.onPressOut}
+    >
+      {props.value === 'C' ? (
+        <Feather name='chevron-left' size={24}></Feather>
+      ) : (
+        <Text style={{ fontSize: 21, fontWeight: '600' }}>{props.value}</Text>
+      )}
+    </SpringButton>
+  )
+}
+
 const PaymentScreen = ({ navigation }) => {
   const dispatch = useDispatch()
 
-  const displayValue = useSelector(state => state.paymentKeyboard.displayValue)
+  const [displayValue, setDisplayValue] = useState('0')
+  const [wholePart, setWholePart] = useState('0')
+  const [decimalPart, setDecimalPart] = useState('')
+  const [hasDecimalPart, setHasDecimalPart] = useState(false)
+
   const [lastChar, setLastChar] = useState('')
   const lastCharRef = useRef('')
-
   const displayValueAnimation = useRef(null)
   const lastCharAnimation = useRef(null)
-  let prevRef
+
+  const handleInput = key => {
+    switch (key) {
+      case '0':
+        if (wholePart === '0') {
+          displayValueAnimation.current.shake(480)
+        }
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        if (hasDecimalPart && decimalPart.length >= 2) {
+          return
+        }
+        if (!hasDecimalPart && wholePart.length >= 5) {
+          return
+        }
+
+        hasDecimalPart
+          ? setDecimalPart(decimalPart + key)
+          : setWholePart(wholePart === '0' ? key : wholePart + key)
+
+        setDisplayValue(displayValue === '0' ? key : displayValue + key)
+        return
+
+      case '.':
+        if (wholePart === '0') {
+          displayValueAnimation.current.shake(480)
+          return
+        }
+        setDisplayValue(!hasDecimalPart ? displayValue + key : displayValue)
+        setHasDecimalPart(true)
+        return
+
+      case 'C':
+        if (displayValue.length === 1) {
+          setDisplayValue('0')
+          setWholePart('0')
+          displayValueAnimation.current.shake(480)
+          return
+        } else {
+          if (displayValue.slice(-1) === '.') {
+            setHasDecimalPart(false)
+          }
+
+          setDisplayValue(
+            displayValue !== '0' ? displayValue.slice(0, -1) : displayValue
+          )
+
+          if (hasDecimalPart) {
+            setDecimalPart(
+              decimalPart !== '0' ? decimalPart.slice(0, -1) : decimalPart
+            )
+          } else {
+            setWholePart(wholePart !== '0' ? wholePart.slice(0, -1) : wholePart)
+          }
+        }
+    }
+  }
+
+  const PaymentKeyboard = props => {
+    return (
+      <View style={{}}>
+        <View style={{ flexDirection: 'row' }}>
+          <Key value={'1'} onPressIn={() => handleInput('1')}></Key>
+          <Key value={'2'} onPressIn={() => handleInput('2')}></Key>
+          <Key value={'3'} onPressIn={() => handleInput('3')}></Key>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <Key value={'4'} onPressIn={() => handleInput('4')}></Key>
+          <Key value={'5'} onPressIn={() => handleInput('5')}></Key>
+          <Key value={'6'} onPressIn={() => handleInput('6')}></Key>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <Key value={'7'} onPressIn={() => handleInput('7')}></Key>
+          <Key value={'8'} onPressIn={() => handleInput('8')}></Key>
+          <Key value={'9'} onPressIn={() => handleInput('9')}></Key>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <Key value={'.'} onPressIn={() => handleInput('.')}></Key>
+          <Key value={'0'} onPressIn={() => handleInput('0')}></Key>
+          <Key value={'C'} onPressIn={() => handleInput('C')}></Key>
+        </View>
+      </View>
+    )
+  }
 
   useEffect(() => {
     setLastChar(displayValue.slice(-1))
     lastCharRef.current = displayValue.slice(-1)
 
     if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
-      lastCharAnimation.current.fadeInDown(120)
+      lastCharAnimation.current.fadeInDown(180)
     }
   }, [displayValue])
 

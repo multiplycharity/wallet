@@ -1,9 +1,9 @@
 const animations = {
   fadeInDown: {
     from: {
-      opacity: 0,
-      translateY: -40,
-      translateX: -15,
+      opacity: 0.9,
+      translateY: -60,
+      translateX: -20,
       scale: 0.6
     },
     to: {
