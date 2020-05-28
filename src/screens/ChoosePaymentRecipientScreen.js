@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { View, Text, SafeAreaView, Clipboard, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
@@ -8,13 +8,15 @@ import UserCell from '../components/UserCell'
 import AddressCell from '../components/AddressCell'
 import { isEthereumAddress } from '../helpers'
 
+import * as Animatable from 'react-native-animatable'
+import animationDefinitions from '../constants/animations'
+
 const ChoosePaymentRecipientScreen = props => {
   const { amount } = props.route.params
 
   const [queryStr, setQueryStr] = useState('')
   const [foundUsers, setFoundUsers] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  console.log('isLoading: ', isLoading)
+  const [isLoading, setIsLoading] = useState(true)
 
   const navigation = useNavigation()
 
@@ -30,9 +32,9 @@ const ChoosePaymentRecipientScreen = props => {
   //   ) : null}
 
   useEffect(() => {
+    setIsLoading(true)
     setFoundUsers([])
     ;(async () => {
-      setIsLoading(true)
       const users = await search(queryStr)
       setFoundUsers(users)
       setIsLoading(false)
@@ -97,11 +99,16 @@ const ChoosePaymentRecipientScreen = props => {
         ) : null
       ) : null}
 
-      {queryStr &&
+      {!isLoading &&
+      queryStr &&
       foundUsers.length === 0 &&
-      !isEthereumAddress(queryStr) &&
-      !isLoading ? (
-        <View
+      !isEthereumAddress(queryStr) ? (
+        <Animatable.View
+          animation='fadeIn'
+          iterationCount={1}
+          direction='alternate'
+          duration={240}
+          delay={240}
           style={{
             marginTop: 20,
             justifyContent: 'center',
@@ -124,7 +131,7 @@ const ChoosePaymentRecipientScreen = props => {
           >
             Try searching for another email or AVA address
           </Text>
-        </View>
+        </Animatable.View>
       ) : null}
     </SafeAreaView>
   )
