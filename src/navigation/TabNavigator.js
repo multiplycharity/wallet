@@ -68,11 +68,11 @@ const TabNavigator = props => {
         return {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName
-            if (route.name === 'Home') {
+            if (route.name === 'HomeStack') {
               iconName = 'home'
-            } else if (route.name === 'Payment') {
+            } else if (route.name === 'PaymentStack') {
               iconName = 'dollar-sign'
-            } else if (route.name === 'Profile') {
+            } else if (route.name === 'ProfileStack') {
               iconName = 'user'
             }
             return <Feather name={iconName} size={size} color={color} />
@@ -82,7 +82,7 @@ const TabNavigator = props => {
       tabBarOptions={getTabBarOptions(route)}
     >
       <Tab.Screen
-        name='Home'
+        name='HomeStack'
         component={HomeStackNavigator}
         options={({ navigation, route }) => {
           return {
@@ -90,8 +90,8 @@ const TabNavigator = props => {
           }
         }}
       />
-      <Tab.Screen name='Payment' component={PaymentStackNavigator} />
-      <Tab.Screen name='Profile' component={ProfileStackNavigator} />
+      <Tab.Screen name='PaymentStack' component={PaymentStackNavigator} />
+      <Tab.Screen name='ProfileStack' component={ProfileStackNavigator} />
     </Tab.Navigator>
   )
 }

@@ -60,7 +60,7 @@ const SignInScreen = () => {
 
   const checkIfSignedIn = () => {
     if (isSignedIn) {
-      navigation.navigate('Home')
+      navigation.navigate('HomeStack')
     } else {
       navigation.navigate('SignIn')
     }

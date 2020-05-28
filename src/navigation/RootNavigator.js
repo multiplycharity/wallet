@@ -21,7 +21,7 @@ const RootNavigator = () => {
         screenOptions={{ headerShown: false, gestureEnabled: false }}
       >
         <Stack.Screen name='SignIn' component={SignInScreen}></Stack.Screen>
-        <Stack.Screen name='Home' component={AppNavigator}></Stack.Screen>
+        <Stack.Screen name='HomeStack' component={AppNavigator}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   )

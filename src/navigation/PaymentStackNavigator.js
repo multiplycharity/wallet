@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
   View,
   Text,
@@ -32,10 +32,11 @@ const PaymentStackNavigator = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
 
+  useEffect(() => {}, [])
+
   useFocusEffect(
     useCallback(() => {
-      const res = navigation.canGoBack()
-      console.log('res: ', res)
+      navigation.navigate('Payment')
       StatusBar.setBarStyle('dark-content')
     }, [])
   )
