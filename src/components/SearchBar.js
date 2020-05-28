@@ -48,6 +48,7 @@ const SearchBar = props => {
         onChangeText={text => props.onChangeText(text)}
         autoCorrect={false}
         autoFocus={true}
+        autoCapitalize='none'
       ></TextInput>
 
       <View style={{ position: 'absolute', left: 0, marginLeft: 29 }}>
