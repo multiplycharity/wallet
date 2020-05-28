@@ -17,6 +17,7 @@ const ChoosePaymentRecipientScreen = props => {
   const [queryStr, setQueryStr] = useState('')
   const [foundUsers, setFoundUsers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isExistingUserEmail, setIsExistingUserEmail] = useState(false)
 
   const navigation = useNavigation()
 
@@ -33,9 +34,13 @@ const ChoosePaymentRecipientScreen = props => {
 
   useEffect(() => {
     setIsLoading(true)
+    setIsExistingUserEmail(false)
     setFoundUsers([])
     ;(async () => {
       const users = await search(queryStr)
+      users.map(user => {
+        if (user.email === queryStr) setIsExistingUserEmail(true)
+      })
       setFoundUsers(users)
       setIsLoading(false)
     })()
@@ -120,8 +125,6 @@ const ChoosePaymentRecipientScreen = props => {
             title={`${queryStr.slice(0, 8)}...${queryStr.slice(-7)}`}
             iconName='credit-card'
           ></Cell>
-        ) : isEmailAddress(queryStr) && foundUsers.length === 0 ? (
-          <Cell title={queryStr} iconName='mail'></Cell>
         ) : foundUsers.length > 0 ? (
           foundUsers.map(user => (
             <Cell
@@ -131,6 +134,10 @@ const ChoosePaymentRecipientScreen = props => {
             ></Cell>
           ))
         ) : null
+      ) : null}
+
+      {isEmailAddress(queryStr) && !isExistingUserEmail ? (
+        <Cell title={queryStr} iconName='mail'></Cell>
       ) : null}
 
       {!isLoading &&
