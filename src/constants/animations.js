@@ -15,8 +15,17 @@ const animations = {
     easing: 'ease-in'
   },
   moveLeft: {
-    from: { translateX: 0 },
-    to: { translateX: -10 }
+    from: { translateX: 10 },
+    to: { translateX: 0 }
+  },
+  fadeInAndScale: {
+    0: { opacity: 0.5, scale: 0.5 },
+    1: { opacity: 1, scale: 1 }
+  },
+
+  fadeOutAndScale: {
+    0: { opacity: 1, scale: 1 },
+    1: { opacity: 0, scale: 0 }
   },
   fadeInAndOut: {
     0: {

@@ -131,6 +131,9 @@ const ChoosePaymentRecipientScreen = props => {
               title={user?.name}
               subtitle={user?.email}
               imageUrl={user?.photoUrl}
+              onPress={() => {
+                navigation.navigate('ConfirmPayment', { ...user, amount })
+              }}
             ></Cell>
           ))
         ) : null

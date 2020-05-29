@@ -26,10 +26,10 @@ const Cell = props => {
       <View
         style={{
           marginLeft: 25,
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          backgroundColor: Colors.Gray200,
+          width: props.imageSize || 40,
+          height: props.imageSize || 40,
+          borderRadius: props.imageSize / 2 || 20,
+          backgroundColor: props.imageBgColor || Colors.Gray200,
           justifyContent: 'center',
           alignItems: 'center'
         }}
@@ -38,7 +38,7 @@ const Cell = props => {
           <ImageBackground
             style={{
               flex: 1,
-              borderRadius: 20,
+              borderRadius: props.imageSize / 2 || 20,
               width: '100%',
               height: '100%',
               overflow: 'hidden'
@@ -51,7 +51,7 @@ const Cell = props => {
           <Feather
             name={props.iconName}
             size={21}
-            color={Colors.Gray500}
+            color={props.iconColor || Colors.Gray500}
           ></Feather>
         )}
       </View>
@@ -75,13 +75,15 @@ const Cell = props => {
       <View style={{ flexDirection: 'row' }}>
         <CellImage imageUrl={props.imageUrl}></CellImage>
         <View style={{ marginLeft: 20, justifyContent: 'center' }}>
-          <Text style={{ fontSize: 18, fontWeight: '500' }}>{props.title}</Text>
+          <Text style={{ fontSize: props.titleSize || 18, fontWeight: '500' }}>
+            {props.title}
+          </Text>
 
           {props.subtitle ? (
             <Text
               style={{
                 marginTop: 6,
-                fontSize: 14,
+                fontSize: props.subtitleSize || 14,
                 fontWeight: '400',
                 color: Colors.Gray500
               }}

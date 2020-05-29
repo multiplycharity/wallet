@@ -26,6 +26,8 @@ import { toggleSearchBar } from '../redux/screenReducer'
 
 import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
+import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
+
 import ModalHeader from '../components/ModalHeader'
 
 import HomeStackNavigator from './HomeStackNavigator'
@@ -81,6 +83,37 @@ const AppNavigator = ({ route, navigation }) => {
             left: 0,
             right: 0,
             top: screen.height / 8,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            backgroundColor: 'transparent',
+            justifyContent: 'flex-end'
+          },
+          header: () => <ModalHeader />,
+          // headerShown: false,
+          gestureEnabled: true,
+          cardOverlayEnabled: true,
+          gestureResponseDistance: {
+            vertical: screen.height
+          },
+          headerStatusBarHeight:
+            navigation.dangerouslyGetState().routes.indexOf(route) > 0
+              ? 0
+              : undefined,
+          ...TransitionPresets.ModalPresentationIOS
+        })}
+      />
+
+      <Stack.Screen
+        name='ConfirmPayment'
+        component={ConfirmPaymentModal}
+        options={({ route, navigation }) => ({
+          cardStyle: {
+            flex: 1,
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            top: screen.height / 4,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             backgroundColor: 'transparent',

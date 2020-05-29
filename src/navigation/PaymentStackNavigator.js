@@ -36,7 +36,7 @@ const PaymentStackNavigator = () => {
 
   useFocusEffect(
     useCallback(() => {
-      navigation.navigate('Payment')
+      // navigation.navigate('Payment')
       StatusBar.setBarStyle('dark-content')
     }, [])
   )

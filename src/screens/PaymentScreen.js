@@ -38,6 +38,7 @@ const Key = props => {
         alignItems: 'center'
       }}
       onPressIn={props.onPressIn}
+      onPress={props.onPress}
       onPressOut={props.onPressOut}
     >
       {props.value === 'C' ? (
@@ -61,7 +62,8 @@ const PaymentScreen = ({ navigation }) => {
 
   const [lastChar, setLastChar] = useState('')
 
-  const lastCharRef = useRef('')
+  const [lastPressedKey, setLastPressedKey] = useState('')
+
   const displayValueAnimation = useRef(null)
   const lastCharAnimation = useRef(null)
 
@@ -69,7 +71,8 @@ const PaymentScreen = ({ navigation }) => {
   const [errorTimer, setErrorTimer] = useState(null)
   const errorMessageAnimation = useRef(null)
 
-  const handleInput = key => {
+  const handleInput = async key => {
+    setLastPressedKey(key)
     switch (key) {
       case '0':
         if (wholePart === '0') {
@@ -91,6 +94,8 @@ const PaymentScreen = ({ navigation }) => {
           return
         }
 
+        lastCharAnimation.current.fadeInAndScale(180)
+
         hasDecimalPart
           ? setDecimalPart(decimalPart + key)
           : setWholePart(wholePart === '0' ? key : wholePart + key)
@@ -103,15 +108,21 @@ const PaymentScreen = ({ navigation }) => {
           displayValueAnimation.current.shake(480)
           return
         }
+
+        !hasDecimalPart && lastCharAnimation.current.fadeInAndScale(180)
+
         setDisplayValue(!hasDecimalPart ? displayValue + key : displayValue)
         setHasDecimalPart(true)
+
         return
 
       case 'C':
+        displayValue !== '0' && lastCharAnimation.current.fadeInAndScale(180)
+
         if (displayValue.length === 1) {
+          displayValue === '0' && displayValueAnimation.current.shake(480)
           setDisplayValue('0')
           setWholePart('0')
-          displayValueAnimation.current.shake(480)
           return
         } else {
           if (displayValue.slice(-1) === '.') {
@@ -162,23 +173,11 @@ const PaymentScreen = ({ navigation }) => {
 
   useEffect(() => {
     setLastChar(displayValue.slice(-1))
-    lastCharRef.current = displayValue.slice(-1)
 
-    if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
-      lastCharAnimation.current.fadeInDown(180)
-    }
+    // if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
+    //   lastCharAnimation.current.fadeInDown(180)
+    // }
   }, [displayValue])
-
-  // useEffect(() => {
-  //   errorMessageAnimation.current.fadeIn(480)
-
-  //   setTimeout(async () => {
-  //     errorMessageAnimation.current.fadeOut(480).then(() => {
-  //       setErrorMessage('')
-  //       setIsErrorMessageVisible(false)
-  //     })
-  //   }, 3000)
-  // }, [isErrorMessageVisible, errorMessage])
 
   return (
     <>
@@ -213,6 +212,7 @@ const PaymentScreen = ({ navigation }) => {
             >
               ${displayValue.slice(0, -1)}
             </Animatable.Text>
+
             <Animatable.Text
               ref={lastCharAnimation}
               style={{
@@ -269,12 +269,10 @@ const PaymentScreen = ({ navigation }) => {
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                if (
-                  displayValue === '0' ||
-                  parseFloat(balance) < parseFloat(displayValue)
-                ) {
+                if (displayValue === '0') {
+                  displayValueAnimation.current.shake(480)
+                } else if (parseFloat(balance) < parseFloat(displayValue)) {
                   errorTimer && clearTimeout(errorTimer)
-
                   setErrorMessage('Insufficient funds')
                   errorMessageAnimation.current.fadeIn(480)
 
@@ -283,7 +281,7 @@ const PaymentScreen = ({ navigation }) => {
                       errorMessageAnimation.current.fadeOut(480).then(() => {
                         setErrorMessage('')
                       })
-                    }, 3000)
+                    }, 1800)
                   )
 
                   displayValueAnimation.current.shake(480)
