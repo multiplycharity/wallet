@@ -2,8 +2,8 @@ const animations = {
   fadeInDown: {
     from: {
       opacity: 0.9,
-      translateY: -60,
-      translateX: -20,
+      translateY: -50,
+      translateX: -10,
       scale: 0.6
     },
     to: {
@@ -17,6 +17,13 @@ const animations = {
   moveLeft: {
     from: { translateX: 0 },
     to: { translateX: -10 }
+  },
+  fadeInAndOut: {
+    0: {
+      opacity: 0
+    },
+    0.5: { opacity: 1 },
+    1: { opacity: 0 }
   },
   shake: {
     0: {

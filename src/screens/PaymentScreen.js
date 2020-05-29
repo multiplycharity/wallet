@@ -52,15 +52,22 @@ const Key = props => {
 const PaymentScreen = ({ navigation }) => {
   const dispatch = useDispatch()
 
+  const balance = useSelector(state => state.user.balance)
+
   const [displayValue, setDisplayValue] = useState('0')
   const [wholePart, setWholePart] = useState('0')
   const [decimalPart, setDecimalPart] = useState('')
   const [hasDecimalPart, setHasDecimalPart] = useState(false)
 
   const [lastChar, setLastChar] = useState('')
+
   const lastCharRef = useRef('')
   const displayValueAnimation = useRef(null)
   const lastCharAnimation = useRef(null)
+
+  const [errorMessage, setErrorMessage] = useState('')
+  const [errorTimer, setErrorTimer] = useState(null)
+  const errorMessageAnimation = useRef(null)
 
   const handleInput = key => {
     switch (key) {
@@ -162,6 +169,17 @@ const PaymentScreen = ({ navigation }) => {
     }
   }, [displayValue])
 
+  // useEffect(() => {
+  //   errorMessageAnimation.current.fadeIn(480)
+
+  //   setTimeout(async () => {
+  //     errorMessageAnimation.current.fadeOut(480).then(() => {
+  //       setErrorMessage('')
+  //       setIsErrorMessageVisible(false)
+  //     })
+  //   }, 3000)
+  // }, [isErrorMessageVisible, errorMessage])
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -212,6 +230,16 @@ const PaymentScreen = ({ navigation }) => {
             </Animatable.Text>
           </Animatable.View>
 
+          <Animatable.View
+            ref={errorMessageAnimation}
+            style={{
+              height: 16,
+              alignItems: 'center'
+            }}
+          >
+            <Text style={{ color: 'red' }}>{errorMessage}</Text>
+          </Animatable.View>
+
           <PaymentKeyboard
             style={{ marginTop: screen.height > 800 ? 40 : 0 }}
           ></PaymentKeyboard>
@@ -241,7 +269,23 @@ const PaymentScreen = ({ navigation }) => {
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                if (displayValue === '0') {
+                if (
+                  displayValue === '0' ||
+                  parseFloat(balance) < parseFloat(displayValue)
+                ) {
+                  errorTimer && clearTimeout(errorTimer)
+
+                  setErrorMessage('Insufficient funds')
+                  errorMessageAnimation.current.fadeIn(480)
+
+                  setErrorTimer(
+                    setTimeout(() => {
+                      errorMessageAnimation.current.fadeOut(480).then(() => {
+                        setErrorMessage('')
+                      })
+                    }, 3000)
+                  )
+
                   displayValueAnimation.current.shake(480)
                 } else {
                   navigation.navigate('ChoosePaymentRecipient', {
