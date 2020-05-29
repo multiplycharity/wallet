@@ -5,16 +5,16 @@ import * as Haptics from 'expo-haptics'
 
 import * as Animatable from 'react-native-animatable'
 
-Animatable.initializeRegistryWithDefinitions({
-  zoomIn: {
-    0: { scale: 1 },
-    1: { scale: 1.1 }
-  },
-  zoomOut: {
-    0: { scale: 1.1 },
-    1: { scale: 1 }
-  }
-})
+// Animatable.initializeRegistryWithDefinitions({
+//   zoomIn: {
+//     0: { scale: 1 },
+//     1: { scale: 1.1 }
+//   },
+//   zoomOut: {
+//     0: { scale: 1.1 },
+//     1: { scale: 1 }
+//   }
+// })
 
 const Button = props => {
   const animationRef = useRef(null)
@@ -34,11 +34,11 @@ const Button = props => {
           props.style
         ]}
         onPressIn={() => {
-          animationRef.current.zoomIn(60)
+          // animationRef.current.zoomIn(60)
           if (typeof props.onPressIn === 'function') props.onPressIn()
         }}
         onPressOut={() => {
-          animationRef.current.zoomOut(120)
+          // animationRef.current.zoomOut(120)
           if (typeof props.onPressOut === 'function') props.onPressOut()
         }}
         onPress={() => {

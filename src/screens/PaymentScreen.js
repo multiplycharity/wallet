@@ -252,7 +252,7 @@ const PaymentScreen = ({ navigation }) => {
             }}
           >
             <Button
-              title='Request'
+              title='Send by link'
               style={{}}
               width={screen.width / 2.3}
               onPress={() => {
@@ -265,7 +265,7 @@ const PaymentScreen = ({ navigation }) => {
               }}
             ></Button>
             <Button
-              title='Pay'
+              title='Send'
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {

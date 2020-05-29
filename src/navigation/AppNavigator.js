@@ -113,7 +113,7 @@ const AppNavigator = ({ route, navigation }) => {
             bottom: 0,
             left: 0,
             right: 0,
-            top: screen.height / 4,
+            top: screen.height / (screen.height > 800 ? 3 : 4),
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             backgroundColor: 'transparent',

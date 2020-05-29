@@ -8,7 +8,14 @@ import Cell from '../components/Cell'
 import { Feather } from '@expo/vector-icons'
 
 const BackupScreen = props => {
-  const { address, name, photoUrl, email, amount } = props.route.params
+  const {
+    address,
+    title,
+    imageUrl,
+    subtitle,
+    amount,
+    iconName
+  } = props.route.params
 
   const screen = useScreenDimensions()
 
@@ -73,13 +80,16 @@ const BackupScreen = props => {
         </Text>
 
         <Cell
-          title={name}
-          subtitle={email}
+          title={title}
+          subtitle={subtitle}
           imageSize={50}
           titleSize={21}
           subtitleSize={16}
-          imageUrl={photoUrl}
-          imageBgColor='#bccddf'
+          imageUrl={imageUrl}
+          imageBgColor={Colors.Gray200}
+          iconColor={Colors.Gray600}
+          activeOpacity={1}
+          iconName={iconName}
           style={{ marginLeft: 15, marginTop: 10 }}
         ></Cell>
 
@@ -88,16 +98,15 @@ const BackupScreen = props => {
             alignItems: 'center',
             position: 'absolute',
             bottom: screen.height > 800 ? 60 : 40,
-            left: 25
+            left: 50
           }}
         >
           <Button
             title='Confirm'
             color={Colors.White}
-            width={screen.width - 50}
+            width={screen.width - 100}
             backgroundColor={Colors.Blue}
             style={{
-              marginTop: 40,
               paddingHorizontal: 20
             }}
             onPress={() => {

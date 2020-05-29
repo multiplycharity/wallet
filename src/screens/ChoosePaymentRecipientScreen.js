@@ -124,6 +124,13 @@ const ChoosePaymentRecipientScreen = props => {
           <Cell
             title={`${queryStr.slice(0, 8)}...${queryStr.slice(-7)}`}
             iconName='credit-card'
+            onPress={() => {
+              navigation.navigate('ConfirmPayment', {
+                title: `${queryStr.slice(0, 8)}...${queryStr.slice(-7)}`,
+                iconName: 'credit-card',
+                amount
+              })
+            }}
           ></Cell>
         ) : foundUsers.length > 0 ? (
           foundUsers.map(user => (
@@ -132,7 +139,12 @@ const ChoosePaymentRecipientScreen = props => {
               subtitle={user?.email}
               imageUrl={user?.photoUrl}
               onPress={() => {
-                navigation.navigate('ConfirmPayment', { ...user, amount })
+                navigation.navigate('ConfirmPayment', {
+                  title: user.name,
+                  subtitle: user.email,
+                  imageUrl: user.photoUrl,
+                  amount
+                })
               }}
             ></Cell>
           ))
@@ -140,7 +152,17 @@ const ChoosePaymentRecipientScreen = props => {
       ) : null}
 
       {isEmailAddress(queryStr) && !isExistingUserEmail ? (
-        <Cell title={queryStr} iconName='mail'></Cell>
+        <Cell
+          title={queryStr}
+          iconName='mail'
+          onPress={() => {
+            navigation.navigate('ConfirmPayment', {
+              title: queryStr,
+              iconName: 'mail',
+              amount
+            })
+          }}
+        ></Cell>
       ) : null}
 
       {!isLoading &&

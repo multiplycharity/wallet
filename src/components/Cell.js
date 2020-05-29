@@ -60,6 +60,7 @@ const Cell = props => {
 
   return (
     <TouchableOpacity
+      activeOpacity={props.activeOpacity || 0.2}
       style={[
         {
           flexDirection: 'row',
