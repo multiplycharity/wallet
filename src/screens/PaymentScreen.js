@@ -60,7 +60,7 @@ const PaymentScreen = ({ navigation }) => {
   const [decimalPart, setDecimalPart] = useState('')
   const [hasDecimalPart, setHasDecimalPart] = useState(false)
 
-  const [lastChar, setLastChar] = useState('')
+  const [lastChar, setLastChar] = useState('0')
 
   const [lastPressedKey, setLastPressedKey] = useState('')
 
@@ -93,14 +93,15 @@ const PaymentScreen = ({ navigation }) => {
         if (!hasDecimalPart && wholePart.length >= 5) {
           return
         }
-
-        lastCharAnimation.current.fadeInAndScale(180)
+        setLastChar(key)
 
         hasDecimalPart
           ? setDecimalPart(decimalPart + key)
           : setWholePart(wholePart === '0' ? key : wholePart + key)
 
         setDisplayValue(displayValue === '0' ? key : displayValue + key)
+
+        lastCharAnimation.current.fadeInAndScale(180)
         return
 
       case '.':
@@ -109,10 +110,11 @@ const PaymentScreen = ({ navigation }) => {
           return
         }
 
-        !hasDecimalPart && lastCharAnimation.current.fadeInAndScale(180)
-
         setDisplayValue(!hasDecimalPart ? displayValue + key : displayValue)
         setHasDecimalPart(true)
+        !hasDecimalPart && setLastChar(key)
+
+        !hasDecimalPart && lastCharAnimation.current.fadeInAndScale(180)
 
         return
 
@@ -123,6 +125,7 @@ const PaymentScreen = ({ navigation }) => {
           displayValue === '0' && displayValueAnimation.current.shake(480)
           setDisplayValue('0')
           setWholePart('0')
+          setLastChar('0')
           return
         } else {
           if (displayValue.slice(-1) === '.') {
@@ -140,6 +143,8 @@ const PaymentScreen = ({ navigation }) => {
           } else {
             setWholePart(wholePart !== '0' ? wholePart.slice(0, -1) : wholePart)
           }
+
+          setLastChar(displayValue[displayValue.length - 2])
         }
     }
   }
@@ -170,14 +175,6 @@ const PaymentScreen = ({ navigation }) => {
       </View>
     )
   }
-
-  useEffect(() => {
-    setLastChar(displayValue.slice(-1))
-
-    // if (lastCharAnimation && displayValueAnimation && displayValue !== '0') {
-    //   lastCharAnimation.current.fadeInDown(180)
-    // }
-  }, [displayValue])
 
   return (
     <>
@@ -252,7 +249,7 @@ const PaymentScreen = ({ navigation }) => {
             }}
           >
             <Button
-              title='Send by link'
+              title='Request'
               style={{}}
               width={screen.width / 2.3}
               onPress={() => {
@@ -265,7 +262,7 @@ const PaymentScreen = ({ navigation }) => {
               }}
             ></Button>
             <Button
-              title='Send'
+              title='Pay'
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
