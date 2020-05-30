@@ -72,7 +72,7 @@ const PaymentStackNavigator = () => {
         component={ChoosePaymentRecipientScreen}
         options={({ route, navigation }) => ({
           headerTitle: `$${route.params.amount}`,
-          headerTitleStyle: { fontSize: 21 },
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {

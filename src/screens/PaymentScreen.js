@@ -262,7 +262,7 @@ const PaymentScreen = ({ navigation }) => {
               }}
             ></Button>
             <Button
-              title='Pay'
+              title='Send'
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {

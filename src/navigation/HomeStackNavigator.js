@@ -58,7 +58,7 @@ const HomeStackNavigator = props => {
         name='Home'
         component={HomeScreen}
         options={({ route }) => ({
-          headerTitleStyle: { fontSize: 21 },
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
           headerTitleAlign: 'left'
         })}
       />

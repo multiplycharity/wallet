@@ -6,6 +6,7 @@ import Colors from '../constants/colors'
 import Button from '../components/Button'
 import Cell from '../components/Cell'
 import { Feather } from '@expo/vector-icons'
+import { CommonActions } from '@react-navigation/native'
 
 const BackupScreen = props => {
   const {
@@ -18,6 +19,7 @@ const BackupScreen = props => {
   } = props.route.params
 
   const screen = useScreenDimensions()
+  const navigation = props.navigation
 
   return (
     <View
@@ -110,7 +112,18 @@ const BackupScreen = props => {
               paddingHorizontal: 20
             }}
             onPress={() => {
-              console.log('Pressed confirm')
+              navigation.goBack()
+
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 1,
+                  routes: [
+                    {
+                      name: 'Payment'
+                    }
+                  ]
+                })
+              )
             }}
           ></Button>
         </View>
