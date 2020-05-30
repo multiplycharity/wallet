@@ -12,16 +12,16 @@ export const sendTxStarted = () => {
   return { type: SEND_TX_STARTED }
 }
 
-export const sendTxPending = txHash => {
-  return { type: SEND_TX_PENDING, payload: txHash }
+export const sendTxPending = tx => {
+  return { type: SEND_TX_PENDING, payload: tx }
 }
 
 export const sendTxError = error => {
   return { type: SEND_TX_ERROR, payload: error }
 }
 
-export const sendTxSuccess = txHash => {
-  return { type: SEND_TX_SUCCESS, payload: txHash }
+export const sendTxSuccess = tx => {
+  return { type: SEND_TX_SUCCESS, payload: tx }
 }
 
 export const sendTx = ({ to, value, data = '0x' }) => async (
@@ -30,38 +30,29 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
 ) => {
   try {
     const privateKey = getState().user?.wallet?.privateKey
+
     const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
     const sender = new ethers.Wallet(privateKey, provider)
 
     value = ethers.utils.parseUnits((parseFloat(value) / 100).toString())
 
-    const tx = await sender.sendTransaction({ to, value, data })
-    dispatch(sendTxPending(tx.hash))
+    let tx = await sender.sendTransaction({ to, value, data })
+
+    // Temporary
+    let txObj = {
+      txHash: tx.hash,
+      from: tx.from,
+      to: tx.to,
+      timestamp: Date.now()
+    }
+
+    dispatch(sendTxPending(txObj))
     await tx.wait(1)
-    dispatch(sendTxSuccess(tx.hash))
+    dispatch(sendTxSuccess(txObj))
   } catch (error) {
     console.log('error: ', error)
     dispatch(sendTxError(error))
   }
-}
-
-const getUserByAddress = async address => {
-  address = formatAddress(address)
-
-  let docs = []
-
-  const snapshot = await firestore
-    .collection('users')
-    .where('address', '==', address)
-    .get()
-
-  snapshot.docs.forEach(doc => {
-    docs.push(doc.data())
-  })
-
-  if (docs.length !== 1) return null
-
-  return docs[0]
 }
 
 const initialState = {
@@ -75,13 +66,14 @@ const sendTxReducer = (state = initialState, action) => {
     case SEND_TX_PENDING:
       return {
         ...state,
-
         pendingTxs: [...state.pendingTxs, action.payload]
       }
     case SEND_TX_SUCCESS:
       return {
         ...state,
-        pendingTxs: state.pendingTxs.filter(txHash => txHash !== action.payload)
+        pendingTxs: state.pendingTxs.filter(
+          txObj => txObj.txHash !== action.payload.txHash
+        )
       }
     case SEND_TX_ERROR:
       return {
