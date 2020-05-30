@@ -20,9 +20,9 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
-  const isLoading = useSelector(state => state.txs.pending)
+  const isLoading = useSelector(state => state.fetchTxs.pending)
 
-  let transactions = useSelector(state => state.txs.txs)
+  let transactions = useSelector(state => state.fetchTxs.txs)
 
   let sorted = _.orderBy(
     transactions,

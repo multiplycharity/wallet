@@ -237,7 +237,8 @@ const ChoosePaymentRecipientScreen = props => {
                   navigation.navigate('ConfirmPayment', {
                     title: `${queryStr.slice(0, 8)}...${queryStr.slice(-7)}`,
                     iconName: 'credit-card',
-                    amount
+                    amount,
+                    address: queryStr
                   })
                 }}
               ></Cell>
@@ -252,27 +253,14 @@ const ChoosePaymentRecipientScreen = props => {
                       title: user.name,
                       subtitle: user.email,
                       imageUrl: user.photoUrl,
-                      amount
+                      amount,
+                      address: user.address
                     })
                   }}
                   key={user?.email}
                 ></Cell>
               ))
             ) : null
-          ) : null}
-
-          {isEmailAddress(queryStr) && !isExistingUserEmail ? (
-            <Cell
-              title={queryStr}
-              iconName='mail'
-              onPress={() => {
-                navigation.navigate('ConfirmPayment', {
-                  title: queryStr,
-                  iconName: 'mail',
-                  amount
-                })
-              }}
-            ></Cell>
           ) : null}
 
           {!isLoading &&

@@ -5,6 +5,11 @@ import {
   LOGIN_FAILURE,
   FIREBASE_SIGN_IN_FAILURE
 } from './authReducer'
+import {
+  SEND_TX_PENDING,
+  SEND_TX_ERROR,
+  SEND_TX_SUCCESS
+} from './sendTxReducer'
 
 const loadingReducer = (state = false, action) => {
   switch (action.type) {
@@ -16,6 +21,12 @@ const loadingReducer = (state = false, action) => {
       return false
     case FIREBASE_SIGN_IN_FAILURE:
       return false
+    // case SEND_TX_PENDING:
+    //   return true
+    // case SEND_TX_ERROR:
+    //   return false
+    // case SEND_TX_SUCCESS:
+    //   return false
     default:
       return state
   }

@@ -24,7 +24,7 @@ import SearchBar from '../components/SearchBar'
 
 import WalletSDK from '../helpers/WalletSDK'
 
-import { fetchTxs } from '../redux/txsReducer'
+import { fetchTxs } from '../redux/fetchTxsReducer'
 
 const screen = Dimensions.get('screen')
 

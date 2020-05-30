@@ -8,6 +8,7 @@ import Cell from '../components/Cell'
 import { Feather } from '@expo/vector-icons'
 import { CommonActions } from '@react-navigation/native'
 import { resetPaymentScreen } from '../redux/screenReducer'
+import { sendTx } from '../redux/sendTxReducer'
 
 const ConfirmPaymentModal = props => {
   const {
@@ -22,6 +23,8 @@ const ConfirmPaymentModal = props => {
   const screen = useScreenDimensions()
   const navigation = props.navigation
   const dispatch = useDispatch()
+
+  const isLoading = useSelector(state => state.isLoading)
 
   return (
     <View
@@ -113,20 +116,18 @@ const ConfirmPaymentModal = props => {
             style={{
               paddingHorizontal: 20
             }}
-            onPress={() => {
-              // navigation.dispatch(
-              //   CommonActions.reset({
-              //     index: 1,
-              //     routes: [
-              //       {
-              //         name: 'Payment'
-              //       }
-              //     ]
-              //   })
-              // )
-
+            onPress={async () => {
+              dispatch(sendTx({ to: address, value: amount }))
               dispatch(resetPaymentScreen())
-              navigation.popToTop()
+
+              navigation.navigate('TxSent', {
+                address,
+                title,
+                imageUrl,
+                subtitle,
+                amount,
+                iconName
+              })
             }}
           ></Button>
         </View>

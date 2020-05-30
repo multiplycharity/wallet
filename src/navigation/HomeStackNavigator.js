@@ -19,7 +19,7 @@ import TransactionScreen from '../screens/TransactionScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
-import { fetchTxs, fetchTxsPending } from '../redux/txsReducer'
+import { fetchTxs, fetchTxsPending } from '../redux/fetchTxsReducer'
 import { fetchBalance } from '../redux/userReducer'
 
 const screen = Dimensions.get('screen')

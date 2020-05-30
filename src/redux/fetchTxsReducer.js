@@ -1,6 +1,5 @@
 import { EXPLORER_API_HOST } from 'react-native-dotenv'
 import { useSelector } from 'react-redux'
-import { ethers } from 'ethers'
 import { formatWei, formatAddress } from '../helpers'
 import { firestore } from '../config/firebase'
 
@@ -22,7 +21,7 @@ export const fetchTxsError = error => {
 
 export const fetchTxs = () => async (dispatch, getState) => {
   const address = getState().user?.wallet?.address
-  dispatch(fetchTxsPending)
+  dispatch(fetchTxsPending())
 
   try {
     let res = await fetch(`${EXPLORER_API_HOST}/account/${address}/txs`)
@@ -85,7 +84,7 @@ const sortTxs = txs => async (dispatch, getState) => {
 
 const initialState = { pending: true, txs: [], error: null, sorted: [] }
 
-const txsReducer = (state = initialState, action) => {
+const fetchTxsReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_TXS_PENDING:
       return { ...state, pending: true }
@@ -93,9 +92,10 @@ const txsReducer = (state = initialState, action) => {
       return { ...state, pending: false, txs: action.payload }
     case FETCH_TXS_ERROR:
       return { ...state, pending: false, error: action.payload }
+
     default:
       return state
   }
 }
 
-export default txsReducer
+export default fetchTxsReducer

@@ -28,6 +28,7 @@ import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
 import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
+import TxSentScreen from '../screens/TxSentScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -151,6 +152,15 @@ const AppNavigator = ({ route, navigation }) => {
               <Feather name='x' size={24}></Feather>
             </TouchableOpacity>
           )
+        })}
+      />
+
+      <Stack.Screen
+        name='TxSent'
+        component={TxSentScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: null,
+          headerShown: false
         })}
       />
     </Stack.Navigator>
