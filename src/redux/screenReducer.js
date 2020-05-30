@@ -3,12 +3,18 @@ export const TOGGLE_SEARCH_BAR = 'TOGGLE_SEARCH_BAR'
 export const TOGGLE_SCANNER_SCREEN = 'TOGGLE_SCANNER_SCREEN'
 export const SET_IS_SCANNER_ACTIVE = 'SET_IS_SCANNER_ACTIVE'
 
+export const RESET_PAYMENT_SCREEN = 'RESET_PAYMENT_SCREEN'
+
 // Action Creators
 export const toggleSearchBar = () => ({ type: TOGGLE_SEARCH_BAR })
 export const toggleScannerScreen = () => ({ type: TOGGLE_SCANNER_SCREEN })
 export const setIsScannerActive = bool => ({
   type: SET_IS_SCANNER_ACTIVE,
   payload: bool
+})
+
+export const resetPaymentScreen = () => ({
+  type: RESET_PAYMENT_SCREEN
 })
 
 const initialState = {

@@ -131,8 +131,7 @@ const ChoosePaymentRecipientScreen = props => {
               height: 80,
               flexDirection: 'row',
               borderColor: Colors.Gray200,
-              borderTopWidth: StyleSheet.hairlineWidth,
-              borderBottomWidth: StyleSheet.hairlineWidth
+              borderTopWidth: StyleSheet.hairlineWidth
             }}
             onPress={() => {
               setIsTextInputFocused(true)

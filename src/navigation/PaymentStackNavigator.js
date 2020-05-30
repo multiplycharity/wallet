@@ -66,25 +66,6 @@ const PaymentStackNavigator = () => {
           )
         })}
       />
-
-      <Stack.Screen
-        name='ChoosePaymentRecipient'
-        component={ChoosePaymentRecipientScreen}
-        options={({ route, navigation }) => ({
-          headerTitle: `$${route.params.amount}`,
-          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
-          headerLeft: props => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack()
-              }}
-              style={{ marginLeft: 16 }}
-            >
-              <Feather name='arrow-left' size={24}></Feather>
-            </TouchableOpacity>
-          )
-        })}
-      />
     </Stack.Navigator>
   )
 }

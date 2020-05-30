@@ -27,6 +27,7 @@ import { toggleSearchBar } from '../redux/screenReducer'
 import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
+import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -131,6 +132,25 @@ const AppNavigator = ({ route, navigation }) => {
               ? 0
               : undefined,
           ...TransitionPresets.ModalPresentationIOS
+        })}
+      />
+
+      <Stack.Screen
+        name='ChoosePaymentRecipient'
+        component={ChoosePaymentRecipientScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: `$${route.params.amount}`,
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerLeft: props => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack()
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              <Feather name='x' size={24}></Feather>
+            </TouchableOpacity>
+          )
         })}
       />
     </Stack.Navigator>

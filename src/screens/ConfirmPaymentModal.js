@@ -1,14 +1,15 @@
 import React from 'react'
 import { View, Text, Share, StyleSheet } from 'react-native'
-import { useSelector, dispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import useScreenDimensions from '../hooks/useScreenDimensions'
 import Colors from '../constants/colors'
 import Button from '../components/Button'
 import Cell from '../components/Cell'
 import { Feather } from '@expo/vector-icons'
 import { CommonActions } from '@react-navigation/native'
+import { resetPaymentScreen } from '../redux/screenReducer'
 
-const BackupScreen = props => {
+const ConfirmPaymentModal = props => {
   const {
     address,
     title,
@@ -20,6 +21,7 @@ const BackupScreen = props => {
 
   const screen = useScreenDimensions()
   const navigation = props.navigation
+  const dispatch = useDispatch()
 
   return (
     <View
@@ -112,18 +114,19 @@ const BackupScreen = props => {
               paddingHorizontal: 20
             }}
             onPress={() => {
-              navigation.goBack()
+              // navigation.dispatch(
+              //   CommonActions.reset({
+              //     index: 1,
+              //     routes: [
+              //       {
+              //         name: 'Payment'
+              //       }
+              //     ]
+              //   })
+              // )
 
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 1,
-                  routes: [
-                    {
-                      name: 'Payment'
-                    }
-                  ]
-                })
-              )
+              dispatch(resetPaymentScreen())
+              navigation.popToTop()
             }}
           ></Button>
         </View>
@@ -132,7 +135,7 @@ const BackupScreen = props => {
   )
 }
 
-export default BackupScreen
+export default ConfirmPaymentModal
 
 const styles = StyleSheet.create({
   sectionHeader: {

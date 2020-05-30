@@ -13,7 +13,10 @@ import { Feather } from '@expo/vector-icons'
 import { Dimensions } from 'react-native'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { setIsScannerActive } from '../redux/screenReducer'
+import {
+  setIsScannerActive,
+  RESET_PAYMENT_SCREEN
+} from '../redux/screenReducer'
 
 import Button from '../components/Button'
 import SpringButton from '../components/SpringButton'
@@ -70,6 +73,20 @@ const PaymentScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState('')
   const [errorTimer, setErrorTimer] = useState(null)
   const errorMessageAnimation = useRef(null)
+
+  const lastAction = useSelector(state => state.lastAction)
+
+  useEffect(() => {
+    if (lastAction.type === RESET_PAYMENT_SCREEN) {
+      setDisplayValue('0')
+      setWholePart('0')
+      setDecimalPart('0'), setHasDecimalPart(false)
+      setLastChar('0')
+      setLastPressedKey('')
+      setErrorMessage('')
+      setErrorTimer(null)
+    }
+  }, [lastAction])
 
   const handleInput = async key => {
     setLastPressedKey(key)
