@@ -125,7 +125,8 @@ export const signInWithGoogle = () => async dispatch => {
     if (response.type === 'success') {
       dispatch(googleSignInSuccess())
       dispatch(setAccessToken(response.accessToken))
-      await dispatch(getWalletFromDrive(response.accessToken))
+      const address = await dispatch(getWalletFromDrive(response.accessToken))
+      response.address = address
       await dispatch(signInWithFirebase(response))
     } else {
       dispatch(googleSignInFailure({ message: 'Canceled' }))
@@ -169,7 +170,8 @@ export const signInWithFirebase = googleUser => dispatch => {
               email,
               name: displayName,
               phone: phoneNumber,
-              photoUrl: photoURL
+              photoUrl: photoURL,
+              address: googleUser.address
             }
 
             // If new user

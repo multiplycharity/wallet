@@ -8,7 +8,7 @@ import Cell from '../components/Cell'
 import { Feather } from '@expo/vector-icons'
 import { CommonActions } from '@react-navigation/native'
 import { resetPaymentScreen } from '../redux/screenReducer'
-import { sendTx } from '../redux/sendTxReducer'
+import { sendTx } from '../redux/transactions'
 
 const ConfirmPaymentModal = props => {
   const {

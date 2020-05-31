@@ -18,7 +18,7 @@ import { isEthereumAddress } from '../helpers'
 
 import { Feather } from '@expo/vector-icons'
 
-const ActivityCell = props => {
+const TransactionCell = props => {
   const navigation = useNavigation()
   const screen = useScreenDimensions()
 
@@ -106,6 +106,7 @@ const ActivityCell = props => {
           color: props.type === 'out' ? Colors.Red : Colors.Green
         }}
       >
+        {props.status === 'pending' && 'P '}
         {props.type === 'out' ? '-$' : '$'}
         {props.amount}
       </Text>
@@ -113,4 +114,4 @@ const ActivityCell = props => {
   )
 }
 
-export default ActivityCell
+export default TransactionCell

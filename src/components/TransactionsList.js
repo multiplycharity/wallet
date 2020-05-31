@@ -10,7 +10,7 @@ const screen = Dimensions.get('screen')
 import LoadingCellPlaceholder from '../components/LoadingCellPlaceholder'
 
 const renderItem = ({ item }) => {
-  return <TransactionCell {...item} />
+  return <TransactionCell {...item} key={item.id} />
 }
 
 const extractKey = ({ id }) => id
@@ -20,9 +20,9 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
-  const isLoading = useSelector(state => state.fetchTxs.pending)
+  const isLoading = useSelector(state => state.transactions.isLoading)
 
-  let transactions = useSelector(state => state.fetchTxs.txs)
+  let transactions = useSelector(state => state.transactions.history)
 
   let sorted = _.orderBy(
     transactions,

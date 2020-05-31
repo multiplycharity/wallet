@@ -18,7 +18,7 @@ export const GET_WALLET_FAILURE = 'GET_WALLET_FAILURE'
 
 export const SET_BALANCE = 'SET_BALANCE'
 
-const initialState = { balance: 0 }
+const initialState = { balance: 0, wallet: null }
 
 export const updateUserSuccess = user => {
   return { type: UPDATE_USER_SUCCESS, payload: user }
@@ -98,12 +98,15 @@ export const getWalletFromDrive = accessToken => async dispatch => {
           privateKey: wallet.privateKey,
           mnemonic: wallet.mnemonic
         })
+
         dispatch(createWalletSuccess(wallet))
       } catch (error) {
         dispatch(createWalletFailure(error))
         throw new Error(error)
       }
     }
+
+    return wallet.address
   } catch (error) {
     dispatch(getWalletFailure(error))
     throw new Error(error)
