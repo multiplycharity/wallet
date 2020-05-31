@@ -14,7 +14,6 @@ import errorReducer from './errorReducer'
 import loadingReducer from './loadingReducer'
 import lastActionReducer from './lastActionReducer'
 import transactionsReducer from './transactions'
-import sendTxReducer from './sendTxReducer'
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -23,8 +22,7 @@ const appReducer = combineReducers({
   error: errorReducer,
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
-  transactions: transactionsReducer,
-  sendTx: sendTxReducer
+  transactions: transactionsReducer
 })
 
 const rootReducer = (state, action) => {
@@ -37,7 +35,7 @@ const rootReducer = (state, action) => {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'transactions', 'sendTx']
+  blacklist: ['isLoading', 'transactions', 'lastAction']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

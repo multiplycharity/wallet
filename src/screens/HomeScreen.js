@@ -22,11 +22,7 @@ import Button from '../components/Button'
 import TransactionsList from '../components/TransactionsList'
 import SearchBar from '../components/SearchBar'
 
-import WalletSDK from '../helpers/WalletSDK'
-
 const screen = Dimensions.get('screen')
-
-const SDK = new WalletSDK()
 
 const ListHeader = props => {
   const navigation = useNavigation()

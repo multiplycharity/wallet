@@ -92,19 +92,21 @@ export const getWalletFromDrive = accessToken => async dispatch => {
     } else {
       try {
         wallet = ethers.Wallet.createRandom()
-        wallet = {
+
+        await googleDrive.uploadFile({
           address: wallet.address,
           privateKey: wallet.privateKey,
           mnemonic: wallet.mnemonic
-        }
+        })
 
-        await googleDrive.uploadFile(wallet)
         dispatch(createWalletSuccess(wallet))
       } catch (error) {
         dispatch(createWalletFailure(error))
         throw new Error(error)
       }
     }
+
+    return wallet.address
   } catch (error) {
     dispatch(getWalletFailure(error))
     throw new Error(error)

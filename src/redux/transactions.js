@@ -1,8 +1,11 @@
-import { EXPLORER_API_HOST } from 'react-native-dotenv'
-import { useSelector } from 'react-redux'
-import { formatWei, formatAddress } from '../helpers'
+import { EXPLORER_API_HOST, JSON_RPC_URL } from 'react-native-dotenv'
 import { firestore } from '../config/firebase'
-import { getUserByAddress } from '../helpers'
+import { ethers } from 'ethers'
+import { formatWei, formatAddress, getUserByAddress } from '../helpers'
+import produce from 'immer'
+import moment from 'moment'
+
+const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
 
 export const FETCH_TXS_LOADING = 'FETCH_TXS_LOADING'
 export const FETCH_TXS_SUCCESS = 'FETCH_TXS_SUCCESS'
@@ -13,6 +16,11 @@ export const SET_LAST_INDEXED_TIMESTAMP = 'SET_LAST_INDEXED_TIMESTAMP'
 export const ADD_TO_HISTORY = 'ADD_TO_HISTORY'
 export const ADD_PENDING_TX = 'ADD_PENDING_TX'
 
+export const SEND_TX_SUCCESS = 'SEND_TX_SUCCESS'
+export const SEND_TX_ERROR = 'SEND_TX_ERROR'
+export const SEND_TX_PENDING = 'SEND_TX_PENDING'
+export const SEND_TX_STARTED = 'SEND_TX_STARTED'
+
 const initialState = {
   loading: false,
   pendingTxs: [],
@@ -21,31 +29,120 @@ const initialState = {
   lastIndexedTimestamp: null
 }
 
+export const sendTx = ({ to, value, data = '0x' }) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch(sendTxStarted())
+
+    const amount = value
+
+    const privateKey = getState().user?.wallet?.privateKey
+    const sender = new ethers.Wallet(privateKey, provider)
+
+    const txValue = ethers.utils.parseUnits(
+      (parseFloat(value) / 100).toString()
+    )
+
+    let tx = await sender.sendTransaction({ to, value: txValue, data })
+
+    const user = await getUserByAddress(tx.to)
+
+    // Temporary
+    let txn = {
+      id: tx.hash,
+      txHash: tx.hash,
+      from: tx.from,
+      to: tx.to,
+      value: txValue,
+      data: data,
+      title: user?.name || tx.to,
+      timestamp: moment().valueOf(), //Temporary
+      amount: amount,
+      user: user,
+      type: 'out',
+      status: 'pending'
+    }
+
+    dispatch(addPendingTx(txn))
+    dispatch(waitForTx(txn))
+  } catch (error) {
+    console.log('error: ', error)
+    dispatch(sendTxError(error))
+  }
+}
+
+// mytx
+export const waitForTx = tx => async (dispatch, getState) => {
+  await provider.waitForTransaction(tx.txHash)
+  dispatch(moveToHistory(tx))
+}
+
+export const sendTxStarted = () => {
+  return { type: SEND_TX_STARTED }
+}
+
+export const sendTxError = error => {
+  return { type: SEND_TX_ERROR, payload: error }
+}
+
+export const sendTxSuccess = () => {
+  return { type: SEND_TX_SUCCESS }
+}
+
 export const setHistory = history => {
   return { type: SET_HISTORY, payload: history }
 }
 
 export const addToHistory = txs => (dispatch, getState) => {
+  if (!Array.isArray(txs)) {
+    txs = [txs]
+  }
+
   dispatch({ type: ADD_TO_HISTORY, payload: txs })
   let history = getState().transactions.history
 
-  if (Array.isArray(txs)) {
-    let set = new Set()
-    let updatedHistory = [...history, ...txs].filter(item => {
-      if (!set.has(item.id)) {
-        set.add(item.id)
-        return true
-      }
-      return false
-    }, set)
-    dispatch(setHistory(updatedHistory))
-  } else dispatch(setHistory([...history, txs]))
+  let set = new Set()
+  let updatedHistory = [...history, ...txs].filter(item => {
+    if (!set.has(item.txHash)) {
+      set.add(item.txHash)
+      return true
+    }
+    return false
+  }, set)
+
+  dispatch(setHistory(updatedHistory))
 }
 
-export const addPendingTxs = tx => {
-  dispatch({ type: ADD_PENDING_TX, payload: tx })
+// my tx
+export const addPendingTx = tx => (dispatch, getState) => {
+  dispatch({ type: ADD_PENDING_TX })
   const pendingTxs = getState().transactions.pendingTxs
   dispatch(setPengingTxs([...pendingTxs, tx]))
+  dispatch(addToHistory([tx]))
+}
+
+export const moveToHistory = tx => async (dispatch, getState) => {
+  let pendingTxs = getState().transactions.pendingTxs.filter(
+    txn => txn.txHash != tx.txHash
+  )
+  dispatch(setPengingTxs(pendingTxs))
+
+  const history = getState().transactions.history
+
+  const index = history.findIndex(txn => txn.txHash === tx.txHash)
+  const txn = await provider.getTransactionReceipt(tx.txHash)
+  const block = await provider.getBlock(txn.hash)
+  const timestamp = block.timestamp
+
+  const updatedHistory = produce(history, draft => {
+    draft[index].status = 'success'
+    draft[index].timestamp = timestamp
+  })
+
+  dispatch(setHistory(updatedHistory))
+  dispatch(sendTxSuccess())
 }
 
 export const setPengingTxs = pendingTxs => {
@@ -92,9 +189,8 @@ export const fetchTxs = () => async (dispatch, getState) => {
 const sortTxs = txs => async (dispatch, getState) => {
   const userAddress = getState().user?.wallet?.address
 
-  txs = [...new Set(txs)]
-
   let sortedTxs = []
+
   for (let i = 0; i < txs.length; i++) {
     const fromAddr = `0x${txs[i].from}`
     const toAddr = `0x${txs[i].to}`
@@ -111,6 +207,11 @@ const sortTxs = txs => async (dispatch, getState) => {
 
     let tx = {
       id: txs[i].txHash,
+      txHash: txs[i].txHash,
+      from: fromAddr,
+      to: toAddr,
+      value: txs[i].value,
+      data: txs[i].data,
       title: user?.name || (txType === 'in' ? fromAddr : toAddr),
       timestamp: timestamp,
       amount: formatWei(txs[i].value),
@@ -128,7 +229,7 @@ const transactionsReducer = (state = initialState, action) => {
     case FETCH_TXS_LOADING:
       return { ...state, loading: true }
     case FETCH_TXS_SUCCESS:
-      return { ...state, loading: false, txs: action.payload }
+      return { ...state, loading: false }
     case FETCH_TXS_ERROR:
       return { ...state, loading: false, error: action.payload }
     case SET_LAST_INDEXED_TIMESTAMP:
@@ -138,6 +239,16 @@ const transactionsReducer = (state = initialState, action) => {
     case SET_PENDING_TXS: {
       return { ...state, pendingTxs: action.payload }
     }
+
+    case SEND_TX_ERROR:
+      return {
+        ...state,
+        error: action.payload.error
+        // pendingTxs: state.pendingTxs.filter(
+        //   txHash => txHash !== action.payload.tx.hash
+        // )
+      }
+
     default:
       return state
   }

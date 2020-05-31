@@ -10,7 +10,6 @@ const screen = Dimensions.get('screen')
 import LoadingCellPlaceholder from '../components/LoadingCellPlaceholder'
 
 const renderItem = ({ item }) => {
-  console.log('item: ', item.id)
   return <TransactionCell {...item} key={item.id} />
 }
 

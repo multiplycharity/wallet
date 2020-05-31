@@ -5,11 +5,6 @@ import {
   LOGIN_FAILURE,
   FIREBASE_SIGN_IN_FAILURE
 } from './authReducer'
-import {
-  SEND_TX_PENDING,
-  SEND_TX_ERROR,
-  SEND_TX_SUCCESS
-} from './sendTxReducer'
 
 const loadingReducer = (state = false, action) => {
   switch (action.type) {
