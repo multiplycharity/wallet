@@ -118,7 +118,7 @@ const PaymentScreen = ({ navigation }) => {
 
         setDisplayValue(displayValue === '0' ? key : displayValue + key)
 
-        lastCharAnimation.current.fadeInAndScale(180)
+        displayValue !== '0' && lastCharAnimation.current.fadeInAndScale(180)
         return
 
       case '.':

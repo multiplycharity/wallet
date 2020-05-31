@@ -35,7 +35,7 @@ const rootReducer = (state, action) => {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'lastAction']
+  blacklist: ['isLoading', 'transactions', 'lastAction']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
