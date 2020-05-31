@@ -1,7 +1,12 @@
 import { EXPLORER_API_HOST, JSON_RPC_URL } from 'react-native-dotenv'
 import { firestore } from '../config/firebase'
 import { ethers } from 'ethers'
-import { formatWei, formatAddress, getUserByAddress } from '../helpers'
+import {
+  formatWei,
+  formatAddress,
+  getUserByAddress,
+  getHexString
+} from '../helpers'
 import produce from 'immer'
 import moment from 'moment'
 
@@ -22,7 +27,7 @@ export const SEND_TX_PENDING = 'SEND_TX_PENDING'
 export const SEND_TX_STARTED = 'SEND_TX_STARTED'
 
 const initialState = {
-  loading: false,
+  isLoading: false,
   pendingTxs: [],
   history: [],
   error: null,
@@ -49,7 +54,6 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
 
     const user = await getUserByAddress(tx.to)
 
-    // Temporary
     let txn = {
       id: tx.hash,
       txHash: tx.hash,
@@ -58,7 +62,7 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
       value: txValue,
       data: data,
       title: user?.name || tx.to,
-      timestamp: moment().valueOf(), //Temporary
+      timestamp: moment().unix(),
       amount: amount,
       user: user,
       type: 'out',
@@ -73,7 +77,6 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
   }
 }
 
-// mytx
 export const waitForTx = tx => async (dispatch, getState) => {
   await provider.waitForTransaction(tx.txHash)
   dispatch(moveToHistory(tx))
@@ -95,7 +98,7 @@ export const setHistory = history => {
   return { type: SET_HISTORY, payload: history }
 }
 
-export const addToHistory = txs => (dispatch, getState) => {
+export const addToHistory = txs => async (dispatch, getState) => {
   if (!Array.isArray(txs)) {
     txs = [txs]
   }
@@ -104,23 +107,24 @@ export const addToHistory = txs => (dispatch, getState) => {
   let history = getState().transactions.history
 
   let set = new Set()
-  let updatedHistory = [...history, ...txs].filter(item => {
-    if (!set.has(item.txHash)) {
-      set.add(item.txHash)
-      return true
-    }
-    return false
-  }, set)
+  let updatedHistory = [...history, ...txs]
+    .filter(item => {
+      if (!set.has(item.txHash)) {
+        set.add(item.txHash)
+        return true
+      }
+      return false
+    }, set)
+    .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1))
 
   dispatch(setHistory(updatedHistory))
 }
 
-// my tx
 export const addPendingTx = tx => (dispatch, getState) => {
   dispatch({ type: ADD_PENDING_TX })
   const pendingTxs = getState().transactions.pendingTxs
   dispatch(setPengingTxs([...pendingTxs, tx]))
-  dispatch(addToHistory([tx]))
+  dispatch(addToHistory(tx))
 }
 
 export const moveToHistory = tx => async (dispatch, getState) => {
@@ -141,6 +145,7 @@ export const moveToHistory = tx => async (dispatch, getState) => {
     draft[index].timestamp = timestamp
   })
 
+  //   const sortedHistory = await dispatch(sortTxs(updatedHistory))
   dispatch(setHistory(updatedHistory))
   dispatch(sendTxSuccess())
 }
@@ -158,7 +163,7 @@ export const fetchTxsLoading = () => {
 }
 
 export const fetchTxsSuccess = txs => {
-  return { type: FETCH_TXS_SUCCESS, payload: txs }
+  return { type: FETCH_TXS_SUCCESS }
 }
 
 export const fetchTxsError = error => {
@@ -177,10 +182,10 @@ export const fetchTxs = () => async (dispatch, getState) => {
       throw res.error
     }
 
-    const sortedTxs = await dispatch(sortTxs(res.data))
+    const sorted = await dispatch(sortTxs(res.data))
 
-    dispatch(addToHistory(sortedTxs))
-    dispatch(fetchTxsSuccess(sortedTxs))
+    dispatch(addToHistory(sorted))
+    dispatch(fetchTxsSuccess())
   } catch (error) {
     dispatch(fetchTxsError(error.message || error))
   }
@@ -192,14 +197,15 @@ const sortTxs = txs => async (dispatch, getState) => {
   let sortedTxs = []
 
   for (let i = 0; i < txs.length; i++) {
-    const fromAddr = `0x${txs[i].from}`
-    const toAddr = `0x${txs[i].to}`
+    const fromAddr = getHexString(txs[i].from)
+    const toAddr = getHexString(txs[i].to)
     const txType =
       formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
 
-    let timestamp = txs[i].blockCreationTime
+    let timestamp = txs[i].timestamp || txs[i].blockCreationTime
+
     const lastIndexedTimestamp = getState().transactions.lastIndexedTimestamp
 
     if (timestamp > lastIndexedTimestamp)
@@ -227,11 +233,11 @@ const sortTxs = txs => async (dispatch, getState) => {
 const transactionsReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_TXS_LOADING:
-      return { ...state, loading: true }
+      return { ...state, isLoading: true }
     case FETCH_TXS_SUCCESS:
-      return { ...state, loading: false }
+      return { ...state, isLoading: false }
     case FETCH_TXS_ERROR:
-      return { ...state, loading: false, error: action.payload }
+      return { ...state, isLoading: false, error: action.payload }
     case SET_LAST_INDEXED_TIMESTAMP:
       return { ...state, lastIndexedTimestamp: action.payload }
     case SET_HISTORY:

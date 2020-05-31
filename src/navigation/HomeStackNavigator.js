@@ -44,15 +44,15 @@ const HomeStackNavigator = props => {
 
       fetchData()
 
-      // setTimer(
-      //   setInterval(() => {
-      //     fetchData()
-      //   }, 10000)
-      // )
+      setTimer(
+        setInterval(() => {
+          fetchData()
+        }, 10000)
+      )
 
       return () => {
-        // clearInterval(timer)
-        // setTimer(null)
+        clearInterval(timer)
+        setTimer(null)
       }
     }, [])
   )

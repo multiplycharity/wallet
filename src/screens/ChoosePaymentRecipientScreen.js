@@ -84,7 +84,6 @@ const ChoosePaymentRecipientScreen = props => {
       const users = await search(queryStr)
       users.map(user => {
         if (user.email === queryStr) setIsExistingUserEmail(true)
-        console.log({ user })
       })
       setFoundUsers(users)
       setIsLoading(false)

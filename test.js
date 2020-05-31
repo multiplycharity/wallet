@@ -1,14 +1,5 @@
-const ethers = require('ethers')
+const arr = [{ t: 1 }, { t: 45 }, { t: 94545 }, { t: 0 }]
 
-const provider = ethers.getDefaultProvider('rinkeby')
-
-const txHash =
-  '0x57dfc7d1886cbb4d635130df791aa7cde365faa677d837c66dc6513157a33a60'
-
-const main = async () => {
-  const tx = await provider.getTransactionReceipt(txHash)
-  const timestamp = (await provider.getBlock(tx.hash)).timestamp
-  console.log('timestamp: ', timestamp)
-}
-
-main()
+const sorted = arr.sort((a, b) => (a.t > b.t ? 1 : -1))
+console.log('sorted: ', sorted)
+console.log('arr: ', arr)

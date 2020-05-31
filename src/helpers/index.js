@@ -35,3 +35,8 @@ export const getUserByAddress = async address => {
   if (docs.length !== 1) return null
   return docs[0]
 }
+
+export const getHexString = str => {
+  if (!str.startsWith('0x')) return `0x${str}`
+  return str
+}

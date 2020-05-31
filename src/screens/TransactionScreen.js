@@ -12,6 +12,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
+import { getHexString } from '../helpers'
 
 const screen = Dimensions.get('screen')
 
@@ -28,7 +29,8 @@ const TransactionScreen = props => {
   const navigation = useNavigation()
   const route = props.route
 
-  const { amount, timestamp, type, title, user, id: txHash } = route.params
+  const { amount, timestamp, type, title, user, id } = route.params
+  const txHash = getHexString(id)
 
   let imgUrl = user?.photoUrl
 
@@ -122,7 +124,7 @@ const TransactionScreen = props => {
         <TouchableOpacity
           onPress={async () => {
             await WebBrowser.openBrowserAsync(
-              `${BLOCK_EXPLORER_HOST}/tx/0x${txHash}`
+              `${BLOCK_EXPLORER_HOST}/tx/${txHash}`
             )
           }}
         >

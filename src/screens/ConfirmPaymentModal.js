@@ -20,15 +20,6 @@ const ConfirmPaymentModal = props => {
     iconName
   } = props.route.params
 
-  console.log({
-    address,
-    title,
-    imageUrl,
-    subtitle,
-    amount,
-    iconName
-  })
-
   const screen = useScreenDimensions()
   const navigation = props.navigation
   const dispatch = useDispatch()

@@ -20,7 +20,7 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
-  const isLoading = useSelector(state => state.transactions.loading)
+  const isLoading = useSelector(state => state.transactions.isLoading)
 
   let transactions = useSelector(state => state.transactions.history)
 
@@ -55,6 +55,10 @@ const TransactionsList = props => {
         <>
           {isLoading ? (
             <View style={{ marginTop: 30 }}>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
+              <LoadingCellPlaceholder></LoadingCellPlaceholder>
               <LoadingCellPlaceholder></LoadingCellPlaceholder>
             </View>
           ) : (
