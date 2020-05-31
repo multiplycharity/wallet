@@ -18,7 +18,7 @@ const animations = {
     to: { translateX: 0 }
   },
   fadeInAndScale: {
-    0: { opacity: 0.8, scale: 0.8 },
+    0: { opacity: 0.6, scale: 0.6 },
     1: { opacity: 1, scale: 1 }
   },
 

@@ -65,7 +65,7 @@ const PaymentScreen = ({ navigation }) => {
 
   const [lastChar, setLastChar] = useState('0')
 
-  const [lastPressedKey, setLastPressedKey] = useState('')
+  const lastPressedKeyRef = useRef(null)
 
   const displayValueAnimation = useRef(null)
   const lastCharAnimation = useRef(null)
@@ -80,19 +80,21 @@ const PaymentScreen = ({ navigation }) => {
     if (lastAction.type === RESET_PAYMENT_SCREEN) {
       setDisplayValue('0')
       setWholePart('0')
-      setDecimalPart('0'), setHasDecimalPart(false)
+      setDecimalPart('0')
+      setHasDecimalPart(false)
       setLastChar('0')
-      setLastPressedKey('')
       setErrorMessage('')
       setErrorTimer(null)
+      lastPressedKeyRef.current = null
     }
   }, [lastAction])
 
   const handleInput = async key => {
-    setLastPressedKey(key)
+    lastPressedKeyRef.current = key
+
     switch (key) {
       case '0':
-        if (wholePart === '0') {
+        if (displayValue === '0') {
           displayValueAnimation.current.shake(480)
         }
       case '1':
@@ -118,7 +120,9 @@ const PaymentScreen = ({ navigation }) => {
 
         setDisplayValue(displayValue === '0' ? key : displayValue + key)
 
-        displayValue !== '0' && lastCharAnimation.current.fadeInAndScale(180)
+        !(lastPressedKeyRef.current === '0' && displayValue === '0') &&
+          lastCharAnimation.current.fadeInAndScale(180)
+
         return
 
       case '.':
