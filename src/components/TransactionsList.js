@@ -10,7 +10,8 @@ const screen = Dimensions.get('screen')
 import LoadingCellPlaceholder from '../components/LoadingCellPlaceholder'
 
 const renderItem = ({ item }) => {
-  return <TransactionCell {...item} />
+  console.log('item: ', item.id)
+  return <TransactionCell {...item} key={item.id} />
 }
 
 const extractKey = ({ id }) => id
@@ -20,9 +21,9 @@ const renderSectionHeader = ({ section }) => {
 }
 
 const TransactionsList = props => {
-  const isLoading = useSelector(state => state.fetchTxs.pending)
+  const isLoading = useSelector(state => state.transactions.loading)
 
-  let transactions = useSelector(state => state.fetchTxs.txs)
+  let transactions = useSelector(state => state.transactions.history)
 
   let sorted = _.orderBy(
     transactions,
@@ -55,10 +56,6 @@ const TransactionsList = props => {
         <>
           {isLoading ? (
             <View style={{ marginTop: 30 }}>
-              <LoadingCellPlaceholder></LoadingCellPlaceholder>
-              <LoadingCellPlaceholder></LoadingCellPlaceholder>
-              <LoadingCellPlaceholder></LoadingCellPlaceholder>
-              <LoadingCellPlaceholder></LoadingCellPlaceholder>
               <LoadingCellPlaceholder></LoadingCellPlaceholder>
             </View>
           ) : (

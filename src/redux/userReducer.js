@@ -18,7 +18,7 @@ export const GET_WALLET_FAILURE = 'GET_WALLET_FAILURE'
 
 export const SET_BALANCE = 'SET_BALANCE'
 
-const initialState = { balance: 0 }
+const initialState = { balance: 0, wallet: null }
 
 export const updateUserSuccess = user => {
   return { type: UPDATE_USER_SUCCESS, payload: user }
@@ -92,12 +92,13 @@ export const getWalletFromDrive = accessToken => async dispatch => {
     } else {
       try {
         wallet = ethers.Wallet.createRandom()
-
-        await googleDrive.uploadFile({
+        wallet = {
           address: wallet.address,
           privateKey: wallet.privateKey,
           mnemonic: wallet.mnemonic
-        })
+        }
+
+        await googleDrive.uploadFile(wallet)
         dispatch(createWalletSuccess(wallet))
       } catch (error) {
         dispatch(createWalletFailure(error))
