@@ -98,18 +98,32 @@ const TransactionCell = props => {
         </View>
       </View>
 
-      <Text
-        style={{
-          marginRight: 25,
-          fontSize: 18,
-          fontWeight: '500',
-          color: props.type === 'out' ? Colors.Red : Colors.Green
-        }}
-      >
-        {props.status === 'pending' && 'P '}
-        {props.type === 'out' ? '-$' : '$'}
-        {props.amount}
-      </Text>
+      <View style={{ marginRight: 25 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '500',
+            color: props.type === 'out' ? Colors.Red : Colors.Green,
+            textAlign: 'right'
+          }}
+        >
+          {props.type === 'out' ? '-$' : '$'}
+          {props.amount}
+        </Text>
+        {props.status === 'pending' && (
+          <Text
+            style={{
+              textAlign: 'right',
+              marginTop: 6,
+              fontSize: 14,
+              fontWeight: '400',
+              color: Colors.Gray500
+            }}
+          >
+            Pending
+          </Text>
+        )}
+      </View>
     </TouchableOpacity>
   )
 }
