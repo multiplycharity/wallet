@@ -88,6 +88,7 @@ const ScannerModalScreen = props => {
     if (isEthereumAddress(data)) {
       dispatch(setScannedAddress(data))
       setScanned(true)
+      Haptics.notificationAsync('success')
       navigation.navigate('PayToScanned', { scannedAddress })
     }
   }
