@@ -55,6 +55,14 @@ const ScannerModalScreen = props => {
   const [hasPermission, setHasPermission] = useState(null)
   const [scanned, setScanned] = useState(false)
 
+  const navigation = useNavigation()
+
+  const name = useSelector(state => state?.user?.name)
+  const email = useSelector(state => state?.user?.email)
+  const address = useSelector(state => state?.user?.wallet?.address)
+
+  const dispatch = useDispatch()
+
   useEffect(() => {
     if (isScannerActive && !hasPermission) {
       ;(async () => {
@@ -74,7 +82,7 @@ const ScannerModalScreen = props => {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true)
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`)
+    alert(data)
   }
 
   const onShare = async () => {
@@ -87,14 +95,6 @@ const ScannerModalScreen = props => {
       throw new Error(error)
     }
   }
-
-  const navigation = useNavigation()
-
-  const name = useSelector(state => state?.user?.name)
-  const email = useSelector(state => state?.user?.email)
-  const address = useSelector(state => state?.user?.wallet?.address)
-
-  const dispatch = useDispatch()
 
   return (
     <BlurView
@@ -131,7 +131,7 @@ const ScannerModalScreen = props => {
         {!isScannerActive ? (
           <View style={styles.QRCode}>
             <QRCode
-              value='https://google.com'
+              value={address}
               size={parseInt(
                 screen.width * (screen.height > 800 ? 0.65 : 0.55)
               )}

@@ -156,7 +156,8 @@ export const fetchTxsError = error => {
 }
 
 export const fetchTxs = () => async (dispatch, getState) => {
-  const address = getState().user?.wallet?.address
+  const address = getState().user?.wallet?.address || getState().user?.address
+
   dispatch(fetchTxsLoading())
 
   try {
@@ -170,6 +171,7 @@ export const fetchTxs = () => async (dispatch, getState) => {
     const pendingTxs = getState().transactions.pendingTxs
 
     const formatted = await dispatch(formatTxs([...pendingTxs, ...res.data]))
+
     dispatch(setHistory(formatted))
     dispatch(fetchTxsSuccess())
   } catch (error) {
@@ -178,7 +180,8 @@ export const fetchTxs = () => async (dispatch, getState) => {
 }
 
 const formatTxs = txs => async (dispatch, getState) => {
-  const userAddress = getState().user?.wallet?.address
+  const userAddress =
+    getState().user?.wallet?.address || getState().user?.address
 
   let formatted = []
 
