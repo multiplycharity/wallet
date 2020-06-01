@@ -14,6 +14,7 @@ import errorReducer from './errorReducer'
 import loadingReducer from './loadingReducer'
 import lastActionReducer from './lastActionReducer'
 import transactionsReducer from './transactions'
+import scannerReducer from './scannerReducer'
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -22,7 +23,8 @@ const appReducer = combineReducers({
   error: errorReducer,
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
-  transactions: transactionsReducer
+  transactions: transactionsReducer,
+  scanner: scannerReducer
 })
 
 const rootReducer = (state, action) => {

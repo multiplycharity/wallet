@@ -23,6 +23,8 @@ import { throwError } from '../redux/errorReducer'
 
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { BlurView } from 'expo-blur'
+import { isEthereumAddress } from '../helpers'
+import { setScannedAddress } from '../redux/scannerReducer'
 
 const screen = Dimensions.get('screen')
 
@@ -63,6 +65,9 @@ const ScannerModalScreen = props => {
 
   const dispatch = useDispatch()
 
+  const scannedAddress = useSelector(state => state.scanner.scannedAddress)
+  console.log('scannedAddress: ', scannedAddress)
+
   useEffect(() => {
     if (isScannerActive && !hasPermission) {
       ;(async () => {
@@ -81,8 +86,11 @@ const ScannerModalScreen = props => {
   }, [isScannerActive])
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true)
-    alert(data)
+    if (isEthereumAddress(data)) {
+      dispatch(setScannedAddress(data))
+      setScanned(true)
+      navigation.navigate('Payment', { scannedAddress })
+    }
   }
 
   const onShare = async () => {
