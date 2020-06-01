@@ -120,7 +120,6 @@ const TransactionCell = props => {
               color: Colors.Gray500
             }}
           >
-            {' '}
             Pending
           </Text>
         )}
