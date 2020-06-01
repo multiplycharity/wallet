@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useLayoutEffect, useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -19,8 +19,6 @@ import TransactionScreen from '../screens/TransactionScreen'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSearchBar } from '../redux/screenReducer'
-import { fetchTxs } from '../redux/transactions'
-import { fetchBalance } from '../redux/userReducer'
 
 const screen = Dimensions.get('screen')
 
@@ -32,30 +30,6 @@ const HomeStackNavigator = props => {
   const { navigation, route } = props
 
   const dispatch = useDispatch()
-
-  const fetchData = () => {
-    dispatch(fetchTxs())
-    dispatch(fetchBalance())
-  }
-
-  useFocusEffect(
-    React.useCallback(() => {
-      StatusBar.setBarStyle('dark-content')
-
-      fetchData()
-
-      setTimer(
-        setInterval(() => {
-          fetchData()
-        }, 10000)
-      )
-
-      return () => {
-        clearInterval(timer)
-        setTimer(null)
-      }
-    }, [])
-  )
 
   return (
     <HomeStack.Navigator
