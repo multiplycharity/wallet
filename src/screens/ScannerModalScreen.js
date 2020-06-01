@@ -66,7 +66,6 @@ const ScannerModalScreen = props => {
   const dispatch = useDispatch()
 
   const scannedAddress = useSelector(state => state.scanner.scannedAddress)
-  console.log('scannedAddress: ', scannedAddress)
 
   useEffect(() => {
     if (isScannerActive && !hasPermission) {
@@ -89,7 +88,7 @@ const ScannerModalScreen = props => {
     if (isEthereumAddress(data)) {
       dispatch(setScannedAddress(data))
       setScanned(true)
-      navigation.navigate('Payment', { scannedAddress })
+      navigation.navigate('PayToScanned', { scannedAddress })
     }
   }
 

@@ -28,6 +28,7 @@ import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
 import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
+import PayToScannedScreen from '../screens/PayToScannedScreen'
 import TxSentScreen from '../screens/TxSentScreen'
 
 import ModalHeader from '../components/ModalHeader'
@@ -161,6 +162,25 @@ const AppNavigator = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: null,
           headerShown: false
+        })}
+      />
+
+      <Stack.Screen
+        name='PayToScanned'
+        component={PayToScannedScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: null,
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerLeft: props => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Payment')
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              <Feather name='x' size={24}></Feather>
+            </TouchableOpacity>
+          )
         })}
       />
     </Stack.Navigator>

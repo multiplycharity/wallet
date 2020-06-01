@@ -209,10 +209,41 @@ const PaymentScreen = ({ navigation, route }) => {
             justifyContent: 'space-between'
           }}
         >
+          <View
+            style={{
+              paddingHorizontal: 30,
+              alignItems: 'center',
+              flexDirection: 'row',
+              width: '100%',
+              height: 80
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: '600',
+                color: Colors.Black
+              }}
+            >
+              To
+            </Text>
+
+            <Text
+              style={{
+                marginLeft: 20,
+                marginRight: 20,
+                fontSize: 18,
+                fontWeight: '500'
+              }}
+            >
+              {`${scannedAddress.slice(0, 12)}...${scannedAddress.slice(-10)}`}
+            </Text>
+          </View>
+
           <Animatable.View
             ref={displayValueAnimation}
             style={{
-              height: screen.height / 5,
+              height: screen.height / 8,
               alignItems: 'flex-end',
               justifyContent: 'flex-end',
               flexDirection: 'row'
@@ -272,25 +303,9 @@ const PaymentScreen = ({ navigation, route }) => {
             }}
           >
             <Button
-              title='Request'
-              style={{}}
-              width={screen.width / 2.3}
-              onPress={() => {
-                // dispatch(setIsScannerActive(false))
-                console.log('yo')
-                navigation.navigate('PayToScanned', {
-                  scannedAddress: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A'
-                })
-
-                if (displayValue === '0') {
-                  displayValueAnimation.current.shake(480)
-                }
-              }}
-            ></Button>
-            <Button
               title='Send'
-              width={screen.width / 2.3}
-              style={{ marginLeft: 16 }}
+              width={screen.width / 1.1}
+              style={{ marginHorizontal: 16 }}
               onPress={() => {
                 if (displayValue === '0') {
                   displayValueAnimation.current.shake(480)
@@ -309,8 +324,14 @@ const PaymentScreen = ({ navigation, route }) => {
 
                   displayValueAnimation.current.shake(480)
                 } else {
-                  navigation.navigate('ChoosePaymentRecipient', {
-                    amount: displayValue
+                  navigation.navigate('ConfirmPayment', {
+                    amount: displayValue,
+                    title: `${scannedAddress.slice(
+                      0,
+                      8
+                    )}...${scannedAddress.slice(-7)}`,
+                    iconName: 'credit-card',
+                    address: scannedAddress
                   })
                 }
               }}
