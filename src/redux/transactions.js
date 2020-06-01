@@ -55,13 +55,13 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
     const user = await getUserByAddress(tx.to)
 
     let txn = {
-      id: tx.hash,
-      txHash: tx.hash,
-      from: tx.from,
-      to: tx.to,
-      value: txValue,
+      id: tx.hash.toLowerCase(),
+      txHash: tx.hash.toLowerCase(),
+      from: tx.from.toLowerCase(),
+      to: tx.to.toLowerCase(),
+      value: txValue.toString(),
       data: data,
-      title: user?.name || tx.to,
+      title: user?.name || tx.to.toLowerCase(),
       timestamp: moment().unix(),
       amount: amount,
       user: user,
@@ -98,33 +98,16 @@ export const setHistory = history => {
   return { type: SET_HISTORY, payload: history }
 }
 
-export const addToHistory = txs => async (dispatch, getState) => {
-  if (!Array.isArray(txs)) {
-    txs = [txs]
-  }
-
-  dispatch({ type: ADD_TO_HISTORY, payload: txs })
-  let history = getState().transactions.history
-
-  let set = new Set()
-  let updatedHistory = [...history, ...txs]
-    .filter(item => {
-      if (!set.has(item.txHash)) {
-        set.add(item.txHash)
-        return true
-      }
-      return false
-    }, set)
-    .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1))
-
-  dispatch(setHistory(updatedHistory))
-}
-
-export const addPendingTx = tx => (dispatch, getState) => {
+export const addPendingTx = tx => async (dispatch, getState) => {
   dispatch({ type: ADD_PENDING_TX })
-  const pendingTxs = getState().transactions.pendingTxs
-  dispatch(setPengingTxs([...pendingTxs, tx]))
-  dispatch(addToHistory(tx))
+
+  let pendingTxs = getState().transactions.pendingTxs
+  pendingTxs = [tx, ...pendingTxs]
+  dispatch(setPengingTxs(pendingTxs))
+
+  const history = getState().transactions.history
+  const formatted = await dispatch(formatTxs([...pendingTxs, ...history]))
+  dispatch(setHistory(formatted))
 }
 
 export const moveToHistory = tx => async (dispatch, getState) => {
@@ -145,8 +128,10 @@ export const moveToHistory = tx => async (dispatch, getState) => {
     draft[index].timestamp = timestamp
   })
 
-  //   const sortedHistory = await dispatch(sortTxs(updatedHistory))
-  dispatch(setHistory(updatedHistory))
+  const formatted = await dispatch(
+    formatTxs([...pendingTxs, ...updatedHistory])
+  )
+  dispatch(setHistory(formatted))
   dispatch(sendTxSuccess())
 }
 
@@ -182,25 +167,27 @@ export const fetchTxs = () => async (dispatch, getState) => {
       throw res.error
     }
 
-    const sorted = await dispatch(sortTxs(res.data))
+    const pendingTxs = getState().transactions.pendingTxs
 
-    dispatch(addToHistory(sorted))
+    const formatted = await dispatch(formatTxs([...pendingTxs, ...res.data]))
+    dispatch(setHistory(formatted))
     dispatch(fetchTxsSuccess())
   } catch (error) {
     dispatch(fetchTxsError(error.message || error))
   }
 }
 
-const sortTxs = txs => async (dispatch, getState) => {
+const formatTxs = txs => async (dispatch, getState) => {
   const userAddress = getState().user?.wallet?.address
 
-  let sortedTxs = []
+  let formatted = []
 
   for (let i = 0; i < txs.length; i++) {
     const fromAddr = getHexString(txs[i].from)
     const toAddr = getHexString(txs[i].to)
     const txType =
       formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
+    const txHash = getHexString(txs[i].txHash)
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
 
@@ -212,8 +199,8 @@ const sortTxs = txs => async (dispatch, getState) => {
       dispatch(setLastIndexedTimestamp(timestamp))
 
     let tx = {
-      id: txs[i].txHash,
-      txHash: txs[i].txHash,
+      id: txHash,
+      txHash: txHash,
       from: fromAddr,
       to: toAddr,
       value: txs[i].value,
@@ -222,12 +209,24 @@ const sortTxs = txs => async (dispatch, getState) => {
       timestamp: timestamp,
       amount: formatWei(txs[i].value),
       user,
-      type: txType
+      type: txType,
+      status: txs[i].status
     }
-    sortedTxs.push(tx)
+    formatted.push(tx)
   }
+  const set = new Set()
 
-  return sortedTxs
+  let result = formatted
+    .filter(item => {
+      if (!set.has(item.txHash)) {
+        set.add(item.txHash)
+        return true
+      }
+      return false
+    }, set)
+    .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1))
+
+  return result
 }
 
 const transactionsReducer = (state = initialState, action) => {

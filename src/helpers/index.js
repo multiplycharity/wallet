@@ -19,21 +19,22 @@ export const isEmailAddress = email => {
 }
 
 export const getUserByAddress = async address => {
-  address = formatAddress(address)
+  // address = formatAddress(address)
 
-  let docs = []
+  // let docs = []
 
-  const snapshot = await firestore
-    .collection('users')
-    .where('address', '==', address)
-    .get()
+  // const snapshot = await firestore
+  //   .collection('users')
+  //   .where('address', '==', address)
+  //   .get()
 
-  snapshot.docs.forEach(doc => {
-    docs.push(doc.data())
-  })
+  // snapshot.docs.forEach(doc => {
+  //   docs.push(doc.data())
+  // })
 
-  if (docs.length !== 1) return null
-  return docs[0]
+  // if (docs.length !== 1) return null
+  // return docs[0]
+  return null
 }
 
 export const getHexString = str => {
