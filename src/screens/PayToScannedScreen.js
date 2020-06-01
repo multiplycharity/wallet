@@ -211,8 +211,9 @@ const PaymentScreen = ({ navigation, route }) => {
         >
           <View
             style={{
-              paddingHorizontal: 30,
+              paddingHorizontal: 16,
               alignItems: 'center',
+              justifyContent: 'center',
               flexDirection: 'row',
               width: '100%',
               height: 80
@@ -225,18 +226,8 @@ const PaymentScreen = ({ navigation, route }) => {
                 color: Colors.Black
               }}
             >
-              To
-            </Text>
-
-            <Text
-              style={{
-                marginLeft: 20,
-                marginRight: 20,
-                fontSize: 18,
-                fontWeight: '500'
-              }}
-            >
-              {`${scannedAddress.slice(0, 12)}...${scannedAddress.slice(-10)}`}
+              Send to{' '}
+              {`${scannedAddress.slice(0, 10)}...${scannedAddress.slice(-8)}`}
             </Text>
           </View>
 
