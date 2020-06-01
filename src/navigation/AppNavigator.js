@@ -143,6 +143,7 @@ const AppNavigator = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: `$${route.params.amount}`,
           headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerStyle: { shadowColor: 'transparent' },
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {
@@ -150,7 +151,7 @@ const AppNavigator = ({ route, navigation }) => {
               }}
               style={{ marginLeft: 16 }}
             >
-              <Feather name='x' size={24}></Feather>
+              <Feather name='x' size={screen.height > 800 ? 28 : 24}></Feather>
             </TouchableOpacity>
           )
         })}
@@ -169,8 +170,15 @@ const AppNavigator = ({ route, navigation }) => {
         name='PayToScanned'
         component={PayToScannedScreen}
         options={({ route, navigation }) => ({
+          // headerShown: false,
           headerTitle: null,
-          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerStyle: { shadowOpacity: 0 },
+          gestureEnabled: true,
+          cardOverlayEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          },
+
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {
@@ -178,7 +186,7 @@ const AppNavigator = ({ route, navigation }) => {
               }}
               style={{ marginLeft: 16 }}
             >
-              <Feather name='x' size={24}></Feather>
+              <Feather name='x' size={screen.height > 800 ? 28 : 24}></Feather>
             </TouchableOpacity>
           )
         })}
