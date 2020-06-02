@@ -91,13 +91,14 @@ const PaymentScreen = ({ navigation, route }) => {
     }
   }, [lastAction])
 
-  const handleInput = async key => {
+  const handleInput = key => {
     lastPressedKeyRef.current = key
 
     switch (key) {
       case '0':
-        if (displayValue === '0') {
+        if (displayValue === '0' || displayValue === '0.0') {
           displayValueAnimation.current.shake(480)
+          return
         }
       case '1':
       case '2':
@@ -130,16 +131,19 @@ const PaymentScreen = ({ navigation, route }) => {
         return
 
       case '.':
-        if (wholePart === '0') {
-          displayValueAnimation.current.shake(480)
-          return
-        }
+        // if (wholePart === '0') {
+        //   displayValueAnimation.current.shake(480)
+        //   return
+        // }
+        hasDecimalPart && displayValueAnimation.current.shake(480)
 
         setDisplayValue(!hasDecimalPart ? displayValue + key : displayValue)
-        setHasDecimalPart(true)
-        !hasDecimalPart && setLastChar(key)
 
-        !hasDecimalPart && lastCharAnimation.current.fadeInAndScale(180)
+        if (!hasDecimalPart) {
+          setHasDecimalPart(true)
+          setLastChar(key)
+          lastCharAnimation.current.fadeInAndScale(180)
+        }
 
         return
 
@@ -155,6 +159,7 @@ const PaymentScreen = ({ navigation, route }) => {
         } else {
           if (displayValue.slice(-1) === '.') {
             setHasDecimalPart(false)
+            setDecimalPart('')
           }
 
           setDisplayValue(
@@ -163,7 +168,7 @@ const PaymentScreen = ({ navigation, route }) => {
 
           if (hasDecimalPart) {
             setDecimalPart(
-              decimalPart !== '0' ? decimalPart.slice(0, -1) : decimalPart
+              decimalPart !== '' ? decimalPart.slice(0, -1) : decimalPart
             )
           } else {
             setWholePart(wholePart !== '0' ? wholePart.slice(0, -1) : wholePart)
@@ -305,8 +310,13 @@ const PaymentScreen = ({ navigation, route }) => {
               width={screen.width / 1.1}
               style={{ marginHorizontal: 16 }}
               onPress={() => {
-                if (displayValue === '0') {
+                if (
+                  displayValue === '0' ||
+                  displayValue === '0.0' ||
+                  displayValue === '0.'
+                ) {
                   displayValueAnimation.current.shake(480)
+                  return
                 } else if (parseFloat(balance) < parseFloat(displayValue)) {
                   errorTimer && clearTimeout(errorTimer)
                   setErrorMessage('Insufficient funds')
