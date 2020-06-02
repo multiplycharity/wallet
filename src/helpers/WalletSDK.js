@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { JSON_RPC_URL } from 'react-native-dotenv'
-import { formatWei } from '.'
+import { formatWei } from '../helpers'
 
 class WalletSDK {
   constructor (jsonRpcUrl = JSON_RPC_URL) {
