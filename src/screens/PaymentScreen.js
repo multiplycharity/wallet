@@ -5,7 +5,8 @@ import {
   View,
   SafeAreaView,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native'
 import Colors from '../constants/colors'
 import { Feather } from '@expo/vector-icons'
@@ -91,7 +92,7 @@ const PaymentScreen = ({ navigation, route }) => {
     }
   }, [lastAction])
 
-  const handleInput = async key => {
+  const handleInput = key => {
     lastPressedKeyRef.current = key
 
     switch (key) {
@@ -109,9 +110,11 @@ const PaymentScreen = ({ navigation, route }) => {
       case '8':
       case '9':
         if (hasDecimalPart && decimalPart.length >= 2) {
+          displayValueAnimation.current.shake(480)
           return
         }
         if (!hasDecimalPart && wholePart.length >= 5) {
+          displayValueAnimation.current.shake(480)
           return
         }
         setLastChar(key)
@@ -176,24 +179,24 @@ const PaymentScreen = ({ navigation, route }) => {
     return (
       <View style={{}}>
         <View style={{ flexDirection: 'row' }}>
-          <Key value={'1'} onPressIn={() => handleInput('1')}></Key>
-          <Key value={'2'} onPressIn={() => handleInput('2')}></Key>
-          <Key value={'3'} onPressIn={() => handleInput('3')}></Key>
+          <Key value={'1'} onPress={() => handleInput('1')}></Key>
+          <Key value={'2'} onPress={() => handleInput('2')}></Key>
+          <Key value={'3'} onPress={() => handleInput('3')}></Key>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <Key value={'4'} onPressIn={() => handleInput('4')}></Key>
-          <Key value={'5'} onPressIn={() => handleInput('5')}></Key>
-          <Key value={'6'} onPressIn={() => handleInput('6')}></Key>
+          <Key value={'4'} onPress={() => handleInput('4')}></Key>
+          <Key value={'5'} onPress={() => handleInput('5')}></Key>
+          <Key value={'6'} onPress={() => handleInput('6')}></Key>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <Key value={'7'} onPressIn={() => handleInput('7')}></Key>
-          <Key value={'8'} onPressIn={() => handleInput('8')}></Key>
-          <Key value={'9'} onPressIn={() => handleInput('9')}></Key>
+          <Key value={'7'} onPress={() => handleInput('7')}></Key>
+          <Key value={'8'} onPress={() => handleInput('8')}></Key>
+          <Key value={'9'} onPress={() => handleInput('9')}></Key>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <Key value={'.'} onPressIn={() => handleInput('.')}></Key>
-          <Key value={'0'} onPressIn={() => handleInput('0')}></Key>
-          <Key value={'C'} onPressIn={() => handleInput('C')}></Key>
+          <Key value={'.'} onPress={() => handleInput('.')}></Key>
+          <Key value={'0'} onPress={() => handleInput('0')}></Key>
+          <Key value={'C'} onPress={() => handleInput('C')}></Key>
         </View>
       </View>
     )

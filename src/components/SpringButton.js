@@ -24,7 +24,7 @@ const SpringButton = props => {
       onPressIn={() => {
         // setChildViewOpacity(0.5)
 
-        // Haptics.impactAsync('light')
+        Haptics.impactAsync('medium')
 
         scaleValue.setValue(0)
         Animated.timing(scaleValue, {
