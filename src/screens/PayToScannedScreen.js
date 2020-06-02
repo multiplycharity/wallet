@@ -306,11 +306,7 @@ const PaymentScreen = ({ navigation, route }) => {
               width={screen.width / 1.1}
               style={{ marginHorizontal: 16 }}
               onPress={() => {
-                if (
-                  displayValue === '0' ||
-                  displayValue === '0.0' ||
-                  displayValue === '0.'
-                ) {
+                if (formatFloat(displayValue) === 0) {
                   displayValueAnimation.current.shake(480)
                   return
                 } else if (parseFloat(balance) < parseFloat(displayValue)) {

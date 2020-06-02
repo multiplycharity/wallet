@@ -291,11 +291,7 @@ const PaymentScreen = ({ navigation, route }) => {
                   scannedAddress: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A'
                 })
 
-                if (
-                  displayValue === '0' ||
-                  displayValue === '0.0' ||
-                  displayValue === '0.'
-                ) {
+                if (formatFloat(displayValue) === 0) {
                   displayValueAnimation.current.shake(480)
                   return
                 }
@@ -306,11 +302,7 @@ const PaymentScreen = ({ navigation, route }) => {
               width={screen.width / 2.3}
               style={{ marginLeft: 16 }}
               onPress={() => {
-                if (
-                  displayValue === '0' ||
-                  displayValue === '0.0' ||
-                  displayValue === '0.'
-                ) {
+                if (formatFloat(displayValue) === 0) {
                   displayValueAnimation.current.shake(480)
                   return
                 } else if (parseFloat(balance) < parseFloat(displayValue)) {
