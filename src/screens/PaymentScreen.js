@@ -280,7 +280,8 @@ const PaymentScreen = ({ navigation, route }) => {
               width={screen.width / 2.3}
               onPress={() => {
                 // dispatch(setIsScannerActive(false))
-                console.log('yo')
+
+                // Temporary
                 navigation.navigate('PayToScanned', {
                   scannedAddress: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A'
                 })

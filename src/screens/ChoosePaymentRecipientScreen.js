@@ -130,8 +130,8 @@ const ChoosePaymentRecipientScreen = props => {
               alignItems: 'center',
               height: 80,
               flexDirection: 'row',
-              borderColor: Colors.Gray200,
-              borderTopWidth: StyleSheet.hairlineWidth
+              borderColor: Colors.Gray200
+              // borderTopWidth: StyleSheet.hairlineWidth
             }}
             onPress={() => {
               setIsTextInputFocused(true)
@@ -216,9 +216,9 @@ const ChoosePaymentRecipientScreen = props => {
                 alignItems: 'center',
                 height: 80,
                 flexDirection: 'row',
-                borderColor: Colors.Gray200,
-                borderTopWidth: StyleSheet.hairlineWidth,
-                borderBottomWidth: StyleSheet.hairlineWidth
+                borderColor: Colors.Gray200
+                // borderTopWidth: StyleSheet.hairlineWidth,
+                // borderBottomWidth: StyleSheet.hairlineWidth
               }}
               onPress={onShare}
             >
