@@ -51,7 +51,12 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
       (parseFloat(value) / 100).toString()
     )
 
-    let tx = await sender.sendTransaction({ to, value: txValue, data })
+    let tx = await sender.sendTransaction({
+      to,
+      value: txValue,
+      data,
+      gasPrice: ethers.utils.parseUnits('1', 'gwei') // FIXME
+    })
 
     const user = await getUserByAddress(tx.to)
 
