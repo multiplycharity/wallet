@@ -239,7 +239,6 @@ const PaymentScreen = ({ navigation, route }) => {
           </View>
 
           <Animatable.View
-            useNativeDriver={true}
             ref={displayValueAnimation}
             style={{
               height: screen.height / 8,
@@ -249,7 +248,6 @@ const PaymentScreen = ({ navigation, route }) => {
             }}
           >
             <Animatable.Text
-              useNativeDriver={true}
               style={{
                 fontSize:
                   displayValue.length <= 4
@@ -265,7 +263,6 @@ const PaymentScreen = ({ navigation, route }) => {
             </Animatable.Text>
 
             <Animatable.Text
-              useNativeDriver={true}
               ref={lastCharAnimation}
               style={{
                 fontSize:
@@ -283,7 +280,6 @@ const PaymentScreen = ({ navigation, route }) => {
           </Animatable.View>
 
           <Animatable.View
-            useNativeDriver={true}
             ref={errorMessageAnimation}
             style={{
               height: 16,
@@ -298,7 +294,6 @@ const PaymentScreen = ({ navigation, route }) => {
           ></PaymentKeyboard>
 
           <Animatable.View
-            useNativeDriver={true}
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
