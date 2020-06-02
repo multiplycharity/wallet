@@ -107,7 +107,9 @@ export const addPendingTx = tx => async (dispatch, getState) => {
   dispatch(setPengingTxs(pendingTxs))
 
   const history = getState().transactions.history
+
   const formatted = await dispatch(formatTxs([...pendingTxs, ...history]))
+
   dispatch(setHistory(formatted))
 }
 
@@ -120,14 +122,18 @@ export const moveToHistory = tx => async (dispatch, getState) => {
   const history = getState().transactions.history
 
   const index = history.findIndex(txn => txn.txHash === tx.txHash)
+
   const txn = await provider.getTransactionReceipt(tx.txHash)
   const block = await provider.getBlock(txn.hash)
   const timestamp = block.timestamp
 
-  const updatedHistory = produce(history, draft => {
-    draft[index].status = 'success'
-    draft[index].timestamp = timestamp
-  })
+  const updatedHistory =
+    index !== -1
+      ? produce(history, draft => {
+          draft[index].status = 'success'
+          draft[index].timestamp = timestamp
+        })
+      : history
 
   const formatted = await dispatch(
     formatTxs([...pendingTxs, ...updatedHistory])
@@ -194,7 +200,7 @@ const formatTxs = txs => async (dispatch, getState) => {
     const toAddr = txs[i].to || AddressZero
     const txType =
       formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
-    const txHash = txs[i].hash
+    const txHash = txs[i].txHash || txs[i].hash
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
 
