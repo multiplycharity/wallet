@@ -1,4 +1,4 @@
-import { EXPLORER_API_HOST, JSON_RPC_URL } from 'react-native-dotenv'
+import { BLOCK_EXPLORER_URL, JSON_RPC_URL } from 'react-native-dotenv'
 import { firestore } from '../config/firebase'
 import { ethers } from 'ethers'
 import {
@@ -9,6 +9,7 @@ import {
 } from '../helpers'
 import produce from 'immer'
 import moment from 'moment'
+import { AddressZero } from 'ethers/constants'
 
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
 
@@ -106,7 +107,9 @@ export const addPendingTx = tx => async (dispatch, getState) => {
   dispatch(setPengingTxs(pendingTxs))
 
   const history = getState().transactions.history
+
   const formatted = await dispatch(formatTxs([...pendingTxs, ...history]))
+
   dispatch(setHistory(formatted))
 }
 
@@ -119,14 +122,18 @@ export const moveToHistory = tx => async (dispatch, getState) => {
   const history = getState().transactions.history
 
   const index = history.findIndex(txn => txn.txHash === tx.txHash)
+
   const txn = await provider.getTransactionReceipt(tx.txHash)
   const block = await provider.getBlock(txn.hash)
   const timestamp = block.timestamp
 
-  const updatedHistory = produce(history, draft => {
-    draft[index].status = 'success'
-    draft[index].timestamp = timestamp
-  })
+  const updatedHistory =
+    index !== -1
+      ? produce(history, draft => {
+          draft[index].status = 'success'
+          draft[index].timestamp = timestamp
+        })
+      : history
 
   const formatted = await dispatch(
     formatTxs([...pendingTxs, ...updatedHistory])
@@ -161,16 +168,19 @@ export const fetchTxs = () => async (dispatch, getState) => {
   dispatch(fetchTxsLoading())
 
   try {
-    let res = await fetch(`${EXPLORER_API_HOST}/account/${address}/txs`)
+    let res = await fetch(
+      `${BLOCK_EXPLORER_URL}/api?module=account&action=txlist&address=${address}`
+    )
+
     res = await res.json()
 
-    if (res.error) {
-      throw res.error
+    if (res.status != 1) {
+      throw res.message
     }
 
     const pendingTxs = getState().transactions.pendingTxs
 
-    const formatted = await dispatch(formatTxs([...pendingTxs, ...res.data]))
+    const formatted = await dispatch(formatTxs([...pendingTxs, ...res.result]))
 
     dispatch(setHistory(formatted))
     dispatch(fetchTxsSuccess())
@@ -186,15 +196,15 @@ const formatTxs = txs => async (dispatch, getState) => {
   let formatted = []
 
   for (let i = 0; i < txs.length; i++) {
-    const fromAddr = getHexString(txs[i].from)
-    const toAddr = getHexString(txs[i].to)
+    const fromAddr = txs[i].from
+    const toAddr = txs[i].to || AddressZero
     const txType =
       formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
-    const txHash = getHexString(txs[i].txHash)
+    const txHash = txs[i].txHash || txs[i].hash
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
 
-    let timestamp = txs[i].timestamp || txs[i].blockCreationTime
+    let timestamp = txs[i].timestamp || txs[i].timeStamp
 
     const lastIndexedTimestamp = getState().transactions.lastIndexedTimestamp
 
