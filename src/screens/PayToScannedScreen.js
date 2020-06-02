@@ -331,6 +331,8 @@ const PaymentScreen = ({ navigation, route }) => {
                     amount:
                       decimalPart === '00'
                         ? displayValue.slice(0, -3)
+                        : decimalPart === '0'
+                        ? displayValue.slice(0, -2)
                         : displayValue,
                     title: `${scannedAddress.slice(
                       0,
