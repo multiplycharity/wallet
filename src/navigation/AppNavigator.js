@@ -144,6 +144,10 @@ const AppNavigator = ({ route, navigation }) => {
           headerTitle: `$${route.params.amount}`,
           headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
           headerStyle: { shadowColor: 'transparent' },
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          },
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {
@@ -174,11 +178,9 @@ const AppNavigator = ({ route, navigation }) => {
           headerTitle: null,
           headerStyle: { shadowOpacity: 0 },
           gestureEnabled: true,
-          cardOverlayEnabled: true,
           gestureResponseDistance: {
             vertical: Dimensions.get('screen').height
           },
-
           headerLeft: props => (
             <TouchableOpacity
               onPress={() => {
