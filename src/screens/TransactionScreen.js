@@ -20,7 +20,7 @@ import Colors from '../constants/colors'
 import { useNavigation } from '@react-navigation/native'
 import { isEthereumAddress } from '../helpers'
 import moment from 'moment'
-import { BLOCK_EXPLORER_HOST } from 'react-native-dotenv'
+import { BLOCK_EXPLORER_URL } from 'react-native-dotenv'
 import { Feather } from '@expo/vector-icons'
 
 const TransactionScreen = props => {
@@ -124,7 +124,7 @@ const TransactionScreen = props => {
         <TouchableOpacity
           onPress={async () => {
             await WebBrowser.openBrowserAsync(
-              `${BLOCK_EXPLORER_HOST}/tx/${txHash}`
+              `${BLOCK_EXPLORER_URL}/tx/${txHash}`
             )
           }}
         >
