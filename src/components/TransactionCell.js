@@ -17,6 +17,7 @@ import useScreenDimensions from '../hooks/useScreenDimensions'
 import { isEthereumAddress } from '../helpers'
 
 import { Feather } from '@expo/vector-icons'
+import * as Animatable from 'react-native-animatable'
 
 const TransactionCell = props => {
   const navigation = useNavigation()
@@ -111,7 +112,11 @@ const TransactionCell = props => {
           {props.amount}
         </Text>
         {props.status === 'pending' && (
-          <Text
+          <Animatable.Text
+            animation='pulse'
+            iterationCount='infinite'
+            direction='alternate'
+            easing='ease-in-out'
             style={{
               textAlign: 'right',
               marginTop: 6,
@@ -121,7 +126,7 @@ const TransactionCell = props => {
             }}
           >
             Pending
-          </Text>
+          </Animatable.Text>
         )}
       </View>
     </TouchableOpacity>
