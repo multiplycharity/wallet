@@ -328,7 +328,10 @@ const PaymentScreen = ({ navigation, route }) => {
                   displayValueAnimation.current.shake(480)
                 } else {
                   navigation.navigate('ConfirmPayment', {
-                    amount: displayValue,
+                    amount:
+                      decimalPart === '00'
+                        ? displayValue.slice(0, -3)
+                        : displayValue,
                     title: `${scannedAddress.slice(
                       0,
                       8
