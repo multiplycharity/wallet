@@ -10,6 +10,10 @@ export const formatWei = value => {
   return (ethers.utils.formatEther(value) * 100).toFixed(2).replace(/\.00$/, '')
 }
 
+export const formatFloat = value => {
+  return +parseFloat(value).toFixed(2)
+}
+
 export const formatAddress = address => {
   return ethers.utils.getAddress(address)
 }

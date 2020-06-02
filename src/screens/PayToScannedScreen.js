@@ -24,6 +24,7 @@ import SpringButton from '../components/SpringButton'
 import * as Haptics from 'expo-haptics'
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
+import { formatFloat } from '../helpers'
 const screen = Dimensions.get('screen')
 
 Animatable.initializeRegistryWithDefinitions(animationDefinitions)
@@ -328,12 +329,7 @@ const PaymentScreen = ({ navigation, route }) => {
                   displayValueAnimation.current.shake(480)
                 } else {
                   navigation.navigate('ConfirmPayment', {
-                    amount:
-                      decimalPart === '00'
-                        ? displayValue.slice(0, -3)
-                        : decimalPart === '0'
-                        ? displayValue.slice(0, -2)
-                        : displayValue,
+                    amount: formatFloat(displayValue),
                     title: `${scannedAddress.slice(
                       0,
                       8
