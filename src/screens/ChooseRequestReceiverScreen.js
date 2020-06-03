@@ -44,6 +44,8 @@ const ChoosePaymentReceiverScreen = props => {
     try {
       Keyboard.dismiss()
 
+      dispatch(resetPaymentScreen())
+
       const requestReceiver = await getUserByEmail(email)
 
       let response = await sendPushNotification({
@@ -60,7 +62,6 @@ const ChoosePaymentReceiverScreen = props => {
       response = await response.json()
 
       if (response.errors?.length > 0) {
-        dispatch(resetPaymentScreen())
         return navigation.navigate('OverlayMessage', {
           message: 'Oops \n Something went wrong',
           type: 'error',
