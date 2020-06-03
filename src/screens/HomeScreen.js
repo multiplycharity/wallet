@@ -112,17 +112,13 @@ const HomeScreen = props => {
 
     console.log('Subscribing')
     const subscription = Notifications.addListener(notification => {
-      console.log(notification.data)
-
       if (notification.data?.type === 'PAYMENT_REQUEST') {
-        const requestSender = notification.data?.sender
-
         navigation.navigate('ConfirmPayment', {
-          amount: notification.data?.amount,
-          title: requestSender.name,
-          subtitle: requestSender.email,
-          imageUrl: requestSender.photoUrl,
-          address: requestSender.address
+          amount: notification.data.amount,
+          title: notification.data.title,
+          subtitle: notification.data.subtitle,
+          imageUrl: notification.data.imageUrl,
+          address: notification.data.address
         })
       }
     })
@@ -143,6 +139,7 @@ const HomeScreen = props => {
 
     setTimer(
       setInterval(() => {
+        console.log('Next iteration')
         fetchData()
       }, 10000)
     )

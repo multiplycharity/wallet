@@ -19,7 +19,7 @@ import scannerReducer from './scannerReducer'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'transactions', 'lastAction']
+  blacklist: ['isLoading', 'lastAction']
 }
 
 const transactionsConfig = {
@@ -42,11 +42,9 @@ const appReducer = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_APP') {
     state = undefined
+    AsyncStorage.clear()
   }
-  if (action.type === PURGE) {
-    state = undefined
-    persistor.purge()
-  }
+
   return appReducer(state, action)
 }
 

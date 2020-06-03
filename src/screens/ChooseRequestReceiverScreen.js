@@ -30,7 +30,7 @@ import animationDefinitions from '../constants/animations'
 import { useSelector, useDispatch } from 'react-redux'
 import { resetPaymentScreen } from '../redux/screenReducer'
 
-const ChoosePaymentReceiverScreen = props => {
+const ChooseRequestReceiverScreen = props => {
   const dispatch = useDispatch()
   const { amount } = props.route.params
   const [queryStr, setQueryStr] = useState('')
@@ -55,7 +55,9 @@ const ChoosePaymentReceiverScreen = props => {
         data: {
           type: 'PAYMENT_REQUEST',
           amount: amount,
-          sender: myself
+          title: myself.name,
+          imageUrl: myself.photoUrl,
+          subtitle: myself.email
         }
       })
 
@@ -218,7 +220,7 @@ const ChoosePaymentReceiverScreen = props => {
   )
 }
 
-export default ChoosePaymentReceiverScreen
+export default ChooseRequestReceiverScreen
 
 const styles = StyleSheet.create({
   sectionHeader: {
