@@ -10,7 +10,7 @@ const OverlayMessageScreen = props => {
   const dispatch = useDispatch()
   const navigation = props.navigation
 
-  const { message, type } = props.route.params
+  const { message, type, navigateTo } = props.route.params
 
   return (
     <View
@@ -32,7 +32,7 @@ const OverlayMessageScreen = props => {
             type === 'success'
               ? Colors.Lime
               : type === 'error'
-              ? Colors.Red
+              ? Colors.Red75
               : Colors.Gray500
         }}
       >
@@ -65,7 +65,7 @@ const OverlayMessageScreen = props => {
         <TouchableOpacity
           onPress={() => {
             // dispatch(resetPaymentScreen())
-            navigation.navigate('Home')
+            navigation.navigate(navigateTo || 'Home')
           }}
         >
           <Text

@@ -27,9 +27,11 @@ import { Feather } from '@expo/vector-icons'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { resetPaymentScreen } from '../redux/screenReducer'
 
 const ChoosePaymentReceiverScreen = props => {
+  const dispatch = useDispatch()
   const { amount } = props.route.params
   const [queryStr, setQueryStr] = useState('')
   const [foundUsers, setFoundUsers] = useState([])
@@ -40,6 +42,8 @@ const ChoosePaymentReceiverScreen = props => {
 
   const onRequest = async email => {
     try {
+      Keyboard.dismiss()
+
       const requestReceiver = await getUserByEmail(email)
 
       let response = await sendPushNotification({
@@ -52,16 +56,25 @@ const ChoosePaymentReceiverScreen = props => {
       })
 
       response = await response.json()
-      Keyboard.dismiss()
+
+      if (response.errors.length > 0) {
+        dispatch(resetPaymentScreen())
+        return navigation.navigate('OverlayMessage', {
+          message: 'Oops \n Something went wrong',
+          type: 'error',
+          navigateTo: 'Payment'
+        })
+      }
 
       navigation.navigate('OverlayMessage', {
         message: `You requested $${amount} ${'\n'} from ${
           requestReceiver.name
         }`,
-        type: response.data.status === 'ok' ? 'success' : 'error'
+        type: response.data.status === 'ok' ? 'success' : undefined
       })
     } catch (error) {
-      throw new Error(error)
+      console.log(error)
+      navigation.goBack()
     }
   }
 
