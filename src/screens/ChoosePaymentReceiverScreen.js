@@ -23,6 +23,7 @@ import { CommonActions } from '@react-navigation/native'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
+import { useSelector } from 'react-redux'
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -39,6 +40,8 @@ const ChoosePaymentReceiverScreen = props => {
   const [isExistingUserEmail, setIsExistingUserEmail] = useState(false)
   const [isTextInputFocused, setIsTextInputFocused] = useState(false)
   const [paymentType, setPaymentType] = useState(null)
+
+  const myself = useSelector(state => state.user)
 
   const navigation = useNavigation()
 
@@ -81,7 +84,9 @@ const ChoosePaymentReceiverScreen = props => {
     setIsExistingUserEmail(false)
     setFoundUsers([])
     ;(async () => {
-      const users = await search(queryStr)
+      let users = await search(queryStr)
+      users = users.filter(user => user.email !== myself.email)
+
       users.map(user => {
         if (user.email === queryStr) setIsExistingUserEmail(true)
       })

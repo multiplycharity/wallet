@@ -8,11 +8,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   TextInput,
-  ScrollView,
   Keyboard,
   Share
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, CommonActions } from '@react-navigation/native'
 import SearchBar from '../components/SearchBar'
 import Colors from '../constants/colors'
 import { firestore } from '../config/firebase'
@@ -21,21 +20,14 @@ import {
   isEthereumAddress,
   isEmailAddress,
   searchUser,
-  getUserByEmail
+  getUserByEmail,
+  sendPushNotification
 } from '../helpers'
 import { Feather } from '@expo/vector-icons'
-import { CommonActions } from '@react-navigation/native'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
 import { useSelector } from 'react-redux'
-import { sendPushNotification } from '../helpers'
-
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    {children}
-  </TouchableWithoutFeedback>
-)
 
 const ChoosePaymentReceiverScreen = props => {
   const { amount } = props.route.params
@@ -43,17 +35,17 @@ const ChoosePaymentReceiverScreen = props => {
   const [foundUsers, setFoundUsers] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isExistingUserEmail, setIsExistingUserEmail] = useState(false)
-  const requestSender = useSelector(state => state.user.name)
+
+  const myself = useSelector(state => state.user)
 
   const onRequest = async email => {
     try {
       const requestReceiver = await getUserByEmail(email)
-      console.log('requestReceiver: ', requestReceiver)
 
       let response = await sendPushNotification({
-        to: 'ExponentPushToken[hcC_9oMeowC3c93TI5bMdf]',
+        to: requestReceiver.pushToken,
         title: 'Payment request',
-        body: `${requestSender} has requested $${amount}`,
+        body: `${myself.name} has requested $${amount}`,
         data: {
           amount: amount
         }
@@ -80,7 +72,10 @@ const ChoosePaymentReceiverScreen = props => {
     setIsExistingUserEmail(false)
     setFoundUsers([])
     ;(async () => {
-      const users = await searchUser(queryStr)
+      let users = await searchUser(queryStr)
+
+      users = users.filter(user => user.email !== myself.email)
+
       users.map(user => {
         if (user.email === queryStr) setIsExistingUserEmail(true)
       })
@@ -90,122 +85,120 @@ const ChoosePaymentReceiverScreen = props => {
   }, [queryStr])
 
   return (
-    <DismissKeyboard>
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.White }}>
-        <TouchableOpacity
-          activeOpacity={1}
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.White }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={{
+          alignItems: 'center',
+          height: 80,
+          flexDirection: 'row',
+          borderColor: Colors.Gray200
+        }}
+        onPress={() => {
+          setIsTextInputFocused(true)
+        }}
+      >
+        <Text
           style={{
-            alignItems: 'center',
-            height: 80,
+            fontSize: 18,
+            fontWeight: '600',
+            color: Colors.Black,
+            marginLeft: 30
+          }}
+        >
+          From
+        </Text>
+
+        <TextInput
+          style={{
+            flex: 1,
             flexDirection: 'row',
-            borderColor: Colors.Gray200
+            paddingVertical: 10,
+            paddingRight: 65,
+            marginHorizontal: 20,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: 18,
+            fontWeight: '400'
           }}
-          onPress={() => {
-            setIsTextInputFocused(true)
-          }}
+          placeholder='Email'
+          autoFocus={true}
+          autoCorrect={false}
+          autoCapitalize='none'
+          clearTextOnFocus={true}
+          value={queryStr}
+          onChangeText={text => setQueryStr(text)}
+        ></TextInput>
+
+        <TouchableOpacity
+          style={{ marginRight: 30 }}
+          onPress={
+            queryStr
+              ? () => {
+                  setQueryStr('')
+                }
+              : async () => {
+                  const textFromClipboard = await Clipboard.getString()
+                  setQueryStr(textFromClipboard.trim())
+                }
+          }
         >
           <Text
             style={{
-              fontSize: 18,
-              fontWeight: '600',
-              color: Colors.Black,
-              marginLeft: 30
+              fontSize: 16,
+              color: Colors.Gray600,
+              fontWeight: '500'
             }}
           >
-            From
+            {queryStr ? 'Clear' : 'Paste'}
           </Text>
-
-          <TextInput
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              paddingVertical: 10,
-              paddingRight: 65,
-              marginHorizontal: 20,
-              borderRadius: 10,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              fontSize: 18,
-              fontWeight: '400'
-            }}
-            placeholder='Email'
-            autoFocus={true}
-            autoCorrect={false}
-            autoCapitalize='none'
-            clearTextOnFocus={true}
-            value={queryStr}
-            onChangeText={text => setQueryStr(text)}
-          ></TextInput>
-
-          <TouchableOpacity
-            style={{ marginRight: 30 }}
-            onPress={
-              queryStr
-                ? () => {
-                    setQueryStr('')
-                  }
-                : async () => {
-                    const textFromClipboard = await Clipboard.getString()
-                    setQueryStr(textFromClipboard.trim())
-                  }
-            }
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: Colors.Gray600,
-                fontWeight: '500'
-              }}
-            >
-              {queryStr ? 'Clear' : 'Paste'}
-            </Text>
-          </TouchableOpacity>
         </TouchableOpacity>
+      </TouchableOpacity>
 
-        {foundUsers.length > 0 &&
-          foundUsers.map(user => (
-            <Cell
-              title={user?.name}
-              subtitle={user?.email}
-              imageUrl={user?.photoUrl}
-              onPress={async () => onRequest(user?.email)}
-              key={user?.email}
-            ></Cell>
-          ))}
+      {foundUsers.length > 0 &&
+        foundUsers.map(user => (
+          <Cell
+            title={user?.name}
+            subtitle={user?.email}
+            imageUrl={user?.photoUrl}
+            onPress={async () => onRequest(user?.email)}
+            key={user?.email}
+          ></Cell>
+        ))}
 
-        {!isLoading && queryStr && foundUsers.length === 0 ? (
-          <Animatable.View
-            animation='fadeIn'
-            iterationCount={1}
-            direction='alternate'
-            duration={240}
-            delay={240}
+      {!isLoading && queryStr && foundUsers.length === 0 ? (
+        <Animatable.View
+          animation='fadeIn'
+          iterationCount={1}
+          direction='alternate'
+          duration={240}
+          delay={240}
+          style={{
+            marginTop: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 20
+          }}
+        >
+          <Text
+            style={{ fontWeight: '600', fontSize: 18, textAlign: 'center' }}
+          >
+            No results
+          </Text>
+          <Text
             style={{
-              marginTop: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingHorizontal: 20
+              marginTop: 10,
+              fontSize: 16,
+              color: Colors.Gray600,
+              textAlign: 'center'
             }}
           >
-            <Text
-              style={{ fontWeight: '600', fontSize: 18, textAlign: 'center' }}
-            >
-              No results
-            </Text>
-            <Text
-              style={{
-                marginTop: 10,
-                fontSize: 16,
-                color: Colors.Gray600,
-                textAlign: 'center'
-              }}
-            >
-              Try searching for another email
-            </Text>
-          </Animatable.View>
-        ) : null}
-      </SafeAreaView>
-    </DismissKeyboard>
+            Try searching for another email
+          </Text>
+        </Animatable.View>
+      ) : null}
+    </SafeAreaView>
   )
 }
 
