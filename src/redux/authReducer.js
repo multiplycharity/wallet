@@ -127,7 +127,7 @@ export const signInWithGoogle = () => async dispatch => {
       dispatch(setAccessToken(response.accessToken))
       const address = await dispatch(getWalletFromDrive(response.accessToken))
       response.address = address
-      await dispatch(signInWithFirebase(response))
+      dispatch(signInWithFirebase(response))
     } else {
       dispatch(googleSignInFailure({ message: 'Canceled' }))
     }

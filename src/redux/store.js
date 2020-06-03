@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
-import { persistStore, persistReducer } from 'redux-persist'
+import { persistStore, persistReducer, PURGE } from 'redux-persist'
 import logger from 'redux-logger'
 import reactotron from '../config/reactotron'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
@@ -19,7 +19,7 @@ import scannerReducer from './scannerReducer'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'transactions', 'lastAction']
+  blacklist: ['isLoading', 'lastAction']
 }
 
 const transactionsConfig = {
@@ -42,7 +42,9 @@ const appReducer = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_APP') {
     state = undefined
+    AsyncStorage.clear()
   }
+
   return appReducer(state, action)
 }
 

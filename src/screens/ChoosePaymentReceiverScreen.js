@@ -23,6 +23,7 @@ import { CommonActions } from '@react-navigation/native'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
+import { useSelector } from 'react-redux'
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -30,7 +31,7 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 )
 
-const ChoosePaymentRecipientScreen = props => {
+const ChoosePaymentReceiverScreen = props => {
   const { amount } = props.route.params
 
   const [queryStr, setQueryStr] = useState('')
@@ -39,6 +40,8 @@ const ChoosePaymentRecipientScreen = props => {
   const [isExistingUserEmail, setIsExistingUserEmail] = useState(false)
   const [isTextInputFocused, setIsTextInputFocused] = useState(false)
   const [paymentType, setPaymentType] = useState(null)
+
+  const myself = useSelector(state => state.user)
 
   const navigation = useNavigation()
 
@@ -56,7 +59,7 @@ const ChoosePaymentRecipientScreen = props => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: 'Message'
+        message: 'Link to claim'
       })
 
       if (result.action !== Share.dismissedAction) {
@@ -81,7 +84,9 @@ const ChoosePaymentRecipientScreen = props => {
     setIsExistingUserEmail(false)
     setFoundUsers([])
     ;(async () => {
-      const users = await search(queryStr)
+      let users = await search(queryStr)
+      users = users.filter(user => user.email !== myself.email)
+
       users.map(user => {
         if (user.email === queryStr) setIsExistingUserEmail(true)
       })
@@ -304,7 +309,7 @@ const ChoosePaymentRecipientScreen = props => {
   )
 }
 
-export default ChoosePaymentRecipientScreen
+export default ChoosePaymentReceiverScreen
 
 const styles = StyleSheet.create({
   sectionHeader: {

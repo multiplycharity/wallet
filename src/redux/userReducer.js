@@ -4,6 +4,8 @@ import { throwError, clearError } from './errorReducer'
 import WalletSDK from '../helpers/WalletSDK'
 const sdk = new WalletSDK()
 
+import { firestore } from '../config/firebase'
+
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
 
@@ -52,6 +54,22 @@ export const createUserFailure = error => dispatch => {
     type: CREATE_USER_FAILURE,
     payload: error
   })
+}
+
+export const updateUser = params => (dispatch, getState) => {
+  let user = getState().user
+
+  firestore
+    .collection('users')
+    .doc(user.uid)
+    .update({ ...params })
+    .then(() => {
+      dispatch(updateUserSuccess({ ...user, ...params }))
+    })
+    .catch(error => {
+      dispatch(updateUserFailure(error))
+      throw new Error(error)
+    })
 }
 
 export const createWalletSuccess = wallet => {

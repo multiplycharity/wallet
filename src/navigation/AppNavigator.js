@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
   Button,
-  Dimensions
+  Dimensions,
+  Platform,
+  Vibration
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
 import {
   createStackNavigator,
@@ -27,9 +29,10 @@ import { toggleSearchBar } from '../redux/screenReducer'
 import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
-import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
+import ChoosePaymentReceiverScreen from '../screens/ChoosePaymentReceiverScreen'
+import ChooseRequestReceiverScreen from '../screens/ChooseRequestReceiverScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
-import TxSentScreen from '../screens/TxSentScreen'
+import OverlayMessageScreen from '../screens/OverlayMessageScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -42,6 +45,8 @@ import useScreenDimensions from '../hooks/useScreenDimensions'
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
+  const dispatch = useDispatch()
+
   const screen = useScreenDimensions()
 
   return (
@@ -138,8 +143,8 @@ const AppNavigator = ({ route, navigation }) => {
       />
 
       <Stack.Screen
-        name='ChoosePaymentRecipient'
-        component={ChoosePaymentRecipientScreen}
+        name='ChoosePaymentReceiver'
+        component={ChoosePaymentReceiverScreen}
         options={({ route, navigation }) => ({
           headerTitle: `$${route.params.amount}`,
           headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
@@ -162,8 +167,32 @@ const AppNavigator = ({ route, navigation }) => {
       />
 
       <Stack.Screen
-        name='TxSent'
-        component={TxSentScreen}
+        name='ChooseRequestReceiver'
+        component={ChooseRequestReceiverScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: `$${route.params.amount}`,
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerStyle: { shadowColor: 'transparent' },
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          },
+          headerLeft: props => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack()
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              <Feather name='x' size={screen.height > 800 ? 28 : 24}></Feather>
+            </TouchableOpacity>
+          )
+        })}
+      />
+
+      <Stack.Screen
+        name='OverlayMessage'
+        component={OverlayMessageScreen}
         options={({ route, navigation }) => ({
           headerTitle: null,
           headerShown: false

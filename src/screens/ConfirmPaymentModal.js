@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { View, Text, Share, StyleSheet } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import useScreenDimensions from '../hooks/useScreenDimensions'
@@ -9,6 +9,9 @@ import { Feather } from '@expo/vector-icons'
 import { CommonActions } from '@react-navigation/native'
 import { resetPaymentScreen } from '../redux/screenReducer'
 import { sendTx } from '../redux/transactions'
+import * as Animatable from 'react-native-animatable'
+import animationDefinitions from '../constants/animations'
+Animatable.initializeRegistryWithDefinitions(animationDefinitions)
 
 const ConfirmPaymentModal = props => {
   const {
@@ -26,6 +29,13 @@ const ConfirmPaymentModal = props => {
 
   const isLoading = useSelector(state => state.isLoading)
 
+  const balance = useSelector(state => state.user.balance)
+
+  const [errorMessage, setErrorMessage] = useState('')
+  const [errorTimer, setErrorTimer] = useState(null)
+  const amountAnimation = useRef(null)
+  const errorMessageAnimation = useRef(null)
+
   return (
     <View
       style={{
@@ -33,20 +43,28 @@ const ConfirmPaymentModal = props => {
         backgroundColor: Colors.White
       }}
     >
-      <View style={{ backgroundColor: 'white', flex: 1 }}>
-        <Text style={[styles.sectionHeader, { marginTop: 40, marginLeft: 40 }]}>
-          Amount
-        </Text>
-        <Text
+      <View style={{ backgroundColor: 'white', flex: 1, marginLeft: 40 }}>
+        <Text style={[styles.sectionHeader, { marginTop: 40 }]}>Amount</Text>
+        <Animatable.View ref={amountAnimation}>
+          <Text
+            style={{
+              fontSize: 28,
+              fontWeight: '500',
+              marginTop: 10
+            }}
+          >
+            ${amount}
+          </Text>
+        </Animatable.View>
+        <Animatable.View
+          ref={errorMessageAnimation}
           style={{
-            fontSize: 28,
-            fontWeight: '500',
-            marginLeft: 40,
-            marginTop: 10
+            marginTop: 10,
+            height: 16
           }}
         >
-          ${amount}
-        </Text>
+          <Text style={{ color: 'red' }}>{errorMessage}</Text>
+        </Animatable.View>
       </View>
 
       <View
@@ -117,17 +135,32 @@ const ConfirmPaymentModal = props => {
               paddingHorizontal: 20
             }}
             onPress={async () => {
-              dispatch(sendTx({ to: address, value: amount }))
-              dispatch(resetPaymentScreen())
+              if (parseFloat(balance) < parseFloat(amount)) {
+                errorTimer && clearTimeout(errorTimer)
+                setErrorMessage('Insufficient balance')
+                amountAnimation.current.shake(480)
+                errorMessageAnimation.current.fadeIn(480)
 
-              navigation.navigate('TxSent', {
-                address,
-                title,
-                imageUrl,
-                subtitle,
-                amount,
-                iconName
-              })
+                setErrorTimer(
+                  setTimeout(() => {
+                    errorMessageAnimation.current.fadeOut(480).then(() => {
+                      setErrorMessage('')
+                    })
+                  }, 1800)
+                )
+                return
+              }
+
+              // displayValueAnimation.current.shake(480)
+              else {
+                dispatch(sendTx({ to: address, value: amount }))
+                dispatch(resetPaymentScreen())
+
+                navigation.navigate('OverlayMessage', {
+                  message: `You sent $${amount} ${'\n'} to ${title}`,
+                  type: 'success'
+                })
+              }
             }}
           ></Button>
         </View>

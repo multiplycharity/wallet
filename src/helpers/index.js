@@ -41,7 +41,78 @@ export const getUserByAddress = async address => {
   return null
 }
 
+export const getUserByEmail = async email => {
+  let docs = []
+
+  const snapshot = await firestore
+    .collection('users')
+    .where('email', '==', email)
+    .get()
+
+  snapshot.docs.forEach(doc => {
+    docs.push(doc.data())
+  })
+
+  if (docs.length !== 1) return null
+  return docs[0]
+}
+
 export const getHexString = str => {
   if (!str.startsWith('0x')) return `0x${str}`
   return str
+}
+
+export const sendPushNotification = async ({
+  to,
+  title = 'Title',
+  body = 'Body',
+  data = {}
+}) => {
+  const message = {
+    to: to,
+    sound: 'default',
+    title: title,
+    body: body,
+    data: data,
+    _displayInForeground: true
+  }
+  return fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(message)
+  })
+}
+
+export const searchUser = async queryStr => {
+  let docs = []
+
+  if (queryStr) {
+    const emails = await firestore
+      .collection('users')
+      .where('email', '>=', queryStr)
+      .where('email', '<=', queryStr + '\uf8ff')
+      .get()
+
+    emails.docs.forEach(doc => {
+      docs.push(doc.data())
+    })
+
+    if (isEthereumAddress(queryStr)) {
+      const addresses = await firestore
+        .collection('users')
+        .where('address', '>=', queryStr)
+        .where('address', '<=', queryStr + '\uf8ff')
+        .get()
+
+      addresses.docs.forEach(doc => {
+        docs.push(doc.data())
+      })
+    }
+  }
+
+  return docs
 }
