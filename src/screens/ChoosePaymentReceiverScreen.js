@@ -30,7 +30,7 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 )
 
-const ChoosePaymentRecipientScreen = props => {
+const ChoosePaymentReceiverScreen = props => {
   const { amount } = props.route.params
 
   const [queryStr, setQueryStr] = useState('')
@@ -56,7 +56,7 @@ const ChoosePaymentRecipientScreen = props => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: 'Message'
+        message: 'Link to claim'
       })
 
       if (result.action !== Share.dismissedAction) {
@@ -304,7 +304,7 @@ const ChoosePaymentRecipientScreen = props => {
   )
 }
 
-export default ChoosePaymentRecipientScreen
+export default ChoosePaymentReceiverScreen
 
 const styles = StyleSheet.create({
   sectionHeader: {

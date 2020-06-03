@@ -34,7 +34,8 @@ import { toggleSearchBar } from '../redux/screenReducer'
 import PaymentScreen from '../screens/PaymentScreen'
 import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
-import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
+import ChoosePaymentReceiverScreen from '../screens/ChoosePaymentReceiverScreen'
+import ChooseRequestReceiverScreen from '../screens/ChooseRequestReceiverScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
 import OverlayMessageScreen from '../screens/OverlayMessageScreen'
 
@@ -45,14 +46,12 @@ import ProfileStackNavigator from './ProfileStackNavigator'
 import PaymentStackNavigator from './PaymentStackNavigator'
 import TabNavigator from './TabNavigator'
 import useScreenDimensions from '../hooks/useScreenDimensions'
+import { updateUser } from '../redux/userReducer'
 
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
-  const [expoPushToken, setExpoPushToken] = useState('')
-  const [notification, setNorification] = useState({})
-  console.log('notification: ', notification)
-  console.log('expoPushToken: ', expoPushToken)
+  const dispatch = useDispatch()
 
   const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
@@ -68,9 +67,9 @@ const AppNavigator = ({ route, navigation }) => {
         alert('Failed to get push token for push notification!')
         return
       }
-      token = await Notifications.getExpoPushTokenAsync()
-      console.log(token)
-      setExpoPushToken(token)
+      const pushToken = await Notifications.getExpoPushTokenAsync()
+
+      dispatch(updateUser({ pushToken }))
     } else {
       alert('Must use physical device for Push Notifications')
     }
@@ -187,8 +186,32 @@ const AppNavigator = ({ route, navigation }) => {
       />
 
       <Stack.Screen
-        name='ChoosePaymentRecipient'
-        component={ChoosePaymentRecipientScreen}
+        name='ChoosePaymentReceiver'
+        component={ChoosePaymentReceiverScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: `$${route.params.amount}`,
+          headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },
+          headerStyle: { shadowColor: 'transparent' },
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          },
+          headerLeft: props => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack()
+              }}
+              style={{ marginLeft: 16 }}
+            >
+              <Feather name='x' size={screen.height > 800 ? 28 : 24}></Feather>
+            </TouchableOpacity>
+          )
+        })}
+      />
+
+      <Stack.Screen
+        name='ChooseRequestReceiver'
+        component={ChooseRequestReceiverScreen}
         options={({ route, navigation }) => ({
           headerTitle: `$${route.params.amount}`,
           headerTitleStyle: { fontSize: screen.height > 800 ? 21 : 18 },

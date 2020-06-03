@@ -48,7 +48,8 @@ const OverlayMessageScreen = props => {
           fontSize: 18,
           textAlign: 'center',
           fontWeight: '500',
-          marginTop: 20
+          marginTop: 20,
+          paddingHorizontal: 25
         }}
       >
         {message}

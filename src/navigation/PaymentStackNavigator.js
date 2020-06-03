@@ -19,7 +19,7 @@ import Colors from '../constants/colors'
 import HomeScreen from '../screens/HomeScreen'
 import PaymentScreen from '../screens/PaymentScreen'
 import ProfileScreen from '../screens/ProfileScreen'
-import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
+import ChoosePaymentReceiverScreen from '../screens/ChoosePaymentReceiverScreen'
 
 import QRIcon from '../components/QRIcon'
 import { setIsScannerActive } from '../redux/screenReducer'

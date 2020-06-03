@@ -29,6 +29,7 @@ import { formatFloat } from '../helpers'
 const screen = Dimensions.get('screen')
 
 import { sendPushNotification } from '../helpers'
+import { updateUser } from '../redux/userReducer'
 
 Animatable.initializeRegistryWithDefinitions(animationDefinitions)
 
@@ -63,6 +64,7 @@ const PaymentScreen = ({ navigation, route }) => {
   const dispatch = useDispatch()
 
   const balance = useSelector(state => state.user.balance)
+  const name = useSelector(state => state.user.name)
 
   const [displayValue, setDisplayValue] = useState('0')
   const [wholePart, setWholePart] = useState('0')
@@ -296,15 +298,9 @@ const PaymentScreen = ({ navigation, route }) => {
                   return
                 }
 
-                try {
-                  const res = await sendPushNotification({
-                    to: 'ExponentPushToken[hcC_9oMeowC3c93TI5bMdf]'
-                  })
-
-                  console.log('response: ', await res.json())
-                } catch (err) {
-                  console.log('RR', err)
-                }
+                navigation.navigate('ChooseRequestReceiver', {
+                  amount: parseFloat(displayValue)
+                })
               }}
             ></Button>
             <Button
@@ -330,7 +326,7 @@ const PaymentScreen = ({ navigation, route }) => {
 
                   displayValueAnimation.current.shake(480)
                 } else {
-                  navigation.navigate('ChoosePaymentRecipient', {
+                  navigation.navigate('ChoosePaymentReceiver', {
                     amount: formatFloat(displayValue)
                   })
                 }
