@@ -120,13 +120,9 @@ const ConfirmPaymentModal = props => {
               dispatch(sendTx({ to: address, value: amount }))
               dispatch(resetPaymentScreen())
 
-              navigation.navigate('TxSent', {
-                address,
-                title,
-                imageUrl,
-                subtitle,
-                amount,
-                iconName
+              navigation.navigate('OverlayMessage', {
+                message: `You sent $${amount} ${'\n'} to ${title}`,
+                type: 'success'
               })
             }}
           ></Button>

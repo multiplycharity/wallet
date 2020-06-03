@@ -32,7 +32,7 @@ const PaymentStackNavigator = () => {
   const navigation = useNavigation()
   const dispatch = useDispatch()
 
-  useEffect(() => {}, [])
+  // useEffect(() => {}, [])
 
   useFocusEffect(
     useCallback(() => {

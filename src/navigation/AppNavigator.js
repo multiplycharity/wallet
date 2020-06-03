@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   SafeAreaView,
   Button,
-  Dimensions
+  Dimensions,
+  Platform,
+  Vibration
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+
+import { Notifications } from 'expo'
+import * as Permissions from 'expo-permissions'
+
+import Constants from 'expo-constants'
 
 import {
   createStackNavigator,
@@ -29,7 +36,7 @@ import BackupScreen from '../screens/BackupScreen'
 import ConfirmPaymentModal from '../screens/ConfirmPaymentModal'
 import ChoosePaymentRecipientScreen from '../screens/ChoosePaymentRecipientScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
-import TxSentScreen from '../screens/TxSentScreen'
+import OverlayMessageScreen from '../screens/OverlayMessageScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -42,6 +49,48 @@ import useScreenDimensions from '../hooks/useScreenDimensions'
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
+  const [expoPushToken, setExpoPushToken] = useState('')
+  const [notification, setNorification] = useState({})
+  console.log('notification: ', notification)
+  console.log('expoPushToken: ', expoPushToken)
+
+  const registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      )
+      let finalStatus = existingStatus
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        finalStatus = status
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+      }
+      token = await Notifications.getExpoPushTokenAsync()
+      console.log(token)
+      setExpoPushToken(token)
+    } else {
+      alert('Must use physical device for Push Notifications')
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250]
+      })
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      registerForPushNotificationsAsync()
+    }, [])
+  )
+
   const screen = useScreenDimensions()
 
   return (
@@ -162,8 +211,8 @@ const AppNavigator = ({ route, navigation }) => {
       />
 
       <Stack.Screen
-        name='TxSent'
-        component={TxSentScreen}
+        name='OverlayMessage'
+        component={OverlayMessageScreen}
         options={({ route, navigation }) => ({
           headerTitle: null,
           headerShown: false

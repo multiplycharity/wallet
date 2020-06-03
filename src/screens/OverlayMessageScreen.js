@@ -6,18 +6,11 @@ import { useDispatch } from 'react-redux'
 import { resetPaymentScreen } from '../redux/screenReducer'
 // import { useNavigation } from '@react-navigation/native'
 
-const TxSentScreen = props => {
+const OverlayMessageScreen = props => {
   const dispatch = useDispatch()
   const navigation = props.navigation
 
-  const {
-    address,
-    title,
-    imageUrl,
-    subtitle,
-    amount,
-    iconName
-  } = props.route.params
+  const { message, type } = props.route.params
 
   return (
     <View
@@ -35,11 +28,16 @@ const TxSentScreen = props => {
           borderRadius: 30,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: Colors.Lime
+          backgroundColor:
+            type === 'success'
+              ? Colors.Lime
+              : type === 'error'
+              ? Colors.Red
+              : Colors.Gray500
         }}
       >
         <Feather
-          name='check'
+          name={type === 'success' ? 'check' : 'x'}
           size={36}
           color={Colors.White}
           style={{ marginTop: 8 }}
@@ -53,7 +51,7 @@ const TxSentScreen = props => {
           marginTop: 20
         }}
       >
-        You sent ${amount} {'\n'} to {title}
+        {message}
       </Text>
 
       <View
@@ -84,4 +82,4 @@ const TxSentScreen = props => {
   )
 }
 
-export default TxSentScreen
+export default OverlayMessageScreen

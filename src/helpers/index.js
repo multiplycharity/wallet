@@ -45,3 +45,28 @@ export const getHexString = str => {
   if (!str.startsWith('0x')) return `0x${str}`
   return str
 }
+
+export const sendPushNotification = async ({
+  to,
+  title = 'Title',
+  body = 'Body',
+  data = {}
+}) => {
+  const message = {
+    to: to,
+    sound: 'default',
+    title: title,
+    body: body,
+    data: data,
+    _displayInForeground: true
+  }
+  return fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(message)
+  })
+}

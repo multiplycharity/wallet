@@ -28,6 +28,8 @@ import animationDefinitions from '../constants/animations'
 import { formatFloat } from '../helpers'
 const screen = Dimensions.get('screen')
 
+import { sendPushNotification } from '../helpers'
+
 Animatable.initializeRegistryWithDefinitions(animationDefinitions)
 
 const Key = props => {
@@ -283,17 +285,25 @@ const PaymentScreen = ({ navigation, route }) => {
               title='Request'
               style={{}}
               width={screen.width / 2.3}
-              onPress={() => {
-                // dispatch(setIsScannerActive(false))
-
-                // Temporary
-                navigation.navigate('PayToScanned', {
-                  scannedAddress: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A'
-                })
+              onPress={async () => {
+                // FIXME
+                // navigation.navigate('PayToScanned', {
+                //   scannedAddress: '0x9b5FEeE3B220eEdd3f678efa115d9a4D91D5cf0A'
+                // })
 
                 if (formatFloat(displayValue) === 0) {
                   displayValueAnimation.current.shake(480)
                   return
+                }
+
+                try {
+                  const res = await sendPushNotification({
+                    to: 'ExponentPushToken[hcC_9oMeowC3c93TI5bMdf]'
+                  })
+
+                  console.log('response: ', await res.json())
+                } catch (err) {
+                  console.log('RR', err)
                 }
               }}
             ></Button>
