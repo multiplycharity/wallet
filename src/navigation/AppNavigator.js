@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import {
   View,
   Text,
@@ -10,11 +10,6 @@ import {
   Vibration
 } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
-
-import { Notifications } from 'expo'
-import * as Permissions from 'expo-permissions'
-
-import Constants from 'expo-constants'
 
 import {
   createStackNavigator,
@@ -46,49 +41,11 @@ import ProfileStackNavigator from './ProfileStackNavigator'
 import PaymentStackNavigator from './PaymentStackNavigator'
 import TabNavigator from './TabNavigator'
 import useScreenDimensions from '../hooks/useScreenDimensions'
-import { updateUser } from '../redux/userReducer'
 
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
   const dispatch = useDispatch()
-
-  const registerForPushNotificationsAsync = async () => {
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-      )
-      let finalStatus = existingStatus
-      if (existingStatus !== 'granted') {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
-        finalStatus = status
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!')
-        return
-      }
-      const pushToken = await Notifications.getExpoPushTokenAsync()
-
-      dispatch(updateUser({ pushToken }))
-    } else {
-      alert('Must use physical device for Push Notifications')
-    }
-
-    if (Platform.OS === 'android') {
-      Notifications.createChannelAndroidAsync('default', {
-        name: 'default',
-        sound: true,
-        priority: 'max',
-        vibrate: [0, 250, 250, 250]
-      })
-    }
-  }
-
-  useFocusEffect(
-    useCallback(() => {
-      registerForPushNotificationsAsync()
-    }, [])
-  )
 
   const screen = useScreenDimensions()
 

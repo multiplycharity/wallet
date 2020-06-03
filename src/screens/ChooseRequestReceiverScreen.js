@@ -51,13 +51,15 @@ const ChoosePaymentReceiverScreen = props => {
         title: 'Payment request',
         body: `${myself.name} has requested $${amount}`,
         data: {
-          amount: amount
+          type: 'PAYMENT_REQUEST',
+          amount: amount,
+          sender: myself
         }
       })
 
       response = await response.json()
 
-      if (response.errors.length > 0) {
+      if (response.errors?.length > 0) {
         dispatch(resetPaymentScreen())
         return navigation.navigate('OverlayMessage', {
           message: 'Oops \n Something went wrong',

@@ -10,13 +10,18 @@ import {
   Dimensions
 } from 'react-native'
 
+import { Notifications } from 'expo'
+import * as Permissions from 'expo-permissions'
+
+import Constants from 'expo-constants'
+
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import { toggleSearchBar } from '../redux/screenReducer'
 
 import { fetchTxs } from '../redux/transactions'
-import { fetchBalance } from '../redux/userReducer'
+import { fetchBalance, updateUser } from '../redux/userReducer'
 
 import { Feather } from '@expo/vector-icons'
 
@@ -63,12 +68,70 @@ const ListHeader = props => {
 }
 
 const HomeScreen = props => {
+  const dispatch = useDispatch()
+
   const { navigation, route } = props
   const [timer, setTimer] = useState(null)
 
   const lastAction = useSelector(state => state.lastAction)
+  const email = useSelector(state => state.user.email)
 
-  const dispatch = useDispatch()
+  const registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      )
+      let finalStatus = existingStatus
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        finalStatus = status
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+      }
+      const pushToken = await Notifications.getExpoPushTokenAsync()
+
+      dispatch(updateUser({ pushToken }))
+    } else {
+      alert('Must use physical device for Push Notifications')
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250]
+      })
+    }
+  }
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+
+    console.log('Subscribing')
+    const subscription = Notifications.addListener(notification => {
+      console.log(notification.data)
+
+      if (notification.data?.type === 'PAYMENT_REQUEST') {
+        const requestSender = notification.data?.sender
+
+        navigation.navigate('ConfirmPayment', {
+          amount: notification.data?.amount,
+          title: requestSender.name,
+          subtitle: requestSender.email,
+          imageUrl: requestSender.photoUrl,
+          address: requestSender.address
+        })
+      }
+    })
+
+    return () => {
+      console.log('Unsubscribing')
+      subscription.remove()
+    }
+  }, [])
 
   const fetchData = () => {
     dispatch(fetchTxs())
