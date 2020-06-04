@@ -94,7 +94,7 @@ const HomeScreen = props => {
 
       dispatch(updateUser({ pushToken }))
     } else {
-      alert('Must use physical device for Push Notifications')
+      // alert('Must use physical device for Push Notifications')
     }
 
     if (Platform.OS === 'android') {
@@ -107,24 +107,41 @@ const HomeScreen = props => {
     }
   }
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData()
+
+      setTimer(
+        setInterval(() => {
+          fetchData()
+        }, 10000)
+      )
+      return () => {
+        clearInterval(timer)
+        setTimer(null)
+      }
+    }, [])
+  )
+
   useEffect(() => {
     registerForPushNotificationsAsync()
 
-    console.log('Subscribing')
+    console.log('Subscribing to push notifications')
     const subscription = Notifications.addListener(notification => {
       if (notification.data?.type === 'PAYMENT_REQUEST') {
-        navigation.navigate('ConfirmPayment', {
+        navigation.navigate('Request', {
           amount: notification.data.amount,
           title: notification.data.title,
           subtitle: notification.data.subtitle,
           imageUrl: notification.data.imageUrl,
-          address: notification.data.address
+          address: notification.data.address,
+          timestamp: notification.data.timestamp
         })
       }
     })
 
     return () => {
-      console.log('Unsubscribing')
+      console.log('Unsubscribing from push notifications')
       subscription.remove()
     }
   }, [])
@@ -133,21 +150,6 @@ const HomeScreen = props => {
     dispatch(fetchTxs())
     dispatch(fetchBalance())
   }
-
-  useEffect(() => {
-    fetchData()
-
-    setTimer(
-      setInterval(() => {
-        console.log('Next iteration')
-        fetchData()
-      }, 10000)
-    )
-    return () => {
-      clearInterval(timer)
-      setTimer(null)
-    }
-  }, [])
 
   useEffect(() => {
     if (lastAction.type === 'RESET_APP') {

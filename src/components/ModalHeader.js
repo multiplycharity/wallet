@@ -25,6 +25,7 @@ const ModalHeader = props => {
         }}
       />
     </View>
+
     // <TouchableOpacity><Feather></Feather></TouchableOpacity>
   )
 }

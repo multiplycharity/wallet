@@ -301,6 +301,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 navigation.navigate('ChooseRequestReceiver', {
                   amount: parseFloat(displayValue)
                 })
+                // navigation.navigate('Request', {})
               }}
             ></Button>
             <Button

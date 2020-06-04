@@ -10,8 +10,7 @@ import {
 import produce from 'immer'
 import moment from 'moment'
 import { AddressZero } from 'ethers/constants'
-
-const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
+import provider from '../services/providerService'
 
 export const FETCH_TXS_LOADING = 'FETCH_TXS_LOADING'
 export const FETCH_TXS_SUCCESS = 'FETCH_TXS_SUCCESS'
@@ -78,8 +77,8 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
     dispatch(addPendingTx(txn))
     dispatch(waitForTx(txn))
   } catch (error) {
-    console.log('error: ', error)
     dispatch(sendTxError(error))
+    throw new Error(error)
   }
 }
 
@@ -169,6 +168,7 @@ export const fetchTxsError = error => {
 
 export const fetchTxs = () => async (dispatch, getState) => {
   const address = getState().user?.wallet?.address || getState().user?.address
+  const history = getState().transactions.history
 
   dispatch(fetchTxsLoading())
 
@@ -185,7 +185,9 @@ export const fetchTxs = () => async (dispatch, getState) => {
 
     const pendingTxs = getState().transactions.pendingTxs
 
-    const formatted = await dispatch(formatTxs([...pendingTxs, ...res.result]))
+    const formatted = await dispatch(
+      formatTxs([...pendingTxs, ...history, ...res.result])
+    )
 
     dispatch(setHistory(formatted))
     dispatch(fetchTxsSuccess())
