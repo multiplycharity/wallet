@@ -19,7 +19,7 @@ export const formatWei = value => {
  * @param {String} value Decimal value to parse wei from
  */
 export const parseWei = value => {
-  return ethers.utils.parseEther((parseFloat(value) / 100).toString())
+  return ethers.utils.parseUnits((parseFloat(value) / 100).toString())
 }
 
 export const formatFloat = value => {

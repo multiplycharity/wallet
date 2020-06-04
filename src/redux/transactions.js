@@ -6,7 +6,8 @@ import {
   formatWei,
   formatAddress,
   getUserByAddress,
-  getHexString
+  getHexString,
+  parseWei
 } from '../helpers'
 import produce from 'immer'
 import moment from 'moment'
@@ -35,39 +36,36 @@ const initialState = {
   lastIndexedTimestamp: null
 }
 
-export const sendTx = ({ to, value, data = '0x' }) => async (
+export const sendTx = ({ to, amount, data = '0x', ...overrides }) => async (
   dispatch,
   getState
 ) => {
   try {
     dispatch(sendTxStarted())
 
-    const amount = value
-
     const privateKey = getState().user?.wallet?.privateKey
     const sender = new ethers.Wallet(privateKey, provider)
 
-    const txValue = ethers.utils.parseUnits(
-      (parseFloat(value) / 100).toString()
-    )
+    const value = parseWei(amount)
 
-    let tx = await sender.sendTransaction({
+    let txn = await sender.sendTransaction({
       to,
-      value: txValue,
+      value: value,
       data,
-      gasPrice: ethers.utils.parseUnits('1', 'gwei') // FIXME
+      gasPrice: ethers.utils.parseUnits('1', 'gwei'), // FIXME
+      ...overrides
     })
 
-    const user = await getUserByAddress(tx.to)
+    const user = await getUserByAddress(txn.to)
 
-    let txn = {
-      id: tx.hash.toLowerCase(),
-      txHash: tx.hash.toLowerCase(),
-      from: tx.from.toLowerCase(),
-      to: tx.to.toLowerCase(),
-      value: txValue.toString(),
+    let tx = {
+      id: txn.hash.toLowerCase(),
+      txHash: txn.hash.toLowerCase(),
+      from: txn.from.toLowerCase(),
+      to: txn.to.toLowerCase(),
+      value: value.toString(),
       data: data,
-      title: user?.name || tx.to.toLowerCase(),
+      title: user?.name || txn.to.toLowerCase(),
       timestamp: moment().unix(),
       amount: amount,
       user: user,
@@ -75,8 +73,9 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
       status: 'pending'
     }
 
-    dispatch(addPendingTx(txn))
-    dispatch(waitForTx(txn))
+    dispatch(addPendingTx(tx))
+    dispatch(waitForTx(tx))
+    return tx
   } catch (error) {
     dispatch(sendTxError(error))
     throw new Error(error)

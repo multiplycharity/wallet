@@ -153,7 +153,7 @@ const ConfirmPaymentModal = props => {
 
               // displayValueAnimation.current.shake(480)
               else {
-                dispatch(sendTx({ to: address, value: amount }))
+                dispatch(sendTx({ to: address, amount: amount }))
                 dispatch(resetPaymentScreen())
 
                 navigation.navigate('OverlayMessage', {
