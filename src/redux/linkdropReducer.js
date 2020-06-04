@@ -3,7 +3,8 @@ import { ethers } from 'ethers'
 import {
   CHAIN_ID,
   JSON_RPC_URL,
-  LINKDROP_FACTORY_ADDRESS
+  LINKDROP_FACTORY_ADDRESS,
+  LINKDROP_SERVER_URL
 } from 'react-native-dotenv'
 import LinkdropFactory from '../contracts/LinkdropFactory.json'
 
@@ -19,7 +20,8 @@ export const initLinkdropSDK = senderAddress => (dispatch, getState) => {
     senderAddress: senderAddress,
     chainId: CHAIN_ID,
     jsonRpcUrl: JSON_RPC_URL,
-    factoryAddress: LINKDROP_FACTORY_ADDRESS
+    factoryAddress: LINKDROP_FACTORY_ADDRESS,
+    apiHost: LINKDROP_SERVER_URL
   })
 }
 
@@ -78,4 +80,16 @@ export const generateLink = amount => async (dispatch, getState) => {
     // console.error(err)
     throw new Error(err)
   }
+}
+
+export const claimLink = claimParams => async (dispatch, getState) => {
+  const receiver = dispatch(getWalletFromState())
+  const linkdropSDK = dispatch(initLinkdropSDK(receiver.address))
+
+  const { success, txHash } = await linkdropSDK.claim({
+    ...claimParams,
+    receiverAddress: receiver.address
+  })
+  console.log('txHash: ', txHash)
+  console.log('success: ', success)
 }

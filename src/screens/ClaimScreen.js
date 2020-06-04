@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import {
   View,
   Text,
@@ -9,17 +9,21 @@ import {
 } from 'react-native'
 import Colors from '../constants/colors'
 import Button from '../components/Button'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import moment from 'moment'
 
 import { useSafeArea, SafeAreaView } from 'react-native-safe-area-context'
 import ConfettiCannon from 'react-native-confetti-cannon'
+import { useFocusEffect } from '@react-navigation/core'
+import { getUrlParams } from '../helpers'
+import { claimLink } from '../redux/linkdropReducer'
 
 const screen = Dimensions.get('screen')
 
 const RequestScreen = props => {
-  const confettiRef = useRef(null)
+  const dispatch = useDispatch()
 
+  const confettiRef = useRef(null)
   const confettiFallDuration = 2500
 
   const {
@@ -29,16 +33,17 @@ const RequestScreen = props => {
     subtitle,
     amount,
     timestamp,
-    //
-    linkKey,
-    nativeTokensAmount,
-    signerSignature,
-    linkdropContract,
-    sender,
-    chainId
+    url
   } = props.route.params
 
   const insets = useSafeArea()
+
+  //   useEffect(() => {
+  //     ;(async () => {
+  //       const claimParams = await getUrlParams(url)
+  //       console.log('claimParams: ', claimParams)
+  //     })()
+  //   }, [])
 
   return (
     <SafeAreaView
@@ -126,14 +131,20 @@ const RequestScreen = props => {
         <Button
           title='Claim'
           width={screen.width / 1.2}
-          onPress={() => {
+          onPress={async () => {
             //TODO dispatch claim function
+
+            const claimParams = await getUrlParams(url)
+            console.log('claimParams: ', claimParams)
+
+            dispatch(claimLink(claimParams))
+
             confettiRef.current.start()
 
-            setTimeout(
-              () => props.navigation.goBack(),
-              confettiFallDuration - 250
-            )
+            // setTimeout(
+            //   () => props.navigation.goBack(),
+            //   confettiFallDuration - 250
+            // )
 
             // props.navigation.navigate('ConfirmPayment', {
             //   amount: amount,

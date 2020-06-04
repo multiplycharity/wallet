@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { firestore } from '../config/firebase'
+import queryString from 'query-string'
 
 export const isEthereumAddress = address => {
   const regex = RegExp('^0x[a-fA-F0-9]{40}$')
