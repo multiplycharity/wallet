@@ -34,6 +34,7 @@ import ChooseRequestReceiverScreen from '../screens/ChooseRequestReceiverScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
 import OverlayMessageScreen from '../screens/OverlayMessageScreen'
 import RequestScreen from '../screens/RequestScreen'
+import ClaimScreen from '../screens/ClaimScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -203,6 +204,18 @@ const AppNavigator = ({ route, navigation }) => {
       <Stack.Screen
         name='Request'
         component={RequestScreen}
+        options={({ route, navigation }) => ({
+          headerShown: false,
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          }
+        })}
+      />
+
+      <Stack.Screen
+        name='Claim'
+        component={ClaimScreen}
         options={({ route, navigation }) => ({
           headerShown: false,
           gestureEnabled: true,

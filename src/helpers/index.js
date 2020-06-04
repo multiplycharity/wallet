@@ -128,3 +128,10 @@ export const searchUser = async queryStr => {
 
   return docs
 }
+
+export const getUrlParams = async url => {
+  const rawUrl = url.replace('#', '')
+  const parsedUrl = await queryString.extract(rawUrl)
+  const parsed = await queryString.parse(parsedUrl)
+  return parsed
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   View,
   Text,
@@ -13,17 +13,29 @@ import { useSelector } from 'react-redux'
 import moment from 'moment'
 
 import { useSafeArea, SafeAreaView } from 'react-native-safe-area-context'
+import ConfettiCannon from 'react-native-confetti-cannon'
 
 const screen = Dimensions.get('screen')
 
 const RequestScreen = props => {
+  const confettiRef = useRef(null)
+
+  const confettiFallDuration = 2500
+
   const {
     address,
     title,
     imageUrl,
     subtitle,
     amount,
-    timestamp
+    timestamp,
+    //
+    linkKey,
+    nativeTokensAmount,
+    signerSignature,
+    linkdropContract,
+    sender,
+    chainId
   } = props.route.params
 
   const insets = useSafeArea()
@@ -36,6 +48,15 @@ const RequestScreen = props => {
         alignItems: 'center'
       }}
     >
+      <ConfettiCannon
+        ref={confettiRef}
+        count={100}
+        origin={{ x: -40, y: 0 }}
+        fadeOut={true}
+        autoStart={false}
+        explosionSpeed={250}
+        fallSpeed={confettiFallDuration}
+      />
       <Image
         style={{
           borderRadius: 40,
@@ -72,7 +93,7 @@ const RequestScreen = props => {
           color: Colors.Gray500
         }}
       >
-        has requested
+        has sent you
       </Text>
 
       <Text
@@ -103,23 +124,25 @@ const RequestScreen = props => {
         }}
       >
         <Button
-          title='Cancel'
-          width={screen.width / 2.3}
-          onPress={() => props.navigation.goBack()}
-        ></Button>
-        <Button
-          title='Accept'
-          width={screen.width / 2.3}
-          style={{ marginLeft: 16 }}
+          title='Claim'
+          width={screen.width / 1.2}
           onPress={() => {
-            props.navigation.navigate('ConfirmPayment', {
-              amount: amount,
-              title: title,
-              subtitle: subtitle,
-              imageUrl: imageUrl,
-              address: address,
-              timestamp: timestamp
-            })
+            //TODO dispatch claim function
+            confettiRef.current.start()
+
+            setTimeout(
+              () => props.navigation.goBack(),
+              confettiFallDuration - 250
+            )
+
+            // props.navigation.navigate('ConfirmPayment', {
+            //   amount: amount,
+            //   title: title,
+            //   subtitle: subtitle,
+            //   imageUrl: imageUrl,
+            //   address: address,
+            //   timestamp: timestamp
+            // })
           }}
         ></Button>
       </View>

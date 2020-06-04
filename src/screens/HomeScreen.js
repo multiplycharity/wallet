@@ -56,7 +56,7 @@ const ListHeader = props => {
           style={{}}
           width={screen.width / 2.3}
           onPress={async () => {
-            const url = await dispatch(generateLink('10.23'))
+            const url = await dispatch(generateLink('1'))
             console.log(url)
           }}
         ></Button>
@@ -65,7 +65,15 @@ const ListHeader = props => {
           width={screen.width / 2.3}
           style={{ marginLeft: 16 }}
           onPress={() => {
-            // navigation.navigate('')
+            navigation.navigate('Claim', {
+              address: '0x',
+              title: 'Amir',
+              imageUrl:
+                'https://lh3.googleusercontent.com/a-/AOh14Ggt36CzA90HdFyU0fwqq7JkZiRbu9tVecHv7ol01w=s96-c',
+              subtitle: 'amiromayer@gmail.com',
+              amount: '10',
+              timestamp: Date.now()
+            })
           }}
         ></Button>
       </View>

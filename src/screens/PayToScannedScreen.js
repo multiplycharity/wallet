@@ -3,14 +3,14 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
+  Dimensions,
   StatusBar,
   TouchableOpacity
 } from 'react-native'
 import Colors from '../constants/colors'
 import { Feather } from '@expo/vector-icons'
 
-import { Dimensions } from 'react-native'
+import { useSafeArea, SafeAreaView } from 'react-native-safe-area-context'
 
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -58,6 +58,7 @@ const PaymentScreen = ({ navigation, route }) => {
   const scannedAddress = route.params?.scannedAddress
 
   const dispatch = useDispatch()
+  const insets = useSafeArea()
 
   const balance = useSelector(state => state.user.balance)
 
@@ -298,13 +299,13 @@ const PaymentScreen = ({ navigation, route }) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              marginBottom: 40
+              position: 'absolute',
+              bottom: 40 + insets.bottom
             }}
           >
             <Button
               title='Send'
-              width={screen.width / 1.1}
-              style={{ marginHorizontal: 16 }}
+              width={screen.width / 1.2}
               onPress={() => {
                 if (formatFloat(displayValue) === 0) {
                   displayValueAnimation.current.shake(480)
