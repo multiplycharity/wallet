@@ -22,6 +22,7 @@ import { toggleSearchBar } from '../redux/screenReducer'
 
 import { fetchTxs } from '../redux/transactions'
 import { fetchBalance, updateUser } from '../redux/userReducer'
+import { generateLink } from '../redux/linkdropReducer'
 
 import { Feather } from '@expo/vector-icons'
 
@@ -33,9 +34,11 @@ import SearchBar from '../components/SearchBar'
 const screen = Dimensions.get('screen')
 
 const ListHeader = props => {
+  const dispatch = useDispatch()
   const navigation = useNavigation()
   const balance = useSelector(state => state.user?.balance)
   const address = useSelector(state => state.user?.wallet?.address)
+  const privateKey = useSelector(state => state.user?.wallet?.privateKey)
 
   return (
     <View style={[styles.container, { marginBottom: 40 }]}>
@@ -52,7 +55,10 @@ const ListHeader = props => {
           title='Add Cash'
           style={{}}
           width={screen.width / 2.3}
-          onPress={() => {}}
+          onPress={async () => {
+            const url = await dispatch(generateLink('10.23'))
+            console.log(url)
+          }}
         ></Button>
         <Button
           title='Cash Out'

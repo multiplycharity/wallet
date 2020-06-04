@@ -6,8 +6,20 @@ export const isEthereumAddress = address => {
   return regex.test(address)
 }
 
+/**
+ *
+ * @param {String} value Wei amount to format into decimal
+ */
 export const formatWei = value => {
   return (ethers.utils.formatEther(value) * 100).toFixed(2).replace(/\.00$/, '')
+}
+
+/**
+ *
+ * @param {String} value Decimal value to parse wei from
+ */
+export const parseWei = value => {
+  return ethers.utils.parseEther((parseFloat(value) / 100).toString())
 }
 
 export const formatFloat = value => {
