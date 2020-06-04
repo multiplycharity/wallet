@@ -7,6 +7,7 @@ import {
   LINKDROP_SERVER_URL
 } from 'react-native-dotenv'
 import LinkdropFactory from '../contracts/LinkdropFactory.json'
+import moment from 'moment'
 
 import LinkdropSDK from '@linkdrop/sdk'
 import { parseWei } from '../helpers'
@@ -29,6 +30,23 @@ export const deployProxyIfNeeded = () => async (dispatch, getState) => {
   try {
     const sender = dispatch(getWalletFromState())
     const linkdropSDK = dispatch(initLinkdropSDK(sender.address))
+    const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
+    // Deploy proxy contract if not deployed yet
+    const code = await provider.getCode(proxyAddress)
+    if (code === '0x') {
+      const factoryContract = new ethers.Contract(
+        LINKDROP_FACTORY_ADDRESS,
+        LinkdropFactory.abi,
+        sender
+      )
+      console.log('Deploying proxy', proxyAddress)
+      const tx = await factoryContract.deployProxy(CAMPAIGN_ID, {
+        gasPrice: ethers.utils.parseUnits('1', 'gwei') //FIXME
+      })
+
+      console.log('Tx hash: ', tx.hash)
+      return tx.hash
+    }
   } catch (err) {
     throw new Error(err)
   }
@@ -43,20 +61,7 @@ export const generateLink = amount => async (dispatch, getState) => {
 
     const proxyAddress = linkdropSDK.getProxyAddress(CAMPAIGN_ID)
 
-    // Deploy proxy contract if not deployed yet
-    const code = await provider.getCode(proxyAddress)
-    if (code === '0x') {
-      const factoryContract = new ethers.Contract(
-        LINKDROP_FACTORY_ADDRESS,
-        LinkdropFactory.abi,
-        sender
-      )
-      console.log('Deploying proxy', proxyAddress)
-      const tx = await factoryContract.deployProxy(CAMPAIGN_ID, {
-        gasPrice: ethers.utils.parseUnits('1', 'gwei') //FIXME
-      })
-      console.log('Tx hash: ', tx.hash)
-    }
+    await dispatch(deployProxyIfNeeded())
 
     // Send fund to be claimed to the proxy contract
     const tx = await dispatch(
@@ -71,10 +76,16 @@ export const generateLink = amount => async (dispatch, getState) => {
     console.log(`Sending ${amount} to proxy contract`)
     console.log(`Tx hash: ${tx.txHash}`)
 
-    const { url } = await linkdropSDK.generateLink({
+    const timestamp = moment().unix()
+    let { url } = await linkdropSDK.generateLink({
       signingKeyOrWallet: sender.privateKey,
       nativeTokensAmount: value
     })
+
+    url = `${url}&timestamp=${timestamp}`
+
+    //TODO shorten url
+
     return url
   } catch (err) {
     // console.error(err)
@@ -90,6 +101,5 @@ export const claimLink = claimParams => async (dispatch, getState) => {
     ...claimParams,
     receiverAddress: receiver.address
   })
-  console.log('txHash: ', txHash)
-  console.log('success: ', success)
+  return { success, txHash }
 }

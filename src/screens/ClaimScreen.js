@@ -132,28 +132,18 @@ const RequestScreen = props => {
           title='Claim'
           width={screen.width / 1.2}
           onPress={async () => {
-            //TODO dispatch claim function
-
             const claimParams = await getUrlParams(url)
             console.log('claimParams: ', claimParams)
 
-            dispatch(claimLink(claimParams))
+            const { success, txHash } = await dispatch(claimLink(claimParams))
 
-            confettiRef.current.start()
-
-            // setTimeout(
-            //   () => props.navigation.goBack(),
-            //   confettiFallDuration - 250
-            // )
-
-            // props.navigation.navigate('ConfirmPayment', {
-            //   amount: amount,
-            //   title: title,
-            //   subtitle: subtitle,
-            //   imageUrl: imageUrl,
-            //   address: address,
-            //   timestamp: timestamp
-            // })
+            if (success) {
+              confettiRef.current.start()
+              setTimeout(
+                () => props.navigation.goBack(),
+                confettiFallDuration - 250
+              )
+            } else props.navigation.goBack()
           }}
         ></Button>
       </View>
