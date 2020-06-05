@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react'
 import {
   StyleSheet,
   Text,
@@ -32,6 +32,9 @@ import TransactionsList from '../components/TransactionsList'
 import SearchBar from '../components/SearchBar'
 
 const screen = Dimensions.get('screen')
+
+import { Linking } from 'expo'
+import { setDeepLink } from '../redux/deepLinkReducer'
 
 const ListHeader = props => {
   const dispatch = useDispatch()
@@ -90,12 +93,38 @@ const ListHeader = props => {
 
 const HomeScreen = props => {
   const dispatch = useDispatch()
+  const address = useSelector(state => state.user?.wallet?.address)
 
   const { navigation, route } = props
   const [timer, setTimer] = useState(null)
 
   const lastAction = useSelector(state => state.lastAction)
   const email = useSelector(state => state.user.email)
+
+  const deepLink = useSelector(state => state.deepLink?.deepLink)
+  console.log('deepLink: ', deepLink)
+  const path = useSelector(state => state.deepLink?.path)
+  const queryParams = useSelector(state => state.deepLink?.queryParams)
+
+  useEffect(() => {
+    Linking.addEventListener('url', ({ url }) => {
+      dispatch(setDeepLink(url))
+    })
+    ;(async () => {
+      const initialURL = await Linking.getInitialURL()
+      dispatch(setDeepLink(initialURL))
+    })()
+
+    return Linking.removeEventListener('url')
+  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      if (path === 'claim') {
+        navigation.navigate('Claim', { ...queryParams })
+      }
+    }, [path])
+  )
 
   const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
@@ -168,8 +197,10 @@ const HomeScreen = props => {
   }, [])
 
   const fetchData = () => {
-    dispatch(fetchTxs())
-    dispatch(fetchBalance())
+    if (address) {
+      dispatch(fetchTxs())
+      dispatch(fetchBalance())
+    }
   }
 
   useEffect(() => {

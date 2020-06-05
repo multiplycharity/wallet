@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import {
   StyleSheet,
   Text,
@@ -49,7 +49,7 @@ import { throwError } from '../redux/errorReducer'
 import Spinner from 'react-native-loading-spinner-overlay'
 import Colors from '../constants/colors'
 
-const SignInScreen = () => {
+const SignInScreen = props => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
 

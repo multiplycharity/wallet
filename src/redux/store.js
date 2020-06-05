@@ -15,11 +15,12 @@ import loadingReducer from './loadingReducer'
 import lastActionReducer from './lastActionReducer'
 import transactionsReducer from './transactions'
 import scannerReducer from './scannerReducer'
+import deepLinkReducer from './deepLinkReducer'
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'transactions', 'lastAction']
+  blacklist: ['isLoading', 'transactions', 'lastAction', 'deepLink']
 }
 
 // const transactionsConfig = {
@@ -36,7 +37,8 @@ const appReducer = combineReducers({
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
   transactions: transactionsReducer,
-  scanner: scannerReducer
+  scanner: scannerReducer,
+  deepLink: deepLinkReducer
 })
 
 const rootReducer = (state, action) => {

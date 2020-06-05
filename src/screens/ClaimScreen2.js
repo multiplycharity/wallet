@@ -22,6 +22,7 @@ import {
   addLinkdropTxToFirebase,
   isClaimedLink
 } from '../redux/linkdropReducer'
+import { resetDeepLink } from '../redux/deepLinkReducer'
 
 import Spinner from 'react-native-loading-spinner-overlay'
 import { ethers } from 'ethers'
@@ -178,14 +179,15 @@ const ClaimScreen = props => {
 
                   if (success && txHash) {
                     confettiRef.current.start()
-                    setTimeout(
-                      () => props.navigation.goBack(),
-                      confettiFallDuration
-                    )
-                  } else props.navigation.goBack()
-                } else {
-                  props.navigation.goBack()
+                    setTimeout(() => {
+                      dispatch(resetDeepLink())
+                      props.navigation.goBack()
+                    }, confettiFallDuration)
+                  }
                 }
+
+                dispatch(resetDeepLink())
+                props.navigation.goBack()
               }}
             ></Button>
           </View>
