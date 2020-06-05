@@ -108,7 +108,6 @@ const TransactionCell = props => {
             color: props.type === 'out' ? Colors.Red : Colors.Green
           }}
         >
-          {props.isLinkdrop && 'L '}
           {props.type === 'out' ? '-$' : '$'}
           {props.amount}
         </Text>

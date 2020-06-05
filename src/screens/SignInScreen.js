@@ -47,6 +47,7 @@ import { useSelector, useDispatch, useStore } from 'react-redux'
 import { throwError } from '../redux/errorReducer'
 
 import Spinner from 'react-native-loading-spinner-overlay'
+import Colors from '../constants/colors'
 
 const SignInScreen = () => {
   const dispatch = useDispatch()

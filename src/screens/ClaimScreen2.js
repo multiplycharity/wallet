@@ -25,6 +25,7 @@ import {
 
 import Spinner from 'react-native-loading-spinner-overlay'
 import { ethers } from 'ethers'
+import { Feather } from '@expo/vector-icons'
 
 const screen = Dimensions.get('screen')
 
@@ -36,7 +37,6 @@ const ClaimScreen = props => {
   const confettiRef = useRef(null)
   const confettiFallDuration = 2500
 
-  const [sender, setSender] = useState(null)
   const [isClaimed, setIsClaimed] = useState(false)
 
   const [isLoading, setIsLoading] = useState(true)
@@ -61,15 +61,11 @@ const ClaimScreen = props => {
     linkKey,
     signerSignature,
     linkdropContract,
-    sender: senderAddress,
-    timestamp
+    sender
   } = props.route.params
 
   useEffect(() => {
     ;(async () => {
-      setSender(await getUserByAddress2(senderAddress))
-      setIsLoading(false)
-
       const isClaimed = await dispatch(
         isClaimedLink({
           linkdropContract,
@@ -77,7 +73,8 @@ const ClaimScreen = props => {
         })
       )
 
-      console.log('isClaimed: ', isClaimed)
+      setIsClaimed(isClaimed)
+      setIsLoading(false)
     })()
   }, [])
 
@@ -88,7 +85,8 @@ const ClaimScreen = props => {
       style={{
         flex: 1,
         backgroundColor: Colors.White,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
       }}
     >
       <ConfettiCannon
@@ -101,73 +99,51 @@ const ClaimScreen = props => {
         fallSpeed={confettiFallDuration}
       />
       {isLoading ? (
-        <Spinner visible={isLoading} />
+        <Spinner
+          visible={isLoading}
+          overlayColor='rgba(255,255,255,0.25)'
+          color={Colors.Gray500}
+        />
       ) : (
         <>
-          <Image
-            style={{
-              borderRadius: 40,
-              width: 80,
-              height: 80,
-              overflow: 'hidden',
-              marginTop: insets.top + 60
-            }}
-            source={{
-              uri: sender.photoUrl
-            }}
-          />
-          <Text style={{ marginTop: 20, fontSize: 21, fontWeight: '500' }}>
-            {sender.name}
-          </Text>
-          <Text
-            style={{
-              marginTop: 5,
-              fontSize: 16,
-              fontWeight: '400',
-              color: Colors.Gray500
-            }}
-          >
-            {sender.email}
-          </Text>
-
           <View
             style={{
               alignItems: 'center',
-              marginTop: screen.height > 800 ? 100 : 60
+              marginTop: 20
             }}
           >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '400',
-                color: Colors.Gray500
-              }}
-            >
-              has sent you
-            </Text>
+            {!isClaimed && (
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: '400',
+                  color: Colors.Gray500
+                }}
+              >
+                You have received
+              </Text>
+            )}
             <Text
               style={{
                 marginTop: 5,
-                fontSize: 60,
+                fontSize: 64,
                 fontWeight: '400'
               }}
             >
               ${formatWei(nativeTokensAmount)}
             </Text>
-            <Text
-              style={{
-                marginTop: 5,
-                fontSize: 16,
-                fontWeight: '400',
-                color: Colors.Gray500
-              }}
-            >
-              {isClaimed
-                ? moment
-                    .unix(timestamp)
-                    .calendar(null, { sameElse: 'MM DD YYYY' })
-                : 'claimed'}
-            </Text>
+            {isClaimed && (
+              <Text
+                style={{
+                  marginTop: 5,
+                  fontSize: 18,
+                  fontWeight: '400',
+                  color: Colors.Gray500
+                }}
+              >
+                claimed
+              </Text>
+            )}
           </View>
           <View
             style={{
@@ -177,36 +153,39 @@ const ClaimScreen = props => {
             }}
           >
             <Button
-              title={isClaimed ? 'Claim' : 'Go to wallet'}
+              title={!isClaimed ? 'Claim' : 'Go to wallet'}
               width={screen.width / 1.2}
               onPress={async () => {
-                const { success, txHash } = await dispatch(
-                  claimLink({
-                    token,
-                    nft,
-                    feeToken,
-                    feeReceiver,
-                    nativeTokensAmount,
-                    tokensAmount,
-                    tokenId,
-                    feeAmount,
-                    expiration,
-                    data,
-                    linkKey,
-                    signerSignature,
-                    linkdropContract,
-                    sender: senderAddress,
-                    timestamp
-                  })
-                )
-
-                if (success && txHash) {
-                  confettiRef.current.start()
-                  setTimeout(
-                    () => props.navigation.goBack(),
-                    confettiFallDuration - 250
+                if (!isClaimed) {
+                  const { success, txHash } = await dispatch(
+                    claimLink({
+                      token,
+                      nft,
+                      feeToken,
+                      feeReceiver,
+                      nativeTokensAmount,
+                      tokensAmount,
+                      tokenId,
+                      feeAmount,
+                      expiration,
+                      data,
+                      linkKey,
+                      signerSignature,
+                      linkdropContract,
+                      sender
+                    })
                   )
-                } else props.navigation.goBack()
+
+                  if (success && txHash) {
+                    confettiRef.current.start()
+                    setTimeout(
+                      () => props.navigation.goBack(),
+                      confettiFallDuration
+                    )
+                  } else props.navigation.goBack()
+                } else {
+                  props.navigation.goBack()
+                }
               }}
             ></Button>
           </View>

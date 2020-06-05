@@ -34,7 +34,7 @@ import ChooseRequestReceiverScreen from '../screens/ChooseRequestReceiverScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
 import OverlayMessageScreen from '../screens/OverlayMessageScreen'
 import RequestScreen from '../screens/RequestScreen'
-import ClaimScreen from '../screens/ClaimScreen'
+import ClaimScreen from '../screens/ClaimScreen2'
 
 import ModalHeader from '../components/ModalHeader'
 

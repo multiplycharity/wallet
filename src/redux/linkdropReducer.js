@@ -40,6 +40,7 @@ import {
   LINKDROP_CAMPAIGN_ID
 } from 'react-native-dotenv'
 import LinkdropFactory from '../contracts/LinkdropFactory.json'
+import Linkdrop from '../contracts/Linkdrop.json'
 import moment from 'moment'
 
 import LinkdropSDK from '@linkdrop/sdk'
@@ -87,7 +88,7 @@ export const deployProxyIfNeeded = () => async (dispatch, getState) => {
         LinkdropFactory.abi,
         sender
       )
-      console.log('factoryContract: ', factoryContract)
+
       console.log('Deploying proxy', proxyAddress)
       const tx = await factoryContract.deployProxy(LINKDROP_CAMPAIGN_ID, {
         gasPrice: ethers.utils.parseUnits('1', 'gwei') //FIXME
@@ -120,6 +121,7 @@ export const generateLink = amount => async (dispatch, getState) => {
     })
 
     const claimParams = await getUrlParams(url)
+    console.log('claimParams: ', claimParams)
 
     url = Linking.makeUrl('/claim', {
       ...claimParams,
@@ -221,8 +223,7 @@ export const claimLink = ({
           linkKey,
           signerSignature,
           linkdropContract,
-          sender,
-          timestamp
+          sender
         })
       )
     }
@@ -248,11 +249,13 @@ export const addLinkdropTxToFirebase = ({
   linkKey,
   signerSignature,
   linkdropContract,
-  sender: senderAddress,
-  timestamp
+  sender
 }) => async (dispatch, getState) => {
+  const senderAddress = sender
+
   const myself = getState().user
-  const sender = await getUserByAddress2(senderAddress)
+
+  sender = await getUserByAddress2(senderAddress)
 
   const tx = {
     txHash: txHash.toLowerCase(),
@@ -260,7 +263,7 @@ export const addLinkdropTxToFirebase = ({
     to: myself.address.toLowerCase(),
     value: nativeTokensAmount.toString(),
     data: data,
-    timestamp: timestamp,
+    timestamp: moment().unix(),
     isLinkdrop: true,
     status: 'success'
   }
@@ -272,6 +275,20 @@ export const addLinkdropTxToFirebase = ({
   linkdrops.push(...formatted, ...linkdrops)
 
   dispatch(updateUser({ linkdrops }))
+}
+
+export const isClaimedLink = ({ linkId, linkdropContract }) => async (
+  dispatch,
+  getState
+) => {
+  linkdropContract = new ethers.Contract(
+    linkdropContract,
+    Linkdrop.abi,
+    provider
+  )
+
+  const isClaimed = await linkdropContract.isClaimedLink(linkId)
+  return isClaimed
 }
 
 // const linkdropReducer = (state = {}, action) => {

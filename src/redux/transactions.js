@@ -233,7 +233,7 @@ export const formatTxs = txs => async (dispatch, getState) => {
       dispatch(setLastIndexedTimestamp(timestamp))
 
     const title =
-      toAddr === linkdropContract
+      toAddr === linkdropContract || isLinkdrop
         ? 'Linkdrop'
         : user?.name || (txType === 'in' ? fromAddr : toAddr)
 

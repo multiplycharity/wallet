@@ -61,7 +61,27 @@ const ListHeader = props => {
           title='Cash Out'
           width={screen.width / 2.3}
           style={{ marginLeft: 16 }}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('Claim', {
+              chainId: '77',
+              data: '0x',
+              expiration: '11111111111',
+              feeAmount: '0',
+              feeReceiver: '0x0000000000000000000000000000000000000000',
+              feeToken: '0x0000000000000000000000000000000000000000',
+              linkKey:
+                '0x74978e0085cf9e410bebf0094a2f64801b604b5a14fc756418e18b4cf3518689',
+              linkdropContract: '0x1b181ab2432147829dc9e3b8bdeafb336602f63c',
+              nativeTokensAmount: '10000000000000000',
+              nft: '0x0000000000000000000000000000000000000000',
+              sender: '0x98075199fD8b495A2b17A1b926FAE8c59f5D8a22',
+              signerSignature:
+                '0xbcd359a6e538aaaabed2e37b9443098acaa9912092062f5f77b916f3626a8370113b767cfd78a20fc811aeb3b8e59572b428dabd97cadb7bb6f783f51caeca1e1c',
+              token: '0x0000000000000000000000000000000000000000',
+              tokenId: '0',
+              tokensAmount: '0'
+            })
+          }}
         ></Button>
       </View>
     </View>
