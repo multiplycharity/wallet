@@ -102,7 +102,6 @@ const HomeScreen = props => {
   const email = useSelector(state => state.user.email)
 
   const deepLink = useSelector(state => state.deepLink?.deepLink)
-  console.log('deepLink: ', deepLink)
   const path = useSelector(state => state.deepLink?.path)
   const queryParams = useSelector(state => state.deepLink?.queryParams)
 
