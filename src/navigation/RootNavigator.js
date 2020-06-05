@@ -14,7 +14,6 @@ enableScreens()
 const Stack = createStackNavigator()
 
 const prefix = Linking.makeUrl('/')
-console.log('prefix: ', prefix)
 
 const RootNavigator = () => {
   const [isSignedIn, setIsSignedIn] = useState(false)

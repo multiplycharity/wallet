@@ -1,6 +1,37 @@
 import { ethers } from 'ethers'
 const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
 
+export const CLAIM_STARTED = 'CLAIM_STARTED'
+export const CLAIM_SUCCESS = 'CLAIM_SUCCESS'
+export const CLAIM_ERROR = 'CLAIM_ERROR'
+export const LINK_GENERATION_STARTED = 'LINK_GENERATION_STARTED'
+export const LINK_GENERATION_SUCCESS = 'LINK_GENERATION_SUCCESS'
+export const LINK_GENERATION_ERROR = 'LINK_GENERATION_ERROR'
+
+export const claimStarted = () => {
+  return { type: CLAIM_STARTED }
+}
+
+export const claimSuccess = () => {
+  return { type: CLAIM_SUCCESS }
+}
+
+export const claimError = error => {
+  return { type: CLAIM_ERROR, payload: error }
+}
+
+export const linkGenerationStarted = () => {
+  return { type: LINK_GENERATION_STARTED }
+}
+
+export const linkGenerationSuccess = () => {
+  return { type: LINK_GENERATION_SUCCESS }
+}
+
+export const linkGenerationError = error => {
+  return { type: LINK_GENERATION_ERROR, payload: error }
+}
+
 import {
   CHAIN_ID,
   JSON_RPC_URL,
@@ -72,6 +103,7 @@ export const deployProxyIfNeeded = () => async (dispatch, getState) => {
 
 export const generateLink = amount => async (dispatch, getState) => {
   try {
+    dispatch(linkGenerationStarted())
     const sender = dispatch(getWalletFromState())
 
     const linkdropSDK = dispatch(initLinkdropSDK(sender.address))
@@ -88,7 +120,6 @@ export const generateLink = amount => async (dispatch, getState) => {
     })
 
     const claimParams = await getUrlParams(url)
-    console.log('claimParams: ', claimParams)
 
     url = Linking.makeUrl('/claim', {
       ...claimParams,
@@ -96,10 +127,11 @@ export const generateLink = amount => async (dispatch, getState) => {
     })
 
     //TODO shorten url
-
+    dispatch(linkGenerationSuccess())
     return url
   } catch (err) {
     // console.error(err)
+    dispatch(linkGenerationError(err))
     throw new Error(err)
   }
 }
@@ -147,27 +179,58 @@ export const claimLink = ({
   linkdropContract,
   sender
 }) => async (dispatch, getState) => {
-  const receiver = dispatch(getWalletFromState())
-  const linkdropSDK = dispatch(initLinkdropSDK(receiver.address))
+  try {
+    dispatch(claimStarted())
+    const receiver = dispatch(getWalletFromState())
+    const linkdropSDK = dispatch(initLinkdropSDK(receiver.address))
 
-  const { success, txHash } = await linkdropSDK.claim({
-    token,
-    nft,
-    feeToken,
-    feeReceiver,
-    nativeTokensAmount,
-    tokensAmount,
-    tokenId,
-    feeAmount,
-    expiration,
-    data,
-    linkKey,
-    signerSignature,
-    linkdropContract,
-    sender,
-    receiverAddress: receiver.address
-  })
-  return { success, txHash }
+    const { success, txHash } = await linkdropSDK.claim({
+      token,
+      nft,
+      feeToken,
+      feeReceiver,
+      nativeTokensAmount,
+      tokensAmount,
+      tokenId,
+      feeAmount,
+      expiration,
+      data,
+      linkKey,
+      signerSignature,
+      linkdropContract,
+      sender,
+      receiverAddress: receiver.address
+    })
+
+    if (success) {
+      dispatch(claimSuccess())
+
+      dispatch(
+        addLinkdropTxToFirebase({
+          txHash,
+          token,
+          nft,
+          feeToken,
+          feeReceiver,
+          nativeTokensAmount,
+          tokensAmount,
+          tokenId,
+          feeAmount,
+          expiration,
+          data,
+          linkKey,
+          signerSignature,
+          linkdropContract,
+          sender,
+          timestamp
+        })
+      )
+    }
+
+    return { success, txHash }
+  } catch (error) {
+    dispatch(claimError(error))
+  }
 }
 
 export const addLinkdropTxToFirebase = ({
@@ -210,3 +273,10 @@ export const addLinkdropTxToFirebase = ({
 
   dispatch(updateUser({ linkdrops }))
 }
+
+// const linkdropReducer = (state = {}, action) => {
+//   switch (action.type) {
+//     default:
+//       return state
+//   }
+// }

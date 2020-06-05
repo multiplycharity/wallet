@@ -193,7 +193,7 @@ export const fetchTxs = () => async (dispatch, getState) => {
     !user.linkdrops && dispatch(updateUser({ linkdrops })) // Persist state
 
     const formatted = await dispatch(
-      formatTxs([...pendingTxs, ...linkdrops, ...res.result])
+      formatTxs([...pendingTxs, ...linkdrops, ...history, ...res.result])
     )
 
     dispatch(setHistory(formatted))

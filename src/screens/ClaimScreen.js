@@ -19,6 +19,8 @@ import { useFocusEffect } from '@react-navigation/core'
 import { getUrlParams, getUserByAddress2, formatWei } from '../helpers'
 import { claimLink, addLinkdropTxToFirebase } from '../redux/linkdropReducer'
 
+import Spinner from 'react-native-loading-spinner-overlay'
+
 const screen = Dimensions.get('screen')
 
 const ClaimScreen = props => {
@@ -30,6 +32,8 @@ const ClaimScreen = props => {
   const confettiFallDuration = 2500
 
   const [sender, setSender] = useState(null)
+
+  const [isLoading, setIsLoading] = useState(true)
 
   const {
     address,
@@ -58,6 +62,7 @@ const ClaimScreen = props => {
   useEffect(() => {
     ;(async () => {
       setSender(await getUserByAddress2(senderAddress))
+      setIsLoading(false)
     })()
   }, [])
 
@@ -80,7 +85,9 @@ const ClaimScreen = props => {
         explosionSpeed={250}
         fallSpeed={confettiFallDuration}
       />
-      {sender ? (
+      {isLoading ? (
+        <Spinner visible={isLoading} />
+      ) : (
         <>
           <Image
             style={{
@@ -167,28 +174,7 @@ const ClaimScreen = props => {
                   })
                 )
 
-                if (true && txHash) {
-                  await dispatch(
-                    addLinkdropTxToFirebase({
-                      txHash: txHash,
-                      token,
-                      nft,
-                      feeToken,
-                      feeReceiver,
-                      nativeTokensAmount,
-                      tokensAmount,
-                      tokenId,
-                      feeAmount,
-                      expiration,
-                      data,
-                      linkKey,
-                      signerSignature,
-                      linkdropContract,
-                      sender: senderAddress,
-                      timestamp
-                    })
-                  )
-
+                if (success && txHash) {
                   confettiRef.current.start()
                   setTimeout(
                     () => props.navigation.goBack(),
@@ -199,8 +185,6 @@ const ClaimScreen = props => {
             ></Button>
           </View>
         </>
-      ) : (
-        <ActivityIndicator size='large'></ActivityIndicator>
       )}
     </SafeAreaView>
   )

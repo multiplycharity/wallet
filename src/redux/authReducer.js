@@ -60,7 +60,7 @@ export const googleSignInSuccess = () => {
 }
 
 export const googleSignInFailure = error => dispatch => {
-  dispatch(throwError(error, 'Update user failed'))
+  // dispatch(throwError(error, 'Update user failed'))
 
   dispatch({
     type: GOOGLE_SIGN_IN_FAILURE,

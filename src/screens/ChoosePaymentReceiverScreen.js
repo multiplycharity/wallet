@@ -25,6 +25,7 @@ import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
 import { useSelector, useDispatch } from 'react-redux'
 import { generateLink, topupProxy } from '../redux/linkdropReducer'
+import { resetPaymentScreen } from '../redux/screenReducer'
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -69,16 +70,7 @@ const ChoosePaymentReceiverScreen = props => {
 
       if (result.action !== Share.dismissedAction) {
         const txHash = await dispatch(topupProxy(amount))
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [
-              {
-                name: 'Payment'
-              }
-            ]
-          })
-        )
+        dispatch(resetPaymentScreen())
         navigation.goBack()
       }
     } catch (error) {
