@@ -15,6 +15,7 @@ import moment from 'moment'
 import { AddressZero } from 'ethers/constants'
 import provider from '../services/providerService'
 
+import { updateUser } from './userReducer'
 export const FETCH_TXS_LOADING = 'FETCH_TXS_LOADING'
 export const FETCH_TXS_SUCCESS = 'FETCH_TXS_SUCCESS'
 export const FETCH_TXS_ERROR = 'FETCH_TXS_ERROR'
@@ -168,14 +169,14 @@ export const fetchTxsError = error => {
 }
 
 export const fetchTxs = () => async (dispatch, getState) => {
-  const address = getState().user?.wallet?.address || getState().user?.address
+  const user = getState().user
   const history = getState().transactions.history
 
   dispatch(fetchTxsLoading())
 
   try {
     let res = await fetch(
-      `${BLOCK_EXPLORER_URL}/api?module=account&action=txlist&address=${address}`
+      `${BLOCK_EXPLORER_URL}/api?module=account&action=txlist&address=${user.address}`
     )
 
     res = await res.json()
@@ -186,7 +187,10 @@ export const fetchTxs = () => async (dispatch, getState) => {
 
     const pendingTxs = getState().transactions.pendingTxs
 
-    const linkdrops = (await getUserByAddress2(address))?.linkdrops || []
+    const linkdrops =
+      user.linkdrops || (await getUserByAddress2(user.address))?.linkdrops || []
+
+    !user.linkdrops && dispatch(updateUser({ linkdrops })) // Persist state
 
     const formatted = await dispatch(
       formatTxs([...pendingTxs, ...linkdrops, ...res.result])
@@ -199,9 +203,11 @@ export const fetchTxs = () => async (dispatch, getState) => {
   }
 }
 
-const formatTxs = txs => async (dispatch, getState) => {
+export const formatTxs = txs => async (dispatch, getState) => {
   const userAddress =
     getState().user?.wallet?.address || getState().user?.address
+
+  const linkdropContract = getState().user.linkdropContract
 
   let formatted = []
 
@@ -211,8 +217,9 @@ const formatTxs = txs => async (dispatch, getState) => {
     const toAddr = txs[i].to || AddressZero
 
     const txType =
-      txs[i].type ||
-      (formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out')
+      formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
+
+    const isLinkdrop = txs[i].isLinkdrop
 
     const txHash = txs[i].txHash || txs[i].hash
 
@@ -225,6 +232,11 @@ const formatTxs = txs => async (dispatch, getState) => {
     if (timestamp > lastIndexedTimestamp)
       dispatch(setLastIndexedTimestamp(timestamp))
 
+    const title =
+      toAddr === linkdropContract
+        ? 'Linkdrop'
+        : user?.name || (txType === 'in' ? fromAddr : toAddr)
+
     let tx = {
       id: txHash,
       txHash: txHash,
@@ -232,12 +244,13 @@ const formatTxs = txs => async (dispatch, getState) => {
       to: toAddr,
       value: txs[i].value,
       data: txs[i].data,
-      title: user?.name || (txType === 'in' ? fromAddr : toAddr),
+      title: title,
       timestamp: timestamp,
       amount: formatWei(txs[i].value),
       user,
       type: txType,
-      status: txs[i].status
+      status: txs[i].status,
+      isLinkdrop: isLinkdrop
     }
 
     formatted.push(tx)

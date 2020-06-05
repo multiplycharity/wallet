@@ -79,6 +79,7 @@ const ChoosePaymentReceiverScreen = props => {
             ]
           })
         )
+        navigation.goBack()
       }
     } catch (error) {
       throw error

@@ -55,37 +55,13 @@ const ListHeader = props => {
           title='Add Cash'
           style={{}}
           width={screen.width / 2.3}
-          onPress={async () => {
-            const url = await dispatch(generateLink('1'))
-            console.log(url)
-          }}
+          onPress={async () => {}}
         ></Button>
         <Button
           title='Cash Out'
           width={screen.width / 2.3}
           style={{ marginLeft: 16 }}
-          onPress={() => {
-            navigation.navigate('Claim', {
-              chainId: '77',
-              data: '0x',
-              expiration: '11111111111',
-              feeAmount: '0',
-              feeReceiver: '0x0000000000000000000000000000000000000000',
-              feeToken: '0x0000000000000000000000000000000000000000',
-              linkKey:
-                '0x488f32e3ed9cc7566db8513bd9b039e6389fd5df0d2694665add38079be2ea38',
-              linkdropContract: '0x1b181ab2432147829dc9e3b8bdeafb336602f63c',
-              nativeTokensAmount: '10000000000000000',
-              nft: '0x0000000000000000000000000000000000000000',
-              sender: '0x98075199fD8b495A2b17A1b926FAE8c59f5D8a22',
-              signerSignature:
-                '0xbdf7596347dc7c63aa7f13acd63045feafd3ee9f21e4d9c95c65614afed6f70d1e92ed5649bb974df502f7c279fdca2b45e8dadb80c73d6cbbe2650c5a3225c71c',
-              timestamp: '1591334956',
-              token: '0x0000000000000000000000000000000000000000',
-              tokenId: '0',
-              tokensAmount: '0'
-            })
-          }}
+          onPress={() => {}}
         ></Button>
       </View>
     </View>

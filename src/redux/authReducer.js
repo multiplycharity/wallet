@@ -2,7 +2,7 @@ import * as Google from 'expo-google-app-auth'
 import firebase from '../config/firebase'
 import { firestore as db } from '../config/firebase'
 
-import { CLIENT_ID, API_KEY } from 'react-native-dotenv'
+import { CLIENT_ID, API_KEY, LINKDROP_CAMPAIGN_ID } from 'react-native-dotenv'
 import { isUserEqual } from './helpers'
 import {
   createUserSuccess,
@@ -13,6 +13,7 @@ import {
 } from './userReducer'
 
 import { throwError, clearError } from './errorReducer'
+import { initLinkdropSDK } from './linkdropReducer'
 
 export const LOGIN_STARTED = 'LOGIN_STARTED'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -126,7 +127,13 @@ export const signInWithGoogle = () => async dispatch => {
       dispatch(googleSignInSuccess())
       dispatch(setAccessToken(response.accessToken))
       const address = await dispatch(getWalletFromDrive(response.accessToken))
+
+      const linkdropSDK = dispatch(initLinkdropSDK(address))
+      const linkdropContract = linkdropSDK.getProxyAddress(LINKDROP_CAMPAIGN_ID)
+
       response.address = address
+      response.linkdropContract = linkdropContract
+
       dispatch(signInWithFirebase(response))
     } else {
       dispatch(googleSignInFailure({ message: 'Canceled' }))
@@ -171,7 +178,8 @@ export const signInWithFirebase = googleUser => dispatch => {
               name: displayName,
               phone: phoneNumber,
               photoUrl: photoURL,
-              address: googleUser.address
+              address: googleUser.address,
+              linkdropContract: googleUser.linkdropContract
             }
 
             // If new user
