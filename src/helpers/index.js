@@ -37,21 +37,33 @@ export const isEmailAddress = email => {
 
 export const getUserByAddress = async address => {
   // address = formatAddress(address)
-
   // let docs = []
-
   // const snapshot = await firestore
   //   .collection('users')
   //   .where('address', '==', address)
   //   .get()
-
   // snapshot.docs.forEach(doc => {
   //   docs.push(doc.data())
   // })
-
   // if (docs.length !== 1) return null
   // return docs[0]
-  return null
+  // return null
+}
+
+//FIXME temp
+export const getUserByAddress2 = async address => {
+  address = formatAddress(address)
+  let docs = []
+  const snapshot = await firestore
+    .collection('users')
+    .where('address', '==', address)
+    .get()
+  snapshot.docs.forEach(doc => {
+    docs.push(doc.data())
+  })
+  if (docs.length !== 1) return null
+  return docs[0]
+  // return null
 }
 
 export const getUserByEmail = async email => {

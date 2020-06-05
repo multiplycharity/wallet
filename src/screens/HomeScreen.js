@@ -66,15 +66,24 @@ const ListHeader = props => {
           style={{ marginLeft: 16 }}
           onPress={() => {
             navigation.navigate('Claim', {
-              address: '0x',
-              title: 'Amir',
-              imageUrl:
-                'https://lh3.googleusercontent.com/a-/AOh14Ggt36CzA90HdFyU0fwqq7JkZiRbu9tVecHv7ol01w=s96-c',
-              subtitle: 'amiromayer@gmail.com',
-              amount: '10',
-              timestamp: Date.now(),
-              url:
-                'https://claim-v2.linkdrop.io/#/receive?token=0x0000000000000000000000000000000000000000&nft=0x0000000000000000000000000000000000000000&feeToken=0x0000000000000000000000000000000000000000&feeReceiver=0x0000000000000000000000000000000000000000&linkKey=0x907c7a7629b32bc7c5d69679ee48781e615b35e886699dff081f9f9bf94f640f&nativeTokensAmount=10000000000000000&tokensAmount=0&tokenId=0&feeAmount=0&expiration=11111111111&data=0x&signerSignature=0x4905c48ba19035b984df96a4a9930bb3b409e8e0d4f6dcb3f8547d4e41aae8b2059e4c0fcc2832c1aad9a25f9fb2518f1476e8d533d6966200e335d2e57e88301b&linkdropContract=0x1b181ab2432147829dc9e3b8bdeafb336602f63c&sender=0x98075199fD8b495A2b17A1b926FAE8c59f5D8a22&chainId=77'
+              chainId: '77',
+              data: '0x',
+              expiration: '11111111111',
+              feeAmount: '0',
+              feeReceiver: '0x0000000000000000000000000000000000000000',
+              feeToken: '0x0000000000000000000000000000000000000000',
+              linkKey:
+                '0x488f32e3ed9cc7566db8513bd9b039e6389fd5df0d2694665add38079be2ea38',
+              linkdropContract: '0x1b181ab2432147829dc9e3b8bdeafb336602f63c',
+              nativeTokensAmount: '10000000000000000',
+              nft: '0x0000000000000000000000000000000000000000',
+              sender: '0x98075199fD8b495A2b17A1b926FAE8c59f5D8a22',
+              signerSignature:
+                '0xbdf7596347dc7c63aa7f13acd63045feafd3ee9f21e4d9c95c65614afed6f70d1e92ed5649bb974df502f7c279fdca2b45e8dadb80c73d6cbbe2650c5a3225c71c',
+              timestamp: '1591334956',
+              token: '0x0000000000000000000000000000000000000000',
+              tokenId: '0',
+              tokensAmount: '0'
             })
           }}
         ></Button>

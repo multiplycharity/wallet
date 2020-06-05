@@ -20,7 +20,10 @@ const RootNavigator = () => {
   const [isSignedIn, setIsSignedIn] = useState(false)
 
   const linking = {
-    prefixes: [prefix]
+    prefixes: [prefix],
+    config: {
+      Claim: 'claim'
+    }
   }
 
   return (
