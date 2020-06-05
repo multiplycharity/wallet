@@ -33,9 +33,6 @@ import SearchBar from '../components/SearchBar'
 
 const screen = Dimensions.get('screen')
 
-import { Linking } from 'expo'
-import { setDeepLink } from '../redux/deepLinkReducer'
-
 const ListHeader = props => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
@@ -100,30 +97,6 @@ const HomeScreen = props => {
 
   const lastAction = useSelector(state => state.lastAction)
   const email = useSelector(state => state.user.email)
-
-  const deepLink = useSelector(state => state.deepLink?.deepLink)
-  const path = useSelector(state => state.deepLink?.path)
-  const queryParams = useSelector(state => state.deepLink?.queryParams)
-
-  useEffect(() => {
-    Linking.addEventListener('url', ({ url }) => {
-      dispatch(setDeepLink(url))
-    })
-    ;(async () => {
-      const initialURL = await Linking.getInitialURL()
-      dispatch(setDeepLink(initialURL))
-    })()
-
-    return Linking.removeEventListener('url')
-  }, [])
-
-  useFocusEffect(
-    useCallback(() => {
-      if (path === 'claim') {
-        navigation.navigate('Claim', { ...queryParams })
-      }
-    }, [path])
-  )
 
   const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {

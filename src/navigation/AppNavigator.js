@@ -44,12 +44,39 @@ import PaymentStackNavigator from './PaymentStackNavigator'
 import TabNavigator from './TabNavigator'
 import useScreenDimensions from '../hooks/useScreenDimensions'
 
+import { Linking } from 'expo'
+import { setDeepLink } from '../redux/deepLinkReducer'
+
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
   const dispatch = useDispatch()
 
   const screen = useScreenDimensions()
+
+  const deepLink = useSelector(state => state.deepLink?.deepLink)
+  const path = useSelector(state => state.deepLink?.path)
+  const queryParams = useSelector(state => state.deepLink?.queryParams)
+
+  useEffect(() => {
+    Linking.addEventListener('url', ({ url }) => {
+      dispatch(setDeepLink(url))
+    })
+    ;(async () => {
+      const initialURL = await Linking.getInitialURL()
+      dispatch(setDeepLink(initialURL))
+    })()
+
+    return Linking.removeEventListener('url')
+  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      if (path === 'claim') {
+        navigation.navigate('Claim', { ...queryParams })
+      }
+    }, [path])
+  )
 
   return (
     <Stack.Navigator
