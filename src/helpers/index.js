@@ -47,7 +47,7 @@ export const getUserByAddress = async address => {
   // })
   // if (docs.length !== 1) return null
   // return docs[0]
-  // return null
+  return null
 }
 
 //FIXME temp

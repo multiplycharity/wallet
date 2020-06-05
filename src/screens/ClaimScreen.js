@@ -5,7 +5,8 @@ import {
   Image,
   Dimensions,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native'
 import Colors from '../constants/colors'
 import Button from '../components/Button'
@@ -16,17 +17,19 @@ import { useSafeArea, SafeAreaView } from 'react-native-safe-area-context'
 import ConfettiCannon from 'react-native-confetti-cannon'
 import { useFocusEffect } from '@react-navigation/core'
 import { getUrlParams, getUserByAddress2, formatWei } from '../helpers'
-import { claimLink } from '../redux/linkdropReducer'
+import { claimLink, addLinkdropTxToFirebase } from '../redux/linkdropReducer'
 
 const screen = Dimensions.get('screen')
 
 const ClaimScreen = props => {
+  const myself = useSelector(state => state.user)
+
   const dispatch = useDispatch()
 
   const confettiRef = useRef(null)
   const confettiFallDuration = 2500
 
-  const [user, setSender] = useState(null)
+  const [sender, setSender] = useState(null)
 
   const {
     address,
@@ -48,16 +51,13 @@ const ClaimScreen = props => {
     linkKey,
     signerSignature,
     linkdropContract,
-    sender,
+    sender: senderAddress,
     timestamp
   } = props.route.params
 
   useEffect(() => {
     ;(async () => {
-      const yo = await getUserByAddress2(sender)
-      console.log('yo: ', yo)
-
-      setSender(yo)
+      setSender(await getUserByAddress2(senderAddress))
     })()
   }, [])
 
@@ -80,7 +80,7 @@ const ClaimScreen = props => {
         explosionSpeed={250}
         fallSpeed={confettiFallDuration}
       />
-      {user && (
+      {sender ? (
         <>
           <Image
             style={{
@@ -91,11 +91,11 @@ const ClaimScreen = props => {
               marginTop: insets.top + 60
             }}
             source={{
-              uri: user.photoUrl
+              uri: sender.photoUrl
             }}
           />
           <Text style={{ marginTop: 20, fontSize: 21, fontWeight: '500' }}>
-            {user.name}
+            {sender.name}
           </Text>
           <Text
             style={{
@@ -105,7 +105,7 @@ const ClaimScreen = props => {
               color: Colors.Gray500
             }}
           >
-            {user.email}
+            {sender.email}
           </Text>
           <Text
             style={{
@@ -162,12 +162,33 @@ const ClaimScreen = props => {
                     linkKey,
                     signerSignature,
                     linkdropContract,
-                    sender,
+                    sender: senderAddress,
                     timestamp
                   })
                 )
 
-                if (success) {
+                if (true && txHash) {
+                  await dispatch(
+                    addLinkdropTxToFirebase({
+                      txHash: txHash,
+                      token,
+                      nft,
+                      feeToken,
+                      feeReceiver,
+                      nativeTokensAmount,
+                      tokensAmount,
+                      tokenId,
+                      feeAmount,
+                      expiration,
+                      data,
+                      linkKey,
+                      signerSignature,
+                      linkdropContract,
+                      sender: senderAddress,
+                      timestamp
+                    })
+                  )
+
                   confettiRef.current.start()
                   setTimeout(
                     () => props.navigation.goBack(),
@@ -178,6 +199,8 @@ const ClaimScreen = props => {
             ></Button>
           </View>
         </>
+      ) : (
+        <ActivityIndicator size='large'></ActivityIndicator>
       )}
     </SafeAreaView>
   )

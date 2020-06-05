@@ -19,14 +19,14 @@ import scannerReducer from './scannerReducer'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'lastAction']
+  blacklist: ['isLoading', 'transactions', 'lastAction']
 }
 
-const transactionsConfig = {
-  key: 'transactions',
-  storage: AsyncStorage,
-  blacklist: ['pendingTxs']
-}
+// const transactionsConfig = {
+//   key: 'transactions',
+//   storage: AsyncStorage,
+//   blacklist: ['pendingTxs']
+// }
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -35,7 +35,7 @@ const appReducer = combineReducers({
   error: errorReducer,
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
-  transactions: persistReducer(transactionsConfig, transactionsReducer),
+  transactions: transactionsReducer,
   scanner: scannerReducer
 })
 

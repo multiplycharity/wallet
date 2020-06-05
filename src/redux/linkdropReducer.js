@@ -10,11 +10,19 @@ import LinkdropFactory from '../contracts/LinkdropFactory.json'
 import moment from 'moment'
 
 import LinkdropSDK from '@linkdrop/sdk'
-import { parseWei, getUrlParams } from '../helpers'
+import {
+  parseWei,
+  formatWei,
+  getUrlParams,
+  getUserByAddress,
+  getUserByAddress2
+} from '../helpers'
 import { sendTx } from './transactions'
 import { getWalletFromState } from './walletReducer'
 
 import { Linking } from 'expo'
+import { firestore } from 'firebase'
+import { updateUser } from './userReducer'
 
 const CAMPAIGN_ID = 0
 
@@ -152,4 +160,48 @@ export const claimLink = ({
     receiverAddress: receiver.address
   })
   return { success, txHash }
+}
+
+export const addLinkdropTxToFirebase = ({
+  txHash,
+  token,
+  nft,
+  feeToken,
+  feeReceiver,
+  nativeTokensAmount,
+  tokensAmount,
+  tokenId,
+  feeAmount,
+  expiration,
+  data,
+  linkKey,
+  signerSignature,
+  linkdropContract,
+  sender: senderAddress,
+
+  timestamp
+}) => async (dispatch, getState) => {
+  const myself = getState().user
+  const sender = await getUserByAddress(senderAddress)
+
+  const tx = {
+    id: txHash.toLowerCase(),
+    txHash: txHash.toLowerCase(),
+    from: senderAddress.toLowerCase(),
+    to: myself.address.toLowerCase(),
+    value: nativeTokensAmount.toString(),
+    data: data,
+    title: sender?.name || senderAddress.toLowerCase(),
+    timestamp: timestamp,
+    amount: formatWei(nativeTokensAmount),
+    user: sender,
+    type: 'linkdrop',
+    status: 'success'
+  }
+
+  let linkdrops = sender?.linkdrops || []
+
+  linkdrops.push(tx, ...linkdrops)
+
+  dispatch(updateUser({ linkdrops }))
 }

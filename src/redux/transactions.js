@@ -7,7 +7,8 @@ import {
   formatAddress,
   getUserByAddress,
   getHexString,
-  parseWei
+  parseWei,
+  getUserByAddress2
 } from '../helpers'
 import produce from 'immer'
 import moment from 'moment'
@@ -185,8 +186,10 @@ export const fetchTxs = () => async (dispatch, getState) => {
 
     const pendingTxs = getState().transactions.pendingTxs
 
+    const linkdrops = (await getUserByAddress2(address))?.linkdrops || []
+
     const formatted = await dispatch(
-      formatTxs([...pendingTxs, ...history, ...res.result])
+      formatTxs([...pendingTxs, ...linkdrops, ...res.result])
     )
 
     dispatch(setHistory(formatted))
@@ -204,9 +207,13 @@ const formatTxs = txs => async (dispatch, getState) => {
 
   for (let i = 0; i < txs.length; i++) {
     const fromAddr = txs[i].from
+
     const toAddr = txs[i].to || AddressZero
+
     const txType =
-      formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
+      txs[i].type ||
+      (formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out')
+
     const txHash = txs[i].txHash || txs[i].hash
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
@@ -232,6 +239,7 @@ const formatTxs = txs => async (dispatch, getState) => {
       type: txType,
       status: txs[i].status
     }
+
     formatted.push(tx)
   }
   const set = new Set()
