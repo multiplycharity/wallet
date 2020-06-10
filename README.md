@@ -21,3 +21,9 @@ This step assumes you already have XCode and iOS simulator installed on your Mac
 ```js
 yarn ios
 ```
+
+## Try app
+
+You can also try app in Expo Client App
+
+https://expo.io/@amiromayer/avacashwallet
