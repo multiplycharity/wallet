@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Ava Cash Wallet",
+    "name": "AVA Cash Wallet",
     "slug": "avacashwallet",
     "platforms": [
       "ios",
@@ -29,6 +29,6 @@
     "notification": {
       "iosDisplayInForeground": true
     },
-    "description": "Ava Cash Wallet"
+    "description": "AVA Cash Wallet"
   }
 }

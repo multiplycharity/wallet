@@ -20,14 +20,14 @@ import deepLinkReducer from './deepLinkReducer'
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'transactions', 'lastAction', 'deepLink']
+  blacklist: ['isLoading', 'lastAction', 'deepLink']
 }
 
-// const transactionsConfig = {
-//   key: 'transactions',
-//   storage: AsyncStorage,
-//   blacklist: ['pendingTxs']
-// }
+const transactionsConfig = {
+  key: 'transactions',
+  storage: AsyncStorage,
+  blacklist: ['pendingTxs']
+}
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -36,7 +36,7 @@ const appReducer = combineReducers({
   error: errorReducer,
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
-  transactions: transactionsReducer,
+  transactions: persistReducer(transactionsConfig, transactionsReducer),
   scanner: scannerReducer,
   deepLink: deepLinkReducer
 })
