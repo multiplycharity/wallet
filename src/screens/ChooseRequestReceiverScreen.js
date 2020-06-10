@@ -24,6 +24,7 @@ import {
   sendPushNotification
 } from '../helpers'
 import { Feather } from '@expo/vector-icons'
+import moment from 'moment'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
@@ -57,7 +58,9 @@ const ChooseRequestReceiverScreen = props => {
           amount: amount,
           title: myself.name,
           imageUrl: myself.photoUrl,
-          subtitle: myself.email
+          subtitle: myself.email,
+          timestamp: moment().unix(),
+          address: myself.address
         }
       })
 

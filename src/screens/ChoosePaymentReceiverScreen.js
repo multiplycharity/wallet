@@ -23,7 +23,9 @@ import { CommonActions } from '@react-navigation/native'
 
 import * as Animatable from 'react-native-animatable'
 import animationDefinitions from '../constants/animations'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { generateLink, topupProxy } from '../redux/linkdropReducer'
+import { resetPaymentScreen } from '../redux/screenReducer'
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -44,6 +46,7 @@ const ChoosePaymentReceiverScreen = props => {
   const myself = useSelector(state => state.user)
 
   const navigation = useNavigation()
+  const dispatch = useDispatch()
 
   //   useLayoutEffect(() => {
   //     navigation.setOptions({
@@ -58,21 +61,17 @@ const ChoosePaymentReceiverScreen = props => {
 
   const onShare = async () => {
     try {
+      const url = await dispatch(generateLink(amount))
+
       const result = await Share.share({
-        message: 'Link to claim'
+        title: 'Payment link',
+        message: url
       })
 
       if (result.action !== Share.dismissedAction) {
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [
-              {
-                name: 'Payment'
-              }
-            ]
-          })
-        )
+        const txHash = await dispatch(topupProxy(amount))
+        dispatch(resetPaymentScreen())
+        navigation.goBack()
       }
     } catch (error) {
       throw error

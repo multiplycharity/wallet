@@ -33,6 +33,8 @@ import ChoosePaymentReceiverScreen from '../screens/ChoosePaymentReceiverScreen'
 import ChooseRequestReceiverScreen from '../screens/ChooseRequestReceiverScreen'
 import PayToScannedScreen from '../screens/PayToScannedScreen'
 import OverlayMessageScreen from '../screens/OverlayMessageScreen'
+import RequestScreen from '../screens/RequestScreen'
+import ClaimScreen from '../screens/ClaimScreen'
 
 import ModalHeader from '../components/ModalHeader'
 
@@ -42,12 +44,39 @@ import PaymentStackNavigator from './PaymentStackNavigator'
 import TabNavigator from './TabNavigator'
 import useScreenDimensions from '../hooks/useScreenDimensions'
 
+import { Linking } from 'expo'
+import { setDeepLink } from '../redux/deepLinkReducer'
+
 const Stack = createStackNavigator()
 
 const AppNavigator = ({ route, navigation }) => {
   const dispatch = useDispatch()
 
   const screen = useScreenDimensions()
+
+  const deepLink = useSelector(state => state.deepLink?.deepLink)
+  const path = useSelector(state => state.deepLink?.path)
+  const queryParams = useSelector(state => state.deepLink?.queryParams)
+
+  useEffect(() => {
+    Linking.addEventListener('url', ({ url }) => {
+      dispatch(setDeepLink(url))
+    })
+    ;(async () => {
+      const initialURL = await Linking.getInitialURL()
+      dispatch(setDeepLink(initialURL))
+    })()
+
+    return Linking.removeEventListener('url')
+  }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      if (path === 'claim') {
+        navigation.navigate('Claim', { ...queryParams })
+      }
+    }, [path])
+  )
 
   return (
     <Stack.Navigator
@@ -196,6 +225,30 @@ const AppNavigator = ({ route, navigation }) => {
         options={({ route, navigation }) => ({
           headerTitle: null,
           headerShown: false
+        })}
+      />
+
+      <Stack.Screen
+        name='Request'
+        component={RequestScreen}
+        options={({ route, navigation }) => ({
+          headerShown: false,
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          }
+        })}
+      />
+
+      <Stack.Screen
+        name='Claim'
+        component={ClaimScreen}
+        options={({ route, navigation }) => ({
+          headerShown: false,
+          gestureEnabled: true,
+          gestureResponseDistance: {
+            vertical: Dimensions.get('screen').height
+          }
         })}
       />
 

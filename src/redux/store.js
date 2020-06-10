@@ -15,18 +15,19 @@ import loadingReducer from './loadingReducer'
 import lastActionReducer from './lastActionReducer'
 import transactionsReducer from './transactions'
 import scannerReducer from './scannerReducer'
+import deepLinkReducer from './deepLinkReducer'
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['isLoading', 'lastAction']
+  blacklist: ['isLoading', 'transactions', 'lastAction', 'deepLink']
 }
 
-const transactionsConfig = {
-  key: 'transactions',
-  storage: AsyncStorage,
-  blacklist: ['pendingTxs']
-}
+// const transactionsConfig = {
+//   key: 'transactions',
+//   storage: AsyncStorage,
+//   blacklist: ['pendingTxs']
+// }
 
 const appReducer = combineReducers({
   screen: screenReducer,
@@ -35,8 +36,9 @@ const appReducer = combineReducers({
   error: errorReducer,
   isLoading: loadingReducer,
   lastAction: lastActionReducer,
-  transactions: persistReducer(transactionsConfig, transactionsReducer),
-  scanner: scannerReducer
+  transactions: transactionsReducer,
+  scanner: scannerReducer,
+  deepLink: deepLinkReducer
 })
 
 const rootReducer = (state, action) => {

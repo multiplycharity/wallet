@@ -39,13 +39,15 @@ const Key = props => {
   return (
     <SpringButton
       style={{
-        backgroundColor: 'white',
+        backgroundColor: Colors.White,
         height: 70,
         width: screen.width / 3,
         justifyContent: 'center',
         alignItems: 'center'
       }}
-      onPressIn={props.onPressIn}
+      onPressIn={() => {
+        props.onPressIn
+      }}
       onPress={props.onPress}
       onPressOut={props.onPressOut}
     >
@@ -301,6 +303,7 @@ const PaymentScreen = ({ navigation, route }) => {
                 navigation.navigate('ChooseRequestReceiver', {
                   amount: parseFloat(displayValue)
                 })
+                // navigation.navigate('Request', {})
               }}
             ></Button>
             <Button

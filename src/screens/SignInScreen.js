@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import {
   StyleSheet,
   Text,
@@ -46,9 +46,10 @@ import {
 import { useSelector, useDispatch, useStore } from 'react-redux'
 import { throwError } from '../redux/errorReducer'
 
-import AnimatedLoader from 'react-native-animated-loader'
+import Spinner from 'react-native-loading-spinner-overlay'
+import Colors from '../constants/colors'
 
-const SignInScreen = () => {
+const SignInScreen = props => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
 
@@ -86,15 +87,7 @@ const SignInScreen = () => {
         alignItems: 'center'
       }}
     >
-      <AnimatedLoader
-        visible={isLoading}
-        source={require('../../assets/loader_gray400.json')}
-        overlayColor='rgba(255,255,255,0.7)'
-        overlayColor='rgba(0,0,0,0.42)'
-        animationStyle={{ width: 60, height: 60 }}
-        speed={1}
-      />
-
+      <Spinner visible={isLoading} />
       <Animated.View
         style={{
           opacity: fadeValue,

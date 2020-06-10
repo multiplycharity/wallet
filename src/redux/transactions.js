@@ -1,18 +1,21 @@
 import { BLOCK_EXPLORER_URL, JSON_RPC_URL } from 'react-native-dotenv'
 import { firestore } from '../config/firebase'
+
 import { ethers } from 'ethers'
 import {
   formatWei,
   formatAddress,
   getUserByAddress,
-  getHexString
+  getHexString,
+  parseWei,
+  getUserByAddress2
 } from '../helpers'
 import produce from 'immer'
 import moment from 'moment'
 import { AddressZero } from 'ethers/constants'
+import provider from '../services/providerService'
 
-const provider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL)
-
+import { updateUser } from './userReducer'
 export const FETCH_TXS_LOADING = 'FETCH_TXS_LOADING'
 export const FETCH_TXS_SUCCESS = 'FETCH_TXS_SUCCESS'
 export const FETCH_TXS_ERROR = 'FETCH_TXS_ERROR'
@@ -35,39 +38,36 @@ const initialState = {
   lastIndexedTimestamp: null
 }
 
-export const sendTx = ({ to, value, data = '0x' }) => async (
+export const sendTx = ({ to, amount, data = '0x', ...overrides }) => async (
   dispatch,
   getState
 ) => {
   try {
     dispatch(sendTxStarted())
 
-    const amount = value
-
     const privateKey = getState().user?.wallet?.privateKey
     const sender = new ethers.Wallet(privateKey, provider)
 
-    const txValue = ethers.utils.parseUnits(
-      (parseFloat(value) / 100).toString()
-    )
+    const value = parseWei(amount)
 
-    let tx = await sender.sendTransaction({
+    let txn = await sender.sendTransaction({
       to,
-      value: txValue,
+      value: value,
       data,
-      gasPrice: ethers.utils.parseUnits('1', 'gwei') // FIXME
+      gasPrice: ethers.utils.parseUnits('1', 'gwei'), // FIXME
+      ...overrides
     })
 
-    const user = await getUserByAddress(tx.to)
+    const user = await getUserByAddress(txn.to)
 
-    let txn = {
-      id: tx.hash.toLowerCase(),
-      txHash: tx.hash.toLowerCase(),
-      from: tx.from.toLowerCase(),
-      to: tx.to.toLowerCase(),
-      value: txValue.toString(),
+    let tx = {
+      id: txn.hash.toLowerCase(),
+      txHash: txn.hash.toLowerCase(),
+      from: txn.from.toLowerCase(),
+      to: txn.to.toLowerCase(),
+      value: value.toString(),
       data: data,
-      title: user?.name || tx.to.toLowerCase(),
+      title: user?.name || txn.to.toLowerCase(),
       timestamp: moment().unix(),
       amount: amount,
       user: user,
@@ -75,11 +75,12 @@ export const sendTx = ({ to, value, data = '0x' }) => async (
       status: 'pending'
     }
 
-    dispatch(addPendingTx(txn))
-    dispatch(waitForTx(txn))
+    dispatch(addPendingTx(tx))
+    dispatch(waitForTx(tx))
+    return tx
   } catch (error) {
-    console.log('error: ', error)
     dispatch(sendTxError(error))
+    throw new Error(error)
   }
 }
 
@@ -168,13 +169,14 @@ export const fetchTxsError = error => {
 }
 
 export const fetchTxs = () => async (dispatch, getState) => {
-  const address = getState().user?.wallet?.address || getState().user?.address
+  const user = getState().user
+  const history = getState().transactions.history
 
   dispatch(fetchTxsLoading())
 
   try {
     let res = await fetch(
-      `${BLOCK_EXPLORER_URL}/api?module=account&action=txlist&address=${address}`
+      `${BLOCK_EXPLORER_URL}/api?module=account&action=txlist&address=${user.address}`
     )
 
     res = await res.json()
@@ -185,7 +187,14 @@ export const fetchTxs = () => async (dispatch, getState) => {
 
     const pendingTxs = getState().transactions.pendingTxs
 
-    const formatted = await dispatch(formatTxs([...pendingTxs, ...res.result]))
+    const linkdrops =
+      user.linkdrops || (await getUserByAddress2(user.address))?.linkdrops || []
+
+    !user.linkdrops && dispatch(updateUser({ linkdrops })) // Persist state
+
+    const formatted = await dispatch(
+      formatTxs([...pendingTxs, ...linkdrops, ...history, ...res.result])
+    )
 
     dispatch(setHistory(formatted))
     dispatch(fetchTxsSuccess())
@@ -194,17 +203,24 @@ export const fetchTxs = () => async (dispatch, getState) => {
   }
 }
 
-const formatTxs = txs => async (dispatch, getState) => {
+export const formatTxs = txs => async (dispatch, getState) => {
   const userAddress =
     getState().user?.wallet?.address || getState().user?.address
+
+  const linkdropContract = getState().user.linkdropContract
 
   let formatted = []
 
   for (let i = 0; i < txs.length; i++) {
     const fromAddr = txs[i].from
+
     const toAddr = txs[i].to || AddressZero
+
     const txType =
       formatAddress(toAddr) == formatAddress(userAddress) ? 'in' : 'out'
+
+    const isLinkdrop = txs[i].isLinkdrop
+
     const txHash = txs[i].txHash || txs[i].hash
 
     const user = await getUserByAddress(txType === 'in' ? fromAddr : toAddr)
@@ -216,6 +232,11 @@ const formatTxs = txs => async (dispatch, getState) => {
     if (timestamp > lastIndexedTimestamp)
       dispatch(setLastIndexedTimestamp(timestamp))
 
+    const title =
+      toAddr === linkdropContract || isLinkdrop
+        ? 'Linkdrop'
+        : user?.name || (txType === 'in' ? fromAddr : toAddr)
+
     let tx = {
       id: txHash,
       txHash: txHash,
@@ -223,13 +244,15 @@ const formatTxs = txs => async (dispatch, getState) => {
       to: toAddr,
       value: txs[i].value,
       data: txs[i].data,
-      title: user?.name || (txType === 'in' ? fromAddr : toAddr),
+      title: title,
       timestamp: timestamp,
       amount: formatWei(txs[i].value),
       user,
       type: txType,
-      status: txs[i].status
+      status: txs[i].status,
+      isLinkdrop: isLinkdrop
     }
+
     formatted.push(tx)
   }
   const set = new Set()

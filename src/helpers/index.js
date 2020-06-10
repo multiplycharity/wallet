@@ -1,13 +1,26 @@
 import { ethers } from 'ethers'
 import { firestore } from '../config/firebase'
+import queryString from 'query-string'
 
 export const isEthereumAddress = address => {
   const regex = RegExp('^0x[a-fA-F0-9]{40}$')
   return regex.test(address)
 }
 
+/**
+ *
+ * @param {String} value Wei amount to format into decimal
+ */
 export const formatWei = value => {
   return (ethers.utils.formatEther(value) * 100).toFixed(2).replace(/\.00$/, '')
+}
+
+/**
+ *
+ * @param {String} value Decimal value to parse wei from
+ */
+export const parseWei = value => {
+  return ethers.utils.parseUnits((parseFloat(value) / 100).toString())
 }
 
 export const formatFloat = value => {
@@ -24,21 +37,33 @@ export const isEmailAddress = email => {
 
 export const getUserByAddress = async address => {
   // address = formatAddress(address)
-
   // let docs = []
-
   // const snapshot = await firestore
   //   .collection('users')
   //   .where('address', '==', address)
   //   .get()
-
   // snapshot.docs.forEach(doc => {
   //   docs.push(doc.data())
   // })
-
   // if (docs.length !== 1) return null
   // return docs[0]
   return null
+}
+
+//FIXME temp
+export const getUserByAddress2 = async address => {
+  address = formatAddress(address)
+  let docs = []
+  const snapshot = await firestore
+    .collection('users')
+    .where('address', '==', address)
+    .get()
+  snapshot.docs.forEach(doc => {
+    docs.push(doc.data())
+  })
+  if (docs.length !== 1) return null
+  return docs[0]
+  // return null
 }
 
 export const getUserByEmail = async email => {
@@ -115,4 +140,11 @@ export const searchUser = async queryStr => {
   }
 
   return docs
+}
+
+export const getUrlParams = async url => {
+  const rawUrl = url.replace('#', '')
+  const parsedUrl = await queryString.extract(rawUrl)
+  const parsed = await queryString.parse(parsedUrl)
+  return parsed
 }

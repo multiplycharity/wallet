@@ -75,7 +75,7 @@ const TransactionScreen = props => {
         )}
       </View>
       <Text style={{ marginTop: 20, fontSize: 21, fontWeight: '500' }}>
-        {type === 'in' ? 'Incoming Transaction' : 'Outgoing Transaction'}
+        {type === 'out' ? 'Outgoing Transaction' : 'Incoming Transaction'}
       </Text>
 
       <Text

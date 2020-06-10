@@ -1,10 +1,8 @@
 import GoogleDriveUtils from '../helpers/GoogleDriveUtils'
 import { ethers } from 'ethers'
 import { throwError, clearError } from './errorReducer'
-import WalletSDK from '../helpers/WalletSDK'
-const sdk = new WalletSDK()
-
 import { firestore } from '../config/firebase'
+import { getBalance } from '../services/providerService'
 
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
 export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
@@ -32,7 +30,7 @@ export const setBalance = balance => {
 
 export const fetchBalance = () => async (dispatch, getState) => {
   const address = getState().user?.wallet?.address
-  const balance = await sdk.getBalance(address)
+  const balance = await getBalance(address)
   dispatch(setBalance(balance))
 }
 

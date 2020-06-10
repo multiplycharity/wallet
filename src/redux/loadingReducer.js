@@ -6,6 +6,15 @@ import {
   FIREBASE_SIGN_IN_FAILURE
 } from './authReducer'
 
+import {
+  CLAIM_STARTED,
+  CLAIM_SUCCESS,
+  CLAIM_ERROR,
+  LINK_GENERATION_STARTED,
+  LINK_GENERATION_SUCCESS,
+  LINK_GENERATION_ERROR
+} from './linkdropReducer'
+
 const loadingReducer = (state = false, action) => {
   switch (action.type) {
     case LOGIN_STARTED:
@@ -16,6 +25,21 @@ const loadingReducer = (state = false, action) => {
       return false
     case FIREBASE_SIGN_IN_FAILURE:
       return false
+
+    // case CLAIM_STARTED:
+    //   return true
+    // case CLAIM_SUCCESS:
+    //   return false
+    // case CLAIM_ERROR:
+    //   return false
+
+    // case LINK_GENERATION_STARTED:
+    //   return true
+    // case LINK_GENERATION_SUCCESS:
+    //   return false
+    // case LINK_GENERATION_ERROR:
+    //   return false
+
     // case SEND_TX_PENDING:
     //   return true
     // case SEND_TX_ERROR:
