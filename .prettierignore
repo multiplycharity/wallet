@@ -1,0 +1,30 @@
+node_modules/**/*
+.expo/*
+.expo-shared/*
+assets
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+
+# macOS
+.DS_Store
+
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+build/
+
+# Configs
+.env
+config.json
