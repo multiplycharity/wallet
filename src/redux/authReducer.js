@@ -9,7 +9,7 @@ import {
   createUserFailure,
   updateUserFailure,
   updateUserSuccess,
-  getWalletFromDrive
+  getWalletFromDrive,
 } from './userReducer'
 
 import { throwError, clearError } from './errorReducer'
@@ -35,7 +35,7 @@ const initialState = {
   isSignedInFirebase: false,
   isSignedInGoogle: false,
   accessToken: '',
-  error: null
+  error: null,
 }
 
 export const setAccessToken = accessToken => {
@@ -51,7 +51,7 @@ export const firebaseSignInFailure = error => dispatch => {
 
   dispatch({
     type: FIREBASE_SIGN_IN_FAILURE,
-    payload: error
+    payload: error,
   })
 }
 
@@ -64,7 +64,7 @@ export const googleSignInFailure = error => dispatch => {
 
   dispatch({
     type: GOOGLE_SIGN_IN_FAILURE,
-    payload: error
+    payload: error,
   })
 }
 
@@ -80,7 +80,7 @@ export const loginFailure = error => dispatch => {
   dispatch(throwError(error, 'Update user failed'))
   dispatch({
     type: LOGIN_FAILURE,
-    payload: error
+    payload: error,
   })
 }
 
@@ -92,7 +92,7 @@ export const logoutFailure = error => dispatch => {
   dispatch(throwError(error, 'Update user failed'))
   dispatch({
     type: LOGOUT_FAILURE,
-    payload: error
+    payload: error,
   })
 }
 
@@ -119,8 +119,8 @@ export const signInWithGoogle = () => async dispatch => {
       scopes: [
         'profile',
         'email',
-        'https://www.googleapis.com/auth/drive.appdata'
-      ]
+        'https://www.googleapis.com/auth/drive.appdata',
+      ],
     })
 
     if (response.type === 'success') {
@@ -169,7 +169,7 @@ export const signInWithFirebase = googleUser => dispatch => {
               email,
               displayName,
               phoneNumber,
-              photoURL
+              photoURL,
             } = result.user
 
             let user = {
@@ -179,7 +179,7 @@ export const signInWithFirebase = googleUser => dispatch => {
               phone: phoneNumber,
               photoUrl: photoURL,
               address: googleUser.address,
-              linkdropContract: googleUser.linkdropContract
+              linkdropContract: googleUser.linkdropContract,
             }
 
             // If new user
@@ -240,7 +240,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isSignedIn: true,
-        error: null
+        error: null,
       }
     case LOGIN_FAILURE:
       return { ...state, isSignedIn: false, error: action.payload }
