@@ -59,6 +59,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "babel-preset-expo": "~8.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
+    "prettier": "^2.0.5",
     "react-native-dotenv": "^0.2.0",
     "reactotron-react-native": "^5.0.0",
     "reactotron-redux": "^3.1.3",
